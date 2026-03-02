@@ -1,6 +1,6 @@
 import type { AxiosRequestConfig } from "axios";
 
-const baseURL = "/Auth";
+//const baseURL = "/Auth";
 
 export interface Login {
     username: string;
@@ -10,7 +10,7 @@ export interface Login {
 function login(data: Login) : AxiosRequestConfig<Login> {
     return {
         method: 'POST',
-        url: `${baseURL}/Login`,
+        url: `/login`,
         data: data,
     };
 }

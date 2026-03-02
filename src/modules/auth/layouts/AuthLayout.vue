@@ -1,5 +1,29 @@
 <template>
 
-    <RouterView />
+    <div class="bg-gray-100 flex justify-center items-center h-dvh overflow-hidden">
+    <!-- imagen -->
+    <div class="w-1/2 h-full hidden lg:block">
+        <img src="/src/assets/authimage.jpg" class="w-full h-full object-cover" />
+    </div>
+    <!-- login -->
+    <div class="w-full lg:w-1/2 h-full flex flex-col items-center justify-center p-8">
+        <div class="mb-8 flex flex-col items-center">
+            <router-link
+            :to="{name: 'home'}"
+            class="hover:opacity-80 transition-opacity duration-200 cursor-pointer"
+            >
+            <img 
+                src="/src/assets/voleappblack.png" 
+                alt="VoleApp Logo" 
+                class="h-20 w-auto mb-2" 
+            />
+            </router-link>
+            <p class="text-gray-500 text-sm font-medium">Gestión Deportiva Inteligente</p>
+        </div>
+        <div class="w-full max-w-md">
+            <RouterView />
+        </div>
+    </div>
+  </div>
 
 </template>

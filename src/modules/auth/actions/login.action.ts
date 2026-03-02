@@ -11,8 +11,8 @@ export const loginAction = async (credentials: Login) : Promise<LoginResponse> =
         return data;
     } catch (error: unknown ) {
         const axiosError = error as AxiosError;
-        if (axiosError.response?.status === 401) throw new NotAuthorizedError('Usuario o contraseña incorrectos');
-        if (axiosError.response?.status === 400) throw new BusinessError('Error en la petición');
+        if (axiosError.response?.status === 400) throw new BusinessError('Usuario o contraseña incorrectos');
+        if (axiosError.response?.status === 404) throw new NotAuthorizedError('Sesión expirada');
         if (!axiosError.response) throw new ConnectionError('El servidor no responde');
         throw error;
     }

@@ -24,9 +24,9 @@ export const useUserStore = defineStore('user', () => {
         tokenInfo.value?.["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"]
     );
 
-    const isSuperadmin = computed(() => role.value === 'Superadmin') ;
+    const isSuperadmin = computed(() => role.value === 'SuperAdmin') ;
 
-    const isAdmin = computed(() => role.value === 'Admin' || role.value === 'Superadmin');
+    const isAdmin = computed(() => role.value === 'Admin' || role.value === 'SuperAdmin');
 
     const userId = computed(() => tokenInfo.value?.["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/sid"]);
     
