@@ -26,6 +26,7 @@ export default defineConfigWithVueTs(
       parserOptions: {
         project: ['./tsconfig.app.json', './tsconfig.node.json'],
         tsconfigRootDir: import.meta.dirname,
+        extraFileExtensions: ['.vue'],
       },
     },
   },
