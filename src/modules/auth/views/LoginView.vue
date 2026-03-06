@@ -38,8 +38,8 @@ const onLoginSubmit = async (formData: any) => {
 
 <template>
 
-  <div class="ui:min-h-dvh ui:flex ui:items-center ui:justify-center ui:bg-slate-50 ui:px-4">
-    <div class="ui:w-full ui:max-w-md">
+  <div class="flex items-center">
+    <div class="w-full max-w-md">
 
       <LoginForm 
         :loading="isLoading"

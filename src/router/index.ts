@@ -9,6 +9,17 @@ const router = createRouter({
     //AuthRoutes
     landingRoutes,
     authRoutes,
+    // router/index.ts
+  {
+    path: '/profile',
+    name: 'profile',
+    component: () => import('@/modules/auth/views/LoginView.vue')
+  },
+   {
+    path: '/register',
+    name: 'register',
+    component: () => import('@/modules/auth/views/LoginView.vue')
+  }
   ],
 })
 

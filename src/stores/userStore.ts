@@ -6,14 +6,17 @@ import { jwtDecode } from "jwt-decode";
 interface TokenInfo {
     "http://schemas.microsoft.com/ws/2008/06/identity/claims/role": string,
     "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/sid": string;
+    "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"?: string;
 }
 
 
     
 
 export const useUserStore = defineStore('user', () => {
+    
     const token = ref<string | undefined>(undefined);
     const refreshToken = ref<string | undefined>(undefined);
+
 
     const isAuthenticated = computed(() => token.value !== undefined);
 
@@ -29,6 +32,7 @@ export const useUserStore = defineStore('user', () => {
     const isAdmin = computed(() => role.value === 'Admin' || role.value === 'SuperAdmin');
 
     const userId = computed(() => tokenInfo.value?.["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/sid"]);
+    const username = computed(() => tokenInfo.value?.["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"]);
     
 
     function setToken(newToken : string) {
@@ -56,6 +60,8 @@ export const useUserStore = defineStore('user', () => {
         isSuperadmin,
         isAdmin,
         userId,
+        username,
+        role,
     }
 
 },

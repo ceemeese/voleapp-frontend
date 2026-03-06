@@ -7,10 +7,11 @@ import UILibrary from 'ui';
 
 import router from './router'
 
-import "ui/style.css"
 import './assets/main.css'
 import 'primeicons/primeicons.css';
 import ToastService from 'primevue/toastservice';
+
+import "ui/style.css"
 
 
 
