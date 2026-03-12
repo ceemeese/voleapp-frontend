@@ -3,34 +3,34 @@ import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAuth } from '@/composables/useAuth';
 import { useToast } from 'primevue/usetoast';
-import type { LoginValues } from 'ui';
+import type { RegisterValues } from 'ui';
 
 const toast = useToast();
 const router = useRouter();
-const { login, isLoading} = useAuth();
+const { register, isLoading} = useAuth();
 
 const errorMessage = ref('');
 
-const onLoginSubmit = async (formData: LoginValues) => {
+const onRegisterSubmit = async (formData: RegisterValues) => {
   errorMessage.value = '';
   try {
-    await login(formData);
+    await register(formData);
     toast.add({
       severity: 'success',
       summary: '¡Bienvenido!', 
-      detail: 'Has iniciado sesión correctamente', 
+      detail: 'Registro realizado', 
       life: 3000
     })
-    await new Promise(resolve => setTimeout(resolve, 2000))
 
+    await new Promise(resolve => setTimeout(resolve, 2000))
     router.push({ name: 'home' });
   } catch (error: unknown) {
-    const message = error instanceof Error ? error.message : 'Error inesperado';
-    errorMessage.value = message;
+    const message = error instanceof Error ? error.message : 'Error';
+    errorMessage.value = message
 
     toast.add({ 
       severity: 'error', 
-      summary: 'Error de acceso', 
+      summary: 'Error de registro', 
       detail: errorMessage.value, 
       life: 5000 
     });
@@ -45,9 +45,9 @@ const onLoginSubmit = async (formData: LoginValues) => {
   <div class="flex items-center">
     <div class="w-full max-w-md">
 
-      <LoginForm 
+      <RegisterForm 
         :loading="isLoading"
-        @submit="onLoginSubmit"
+        @submit="onRegisterSubmit"
       />
       
     </div>
