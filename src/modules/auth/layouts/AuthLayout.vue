@@ -15,7 +15,7 @@
             <img 
                 src="/src/assets/voleappblack.png" 
                 alt="VoleApp Logo" 
-                class="h-20 w-auto mb-2" 
+                class="h-20 w-auto" 
             />
             </router-link>
             <p class="text-gray-500 text-sm font-medium">Gestión Deportiva Inteligente</p>

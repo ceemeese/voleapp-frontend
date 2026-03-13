@@ -1,5 +1,6 @@
 import { loginAction, type LoginResponse } from "@/modules/auth/actions/login.action";
-import type { Login } from "@/modules/auth/api/auth";
+import { registerAction } from "@/modules/auth/actions/register.action";
+import type { Login, Register } from "@/modules/auth/api/auth";
 import { useUserStore } from "@/stores/userStore"
 import { ref } from "vue";
 
@@ -21,9 +22,21 @@ export const  useAuth = () => {
     };
 
 
+    const register = async (registerData : Register): Promise<void> => {
+        isLoading.value = true;
+
+        try {
+            await registerAction(registerData);
+        } finally {
+            isLoading.value = false;
+        }
+    };
+
+
     return {
         isLoading,
         login,
+        register,
     };
 
 
