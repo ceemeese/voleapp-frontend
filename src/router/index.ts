@@ -1,5 +1,6 @@
 import { authRoutes } from '@/modules/auth/routes'
 import { landingRoutes } from '@/modules/landing/routes'
+import { userRoutes } from '@/modules/user/routes'
 import { useUserStore } from '@/stores/userStore'
 import { createRouter, createWebHistory } from 'vue-router'
 
@@ -10,11 +11,7 @@ const router = createRouter({
     landingRoutes,
     authRoutes,
     // router/index.ts
-  {
-    path: '/profile',
-    name: 'profile',
-    component: () => import('@/modules/auth/views/LoginView.vue')
-  },
+    userRoutes,
   ]
 })
 

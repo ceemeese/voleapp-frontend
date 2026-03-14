@@ -12,6 +12,7 @@ const createErrorFactory = (name: string) : ErrorConstructor => {
 
 export const ConnectionError = createErrorFactory('ConnectionError');
 export const NotAuthorizedError = createErrorFactory('NotAuthorizedError')
+export const Forbidden = createErrorFactory('Forbidden');
 export const NotFoundError = createErrorFactory('NotFoundError');
 export const ValidationError = createErrorFactory('ValidationError');
 export const BusinessError = createErrorFactory('BusinessError');

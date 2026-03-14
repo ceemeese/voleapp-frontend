@@ -1,11 +1,7 @@
 import type { AxiosRequestConfig } from "axios";
+import type { Login, Register } from "../interfaces";
 
 //const baseURL = "/Auth";
-
-export interface Login {
-    username: string;
-    password: string;
-}
 
 function login(data: Login) : AxiosRequestConfig<Login> {
     return {
@@ -13,16 +9,6 @@ function login(data: Login) : AxiosRequestConfig<Login> {
         url: `/login`,
         data: data,
     };
-}
-
-export interface Register {
-    dni: string;
-    name: string;
-    lastName: string;
-    username: string;
-    email: string;
-    phoneNumber: string;
-    password: string;
 }
 
 function register(data: Register) : AxiosRequestConfig<Register> {
