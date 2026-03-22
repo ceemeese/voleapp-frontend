@@ -23,7 +23,7 @@ const onRegisterSubmit = async (formData: RegisterValues) => {
     })
 
     await new Promise(resolve => setTimeout(resolve, 2000))
-    router.push({ name: 'home' });
+    router.push({ name: 'login' });
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : 'Error';
     errorMessage.value = message

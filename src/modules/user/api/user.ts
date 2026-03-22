@@ -14,14 +14,14 @@ function getUsers() : AxiosRequestConfig {
 function getUserById(id: string) : AxiosRequestConfig {
     return {
         method: 'GET',
-        url: `${baseURL}/${id}`,
+        url: `api${baseURL}/${id}`,
     }
 }
 
 function getUserByEmail(email: string) : AxiosRequestConfig {
     return {
         method: 'GET',
-        url: `${baseURL}/search`,
+        url: `api${baseURL}/search`,
         params: {email}
     }
 }
@@ -29,14 +29,14 @@ function getUserByEmail(email: string) : AxiosRequestConfig {
 function deleteUser(id: string) : AxiosRequestConfig {
     return {
         method: 'DELETE',
-        url: `${baseURL}/${id}`,
+        url: `api${baseURL}/${id}`,
     }
 }
 
 function putUser(id: string, data: PutUser) : AxiosRequestConfig<PutUser> {
     return {
         method: 'PUT',
-        url: `${baseURL}/${id}`,
+        url: `api${baseURL}/${id}`,
         data: data,
     }
 }

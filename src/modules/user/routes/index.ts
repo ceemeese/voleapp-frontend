@@ -1,20 +1,25 @@
 import type { RouteRecordRaw } from "vue-router";
 
 export const userRoutes: RouteRecordRaw = {
-    path: '/user',
-    name: 'user',
-    redirect: { name: 'profile' },
-    component: () => import('@/modules/user/layouts/UserLayout.vue'),
+    path: '/admin',
+    name: 'admin',
+    component: () => import('@/modules/user/layouts/AdminLayout.vue'),
     children: [
         {
-            path: 'profile',
-            name: 'profile',
-            component: () => import('@/modules/user/views/ProfileView.vue'),
+            path: 'users',
+            name: 'admin-users',
+            component: () => import('@/modules/user/views/UserListView.vue'),
         },
         {
-            path: 'users',
-            name: 'users',
+            path: 'profile',
+            name: 'admin-profile',
             component: () => import('@/modules/user/views/UserListView.vue'),
+        },
+        {
+            path: 'user-edit/:id',
+            name: 'user-edit',
+            component: () => import('@/modules/user/views/UserListView.vue'),
+            props: true
         },
     ]
 }
