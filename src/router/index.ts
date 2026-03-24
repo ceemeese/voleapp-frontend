@@ -1,7 +1,7 @@
 import { authRoutes } from '@/modules/auth/routes'
 import { landingRoutes } from '@/modules/landing/routes'
 import { userRoutes } from '@/modules/user/routes'
-import { useUserStore } from '@/stores/userStore'
+import { useAuthStore } from '@/stores/authStore'
 import { createRouter, createWebHistory } from 'vue-router'
 
 const router = createRouter({
@@ -17,7 +17,7 @@ const router = createRouter({
 
 
 router.beforeEach((to, from, next) => {
-  const userStore = useUserStore();
+  const userStore = useAuthStore();
 
   if (to.meta.requiresAuth && !userStore.isAuthenticated) {
     return next({ name: 'login' });  

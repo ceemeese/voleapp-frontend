@@ -1,74 +1,41 @@
+import type { User } from "@/modules/user/interfaces";
 import { defineStore } from "pinia"
 import { ref } from "vue";
-import { computed } from "vue";
-import { jwtDecode } from "jwt-decode";
-
-interface TokenInfo {
-    "http://schemas.microsoft.com/ws/2008/06/identity/claims/role": string,
-    "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/sid": string;
-    "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"?: string;
-}
-
-
-    
+import { useAuthStore } from "./authStore";
+import { useUser } from "@/composables/useUser";
 
 export const useUserStore = defineStore('user', () => {
-    
-    const token = ref<string | undefined>(undefined);
-    const refreshToken = ref<string | undefined>(undefined);
 
+    const authStore = useAuthStore();
+    const profile = ref<User | undefined>(undefined);
+    const { getUserById } = useUser()
 
-    const isAuthenticated = computed(() => token.value !== undefined);
+    async function fetchProfile() {
+        console.log('Perfil desde Store user', profile.value)
+        if (profile.value){
+            console.log('Perfil ya cargado', profile.value)
+            return;
+        } 
+        if (!authStore.userId) {
+            console.log('Sale de authStore porque es falso')
+            console.log(authStore.userId, 'USERID')
+            if(authStore.token) {
+                await new Promise(resolve => setTimeout(resolve, 5000));
+            }
+            return;
+        }
 
-    const tokenInfo = computed(() => 
-        (!isAuthenticated.value || !token.value) ? undefined : jwtDecode<TokenInfo>(token.value));
-
-    const role = computed(() => 
-        tokenInfo.value?.["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"]
-    );
-
-    const isSuperadmin = computed(() => role.value === 'SuperAdmin') ;
-
-    const isAdmin = computed(() => role.value === 'Admin' || role.value === 'SuperAdmin');
-
-    const userId = computed(() => tokenInfo.value?.["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/sid"]);
-    const username = computed(() => tokenInfo.value?.["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"]);
-    
-
-    function setToken(newToken : string) {
-        token.value = newToken;
+        profile.value = await getUserById(authStore.userId)
+        console.log('Perfil desde Store user', profile.value)
     }
 
-    function setRefreshToken(newToken : string) {
-        refreshToken.value = newToken;
+    function clearProfile() {
+        profile.value = undefined;
     }
 
-    function logout() {
-        token.value = undefined;
-        refreshToken.value = undefined;
+    return {
+        fetchProfile,
+        clearProfile,
+        profile
     }
-
-
-  return { 
-        token,
-        tokenInfo,
-        refreshToken, 
-        setToken, 
-        setRefreshToken,
-        logout,
-        isAuthenticated,
-        isSuperadmin,
-        isAdmin,
-        userId,
-        username,
-        role,
-    }
-
-},
-{
-    persist: {
-        key: 'voleapp-auth',
-        storage: localStorage,
-        pick: ["token", "refreshToken"],
-    }
-});
+})

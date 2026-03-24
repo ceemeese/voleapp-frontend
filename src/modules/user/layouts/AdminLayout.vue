@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { useUserStore } from '@/stores/userStore';
+import { useAuthStore } from '@/stores/authStore';
 import type { AppNavigationGroup } from '@/types/navigation';
 import { useRouter } from 'vue-router';
 
-const userStore = useUserStore();
+const userStore = useAuthStore();
 const router = useRouter();
 
 const ADMIN_MENU : AppNavigationGroup[] = [

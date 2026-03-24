@@ -3,7 +3,7 @@ import { useUser } from '@/composables/useUser';
 import { onMounted } from 'vue';
 import { ref } from 'vue';
 import type { User } from '../interfaces';
-import { useUserStore } from '@/stores/userStore';
+import { useAuthStore } from '@/stores/authStore';
 import { BaseDataTable } from 'ui';
 import type { BaseCard, BaseInputProps, ColumnConfig } from 'ui';
 import { useConfirm } from "primevue/useconfirm";
@@ -14,7 +14,7 @@ import { updateSchema } from '../schemas/update.schema';
 
 
 const { getUsers, deleteUser, updateUser } = useUser();
-const userStore = useUserStore()
+const userStore = useAuthStore()
 const users = ref<User[]>([]);
 const confirmPopup = useConfirm();
 const toast = useToast();

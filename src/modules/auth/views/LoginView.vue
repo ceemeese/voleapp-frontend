@@ -4,11 +4,11 @@ import { useRouter } from 'vue-router';
 import { useAuth } from '@/composables/useAuth';
 import { useToast } from 'primevue/usetoast';
 import type { LoginValues } from 'ui';
-import { useUserStore } from '@/stores/userStore';
+import { useAuthStore } from '@/stores/authStore';
 
 const toast = useToast();
 const router = useRouter();
-const userStore = useUserStore();
+const userStore = useAuthStore();
 const { login, isLoading} = useAuth();
 
 const errorMessage = ref('');

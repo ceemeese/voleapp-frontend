@@ -15,11 +15,5 @@ export const userRoutes: RouteRecordRaw = {
             name: 'admin-profile',
             component: () => import('@/modules/user/views/UserListView.vue'),
         },
-        {
-            path: 'user-edit/:id',
-            name: 'user-edit',
-            component: () => import('@/modules/user/views/UserListView.vue'),
-            props: true
-        },
     ]
 }

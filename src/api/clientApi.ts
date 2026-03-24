@@ -1,4 +1,4 @@
-import { useUserStore } from '@/stores/userStore';
+import { useAuthStore } from '@/stores/authStore';
 import axios from 'axios'
 
 const clientApi = axios.create({
@@ -7,7 +7,7 @@ const clientApi = axios.create({
 
 //interceptores
 clientApi.interceptors.request.use((config) => {
-    const userStore = useUserStore();
+    const userStore = useAuthStore();
     if (userStore.token) {
         config.headers.Authorization = `Bearer ${userStore.token}`
     }
