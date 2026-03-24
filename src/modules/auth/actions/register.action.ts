@@ -1,8 +1,9 @@
 import { clientApi } from "@/api/clientApi";
 import { AxiosError } from "axios";
-import auth, { type Register } from "../api/auth";
+import auth from "../api/auth";
 import type { ProblemDetails } from "@/types/problemDetails";
 import { BusinessError, ConnectionError, ValidationError } from "@/api/errorsApi";
+import type { Register } from "../interfaces";
 
 
 export const registerAction = async (dataForm : Register) : Promise<void> => {

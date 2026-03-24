@@ -1,82 +1,60 @@
 <script setup lang="ts">
-import { useUserStore } from '@/stores/userStore';
-import type { MenuItem } from 'primevue/menuitem';
-import { Footer, HeaderM, Navbar, type NavItemNavbar, type NavItem } from 'ui';
+import { useAuthStore } from '@/stores/authStore';
+//import { useRouter } from 'vue-router';
 import { computed } from 'vue';
-import { useRouter } from 'vue-router';
+import { Footer, HeaderM, type NavItem } from 'ui';
 
-const userStore = useUserStore();
-const router = useRouter();
+const userStore = useAuthStore();
+//const router = useRouter();
 
-const isLogged = computed(() => userStore.isAuthenticated);
+const isUserLogged = computed(() => userStore.isAuthenticated && !userStore.isAdmin);
 
-interface AppNavigationGroup extends MenuItem {
-    label: string;
-    items: NavItemNavbar[];
-    visible?: boolean; 
-}
+const headerLinks = computed<NavItem[]>(() => {
+        const publicHeaderLinks : NavItem[] = [
+        { title: 'Inicio', to: {name: 'home'}, icon: 'pi pi-home', },
+        { title: 'Usuarios', to: {name: 'login'}, icon: 'pi pi-users' },
+        {title: 'Clubs', to: {name: 'login'}, icon: 'pi pi-shop' },
+    ];
 
-const publicHeaderLinks : NavItem[] = [
-    { title: 'Inicio', to: {name: 'home'}, icon: 'pi pi-home', },
-    { title: 'Usuarios', to: {name: 'login'}, icon: 'pi pi-users' },
-    {title: 'Clubs', to: {name: 'login'}, icon: 'pi pi-shop' },
-]
-    
+    const authHeaderLinks : NavItem[] = [
+        { title: 'Inicio', to: {name: 'home'}, icon: 'pi pi-home', },
+        { title: 'Reservar', to: {name: 'login'}, icon: 'pi pi-book' },
+        {title: 'Perfil', to: {name: 'profile'}, icon: 'pi pi-user' },
+    ]
 
-const ADMIN_MENU : AppNavigationGroup[] = [
-    {
-        label: 'Análisis y rendimiento',
-        items: [
-            { label: 'Dashboard', to: {name: 'login'}, icon: 'pi pi-chart-bar'},
-            { label: 'Análisis', to: {name: 'login'}, icon: 'pi pi-chart-line'},
-            { label: 'Ocupación de pistas', to: {name: 'login'}, icon: 'pi pi-percentage'},
-        ]
-    },
-    {
-        label: 'Gestión operativa',
-        items: [
-            { label: 'Gestión de pistas', to: {name: 'login'}, icon: 'pi pi-map'},
-            { label: 'Calendario y reservas', to: {name: 'login'}, icon: 'pi pi-calendar'},
-            { label: 'Configurador de precios', to: {name: 'login'}, icon: 'pi pi-money-bill'},
-        ]
-    },
-     {
-        label: 'Gestión de accesos',
-        items: [
-            { label: 'Usuarios', to: {name: 'login'}, icon: 'pi pi-users'},
-            { label: 'Mi perfil', to: {name: 'login'}, icon: 'pi pi-user'},
-        ]
-    }
-]
+    return isUserLogged.value ? authHeaderLinks : publicHeaderLinks;
+})
+
 
 const footerLinks = computed<NavItem[]>(() => {
-    const authLinks: NavItem[] = [
-            { title: 'Soporte', to: { name: 'dashboard' } },
-            { title: 'Términos', to: { name: 'dashboard' } },
-            { title: 'Privacidad', to: { name: 'dashboard' } },
+    const authFooterLinks: NavItem[] = [
+            { title: 'Soporte', to: { name: 'login' } },
+            { title: 'Términos', to: { name: 'login' } },
+            { title: 'Privacidad', to: { name: 'login' } },
         ];
 
-    const publicLinks: NavItem[] = [
+    const publicFooterLinks: NavItem[] = [
             { title: 'Sobre Nosotros', to: { name: 'home' } },
             { title: 'Tarifas', to: { name: 'home' } },
             { title: 'Contacto', to: { name: 'home' }, },
         ]
         
-    return userStore.isAuthenticated ? authLinks : publicLinks;
+    return isUserLogged.value ? authFooterLinks : publicFooterLinks;
 });
 
-const handleLogout = () => {
+/*const handleLogout = () => {
     userStore.logout();
     router.push( {name: 'login'});
-}
+}*/
+
 
 </script>
 
 <template>
     <div class="ui:min-h-screen ui:flex ui:flex-col">
         <HeaderM
-        v-if="!isLogged"
-        :navigation-items="publicHeaderLinks"
+        :navigation-items="headerLinks"
+        class="header-shrink"
         >
             <template #logo>
                 <img 
@@ -86,31 +64,13 @@ const handleLogout = () => {
                 />
             </template>
         </HeaderM>
-        <Navbar
-            v-else
-            :username="userStore.username"
-            :user-role="userStore.role"
-            :navigation-items="ADMIN_MENU"
-            @logout="handleLogout"
-            
-        >
-            <template #logo>
-                <img 
-                    src="/src/assets/voleappblack.png" 
-                    alt="VoleApp Logo" 
-                    class="h-15 mb-2" 
-                />
-            </template>
-        </Navbar>
 
-        <main :class="['flex-1', isLogged ? 'ml-80' : 'pt-32']">
+        <main class="flex-1 w-full pt-32 mx-auto flex flex-col items-center px-6">
             <RouterView />
-            ESTO ES EL MAIN
         </main>
 
 
         <Footer 
-        v-if="!isLogged"
         :navigation-items="footerLinks"
         title-logo="VoleApp"
         >
@@ -125,8 +85,8 @@ const handleLogout = () => {
     </div>
 </template>
 
-<style>
 
+<style>
 :deep(.p-menu) {
     display: flex !important;
     flex-direction: column !important;
@@ -142,5 +102,10 @@ const handleLogout = () => {
 :deep(.p-menu-end) {
     margin-top: auto !important;
 }
-</style>
 
+.header-shrink {
+    backdrop-filter: blur(12px);
+
+    transition: all 0.3s ease-in-out;
+}
+</style>

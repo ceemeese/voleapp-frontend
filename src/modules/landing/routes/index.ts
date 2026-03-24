@@ -8,7 +8,12 @@ export const landingRoutes: RouteRecordRaw = {
         {
             path: '',
             name: 'home',
-            component: () => import('@/modules/landing/views/HomeView.vue'),
+            component: () => import('@/modules/landing/views/HomeView.vue')
+        },
+        {
+            path: 'profile',
+            name: 'profile',
+            component: () => import('@/modules/user/views/ProfileView.vue')
         }
     ]
 }

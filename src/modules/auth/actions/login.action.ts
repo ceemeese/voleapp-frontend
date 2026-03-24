@@ -1,8 +1,9 @@
 import { clientApi } from "@/api/clientApi";
 import { AxiosError } from "axios";
-import auth, { type Login } from "../api/auth";
+import auth from "../api/auth";
 import { BusinessError, ConnectionError, NotAuthorizedError } from "@/api/errorsApi";
 import type { ProblemDetails } from "@/types/problemDetails";
+import type { LoginResponse, Login } from "../interfaces";
 
 
 export const loginAction = async (credentials: Login) : Promise<LoginResponse> => {
@@ -17,9 +18,4 @@ export const loginAction = async (credentials: Login) : Promise<LoginResponse> =
         if (!axiosError.response) throw new ConnectionError('El servidor no responde');
         throw error;
     }
-}
-
-export interface LoginResponse {
-    token: string,
-    refreshToken: string,
 }

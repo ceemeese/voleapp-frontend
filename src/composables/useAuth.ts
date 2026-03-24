@@ -1,11 +1,10 @@
-import { loginAction, type LoginResponse } from "@/modules/auth/actions/login.action";
-import { registerAction } from "@/modules/auth/actions/register.action";
-import type { Login, Register } from "@/modules/auth/api/auth";
-import { useUserStore } from "@/stores/userStore"
+import { loginAction, registerAction } from "@/modules/auth/actions"; 
+import { useAuthStore } from "@/stores/authStore"
 import { ref } from "vue";
+import type { LoginResponse, Login, Register } from "@/modules/auth/interfaces";
 
 export const  useAuth = () => {
-    const userStore = useUserStore();
+    const userStore = useAuthStore();
     const isLoading = ref(false);
 
     

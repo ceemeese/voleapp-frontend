@@ -4,9 +4,11 @@ import { useRouter } from 'vue-router';
 import { useAuth } from '@/composables/useAuth';
 import { useToast } from 'primevue/usetoast';
 import type { LoginValues } from 'ui';
+import { useAuthStore } from '@/stores/authStore';
 
 const toast = useToast();
 const router = useRouter();
+const userStore = useAuthStore();
 const { login, isLoading} = useAuth();
 
 const errorMessage = ref('');
@@ -23,7 +25,13 @@ const onLoginSubmit = async (formData: LoginValues) => {
     })
     await new Promise(resolve => setTimeout(resolve, 2000))
 
-    router.push({ name: 'home' });
+  
+    if (userStore.isAdmin || userStore.isSuperadmin) {
+      router.push({ name: 'admin' });
+    } else {
+      router.push({ name: 'home' });
+    }
+      
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : 'Error inesperado';
     errorMessage.value = message;
