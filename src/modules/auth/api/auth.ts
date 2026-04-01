@@ -1,12 +1,12 @@
 import type { AxiosRequestConfig } from "axios";
 import type { Login, Register } from "../interfaces";
 
-//const baseURL = "/Auth";
+const baseURL = "/api/Auths";
 
 function login(data: Login) : AxiosRequestConfig<Login> {
     return {
         method: 'POST',
-        url: `/login`,
+        url: `${baseURL}/login`,
         data: data,
     };
 }
