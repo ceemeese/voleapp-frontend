@@ -7,5 +7,5 @@ export interface UserResponse {
     email: string;
     phoneNumber: string;
     isActive: boolean;
-    createdAt: string;
+    createdAt: Date;
 }

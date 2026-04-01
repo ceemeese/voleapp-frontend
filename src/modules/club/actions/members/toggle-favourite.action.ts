@@ -1,24 +1,19 @@
 import { clientApi } from "@/api/clientApi";
-import { AxiosError } from "axios";
+import type { AxiosError } from "axios";
 import type { ProblemDetails } from "@/types/problemDetails";
 import { BusinessError, ConnectionError, Forbidden, NotAuthorizedError, NotFoundError, ValidationError } from "@/api/errorsApi";
-import type { PutMember } from "../interfaces";
-import member from "../api/member";
+import member from "../../api/member";
 
-
-export const updateMemberAction = async (clubId: string, memberId: string, dataForm : PutMember) : Promise<void> => {
+export const toggleFavouriteAction = async (clubId: string, memberId: string) : Promise<void> => {
     try {
-        const config = member.putMember(clubId, memberId, dataForm);
+        const config = member.toggleFavouriteClub(clubId, memberId);
         await clientApi.request<void>(config);
-    } catch (error: unknown) {
+    } catch (error : unknown) {
         const axiosError = error as AxiosError<ProblemDetails>;
 
-        if (!axiosError.response) {
-            throw new ConnectionError('El servidor no responde');            
-        }
+        if (!axiosError.response) throw new ConnectionError('El servidor no responde');
 
-        const {status, data} = axiosError.response;
-
+        const { status, data }  = axiosError.response;
 
         if (status == 400) {
             const isValidationError = data.title.includes('Validation');
@@ -26,12 +21,12 @@ export const updateMemberAction = async (clubId: string, memberId: string, dataF
             if (isValidationError) {
                 throw new ValidationError('Los datos introducidos no son válidos. Por favor, revísalos')
             }
-            throw new BusinessError('Ha habido un error en el registro. Intente de nuevo')
+            throw new BusinessError('Ha habido un error en la obtención de datos. Intente de nuevo')
         }
 
         if (status === 401) throw new NotAuthorizedError('Sesión expirada');
         if (status === 403) throw new Forbidden('Usuario sin permisos');
-
+        
         if (status === 404) {
             const isNotFoundClubError = data.title.includes('Club');
 
@@ -42,7 +37,6 @@ export const updateMemberAction = async (clubId: string, memberId: string, dataF
             throw new NotFoundError('El usuario que buscas no pertenece a este club');
         }
 
-        if (status === 409) throw new BusinessError('El usuario ya es miembro de este club');
 
         throw error;
     }

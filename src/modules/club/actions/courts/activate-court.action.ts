@@ -2,15 +2,13 @@ import { clientApi } from "@/api/clientApi";
 import { AxiosError } from "axios";
 import type { ProblemDetails } from "@/types/problemDetails";
 import { BusinessError, ConnectionError, Forbidden, NotAuthorizedError, NotFoundError, ValidationError } from "@/api/errorsApi";
-import type { AddMember } from "../interfaces";
-import member from "../api/member";
+import court from "../../api/court";
 
 
-export const registerMemberAction = async (clubId: string, dataForm : AddMember) : Promise<string> => {
+export const activateCourtAction = async (courtId: string) : Promise<void> => {
     try {
-        const config = member.registerMember(clubId, dataForm);
-        const { data } = await clientApi.request<string>(config);
-        return data;
+        const config = court.activateCourt(courtId);
+        await clientApi.request<void>(config);
     } catch (error: unknown) {
         const axiosError = error as AxiosError<ProblemDetails>;
 
@@ -27,14 +25,12 @@ export const registerMemberAction = async (clubId: string, dataForm : AddMember)
             if (isValidationError) {
                 throw new ValidationError('Los datos introducidos no son válidos. Por favor, revísalos')
             }
-            throw new BusinessError('Ha habido un error en el registro. Intente de nuevo')
+            throw new BusinessError('Ha habido un error en la activación de la pista. Intente de nuevo')
         }
 
         if (status === 401) throw new NotAuthorizedError('Sesión expirada');
         if (status === 403) throw new Forbidden('Usuario sin permisos');
-        if (status === 404) throw new NotFoundError('El club solicitado no existe o no está disponible')
-
-        if (status === 409) throw new BusinessError('El usuario ya es miembro de este club');
+        if (status === 404) throw new NotFoundError('La pista solicitada no existe o no está disponible')
 
         throw error;
     }

@@ -2,12 +2,17 @@ import { clientApi } from "@/api/clientApi";
 import type { AxiosError } from "axios";
 import type { ProblemDetails } from "@/types/problemDetails";
 import { BusinessError, ConnectionError, Forbidden, NotAuthorizedError, NotFoundError, ValidationError } from "@/api/errorsApi";
-import member from "../api/member";
+import member from "../../api/member";
+import type { MemberResponse, Member } from "../../interfaces";
 
-export const toggleFavouriteAction = async (clubId: string, memberId: string) : Promise<void> => {
+export const getMemberByIdAction = async (clubId: string, memberId: string) : Promise<Member> => {
     try {
-        const config = member.toggleFavouriteClub(clubId, memberId);
-        await clientApi.request<void>(config);
+        const config = member.getMemberDetail(clubId, memberId);
+        const { data } = await clientApi.request<MemberResponse>(config);
+        return {
+            ...data,
+            registeredOn: new Date(data.registeredOn)
+        };
     } catch (error : unknown) {
         const axiosError = error as AxiosError<ProblemDetails>;
 
@@ -37,6 +42,7 @@ export const toggleFavouriteAction = async (clubId: string, memberId: string) : 
             throw new NotFoundError('El usuario que buscas no pertenece a este club');
         }
 
+        
 
         throw error;
     }

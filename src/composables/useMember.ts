@@ -1,7 +1,7 @@
 
 import { ref } from "vue";
 import type { AddMember, Member, PutMember } from "@/modules/club/interfaces";
-import { getMemberByIdAction, getMembersAction, registerMemberAction, updateMemberAction, deactivateMemberAction, activateMemberAction, toggleFavouriteAction } from "@/modules/club/actions"
+import { getMemberByIdAction, getMembersAction, registerMemberAction, updateMemberAction, deactivateMemberAction, activateMemberAction, toggleFavouriteAction } from "@/modules/club/actions/"
 
 export const useMember = () => {
     const isLoading = ref(false);

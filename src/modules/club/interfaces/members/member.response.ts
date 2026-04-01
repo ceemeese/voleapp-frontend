@@ -4,7 +4,7 @@ export interface MemberResponse {
     userId: string;
     role: string;
     membershipNumber: string;
-    registeredOn: Date;
+    registeredOn: string;
     isFavourite: boolean;
     isMember: boolean;
     isActive: boolean;

@@ -2,7 +2,7 @@ import { clientApi } from "@/api/clientApi";
 import type { AxiosError } from "axios";
 import type { ProblemDetails } from "@/types/problemDetails";
 import { BusinessError, ConnectionError, Forbidden, NotAuthorizedError, NotFoundError, ValidationError } from "@/api/errorsApi";
-import member from "../api/member";
+import member from "../../api/member";
 
 export const deactivateMemberAction = async (clubId: string, memberId: string) : Promise<void> => {
     try {
@@ -21,7 +21,7 @@ export const deactivateMemberAction = async (clubId: string, memberId: string) :
             if (isValidationError) {
                 throw new ValidationError('Los datos introducidos no son válidos. Por favor, revísalos')
             }
-            throw new BusinessError('Ha habido un error en la obtención de datos. Intente de nuevo')
+            throw new BusinessError('Ha habido un error en la desactivación del miembro. Intente de nuevo')
         }
 
         if (status === 401) throw new NotAuthorizedError('Sesión expirada');
