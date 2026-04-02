@@ -1,5 +1,5 @@
-import { getCourtsAction } from "@/modules/club/actions";
-import type { Court } from "@/modules/club/interfaces";
+import { getCourtByIdAction, getCourtsAction, getCourtsByClubIdAction, registerCourtAction, updateCourtAction } from "@/modules/club/actions";
+import type { AddCourt, Court, PutCourt } from "@/modules/club/interfaces";
 import { ref } from "vue";
 
 export const useCourts = () => {
@@ -20,7 +20,7 @@ export const useCourts = () => {
         isLoading.value = true;
 
         try {
-            const data: Court[] = await getCourtsByClubId(clubId)
+            const data: Court[] = await getCourtsByClubIdAction(clubId)
             return data;
         } finally {
             isLoading.value = false;
@@ -31,29 +31,29 @@ export const useCourts = () => {
         isLoading.value = true;
 
         try {
-            const data: Court = await getCourtById(courtId)
+            const data: Court = await getCourtByIdAction(courtId)
             return data;
         } finally {
             isLoading.value = false;
         }
     }
 
-    const registerCourt = async (clubId: string): Promise<string> => {
+    const registerCourt = async (clubId: string, dataForm: AddCourt): Promise<string> => {
         isLoading.value = true;
 
         try {
-            const data: string = await registerCourt(clubId)
+            const data: string = await registerCourtAction(clubId, dataForm)
             return data;
         } finally {
             isLoading.value = false;
         }
     }
 
-    const updateCourt = async (courtId: string): Promise<void> => {
+    const updateCourt = async (courtId: string, dataForm: PutCourt): Promise<void> => {
         isLoading.value = true;
 
         try {
-            await registerCourt(courtId);
+            await updateCourtAction(courtId, dataForm);
         } finally {
             isLoading.value = false;
         }
