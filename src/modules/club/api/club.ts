@@ -1,0 +1,68 @@
+import type { AxiosRequestConfig } from "axios";
+import type { AddClub } from "../interfaces/club/club-add.interface";
+import type { PutClub } from "../interfaces/club/club-update.interface";
+
+const baseURL = "/api/clubs";
+
+function getClubs() : AxiosRequestConfig {
+    return {
+        method: 'GET',
+        url: `${baseURL}`,
+    }
+}
+
+function getClubById(clubId: string) : AxiosRequestConfig {
+    return {
+        method: 'GET',
+        url: `${baseURL}/${clubId}`,
+    }
+}
+
+function getClubsBySearch(name: string) : AxiosRequestConfig {
+    return {
+        method: 'GET',
+        url: `${baseURL}/search`,
+        params: {name}
+    }
+}
+
+function registerClub(data : AddClub) : AxiosRequestConfig<AddClub> {
+    return {
+        method: 'POST',
+        url: `${baseURL}`,
+        data: data,
+    }
+}
+
+function putClub(clubId: string, data: PutClub) : AxiosRequestConfig<PutClub> {
+    return {
+        method: 'PUT',
+        url: `${baseURL}/${clubId}`,
+        data: data,
+    }
+}
+
+function deactivateClub(clubId: string) : AxiosRequestConfig {
+    return {
+        method: 'DELETE',
+        url: `${baseURL}/${clubId}`,
+    }
+}
+
+function activateClub(clubId: string) : AxiosRequestConfig {
+    return {
+        method: 'PATCH',
+        url: `${baseURL}/${clubId}/activate`,
+    }
+}
+
+
+export default {
+    getClubs,
+    getClubById,
+    getClubsBySearch,
+    registerClub,
+    putClub,
+    deactivateClub,
+    activateClub
+}

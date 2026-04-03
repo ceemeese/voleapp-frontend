@@ -2,8 +2,8 @@ export interface ScheduleResponse {
     id: number, 
     clubId: string,
     dayOfWeek: DayOfWeekResponse,
-    openingTime: Date,
-    closingTime: Date,
+    openingTime: string,
+    closingTime: string,
     isClosed: boolean,
 }
 

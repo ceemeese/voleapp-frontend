@@ -27,7 +27,7 @@ function putScheduleByClub(clubId: string, scheduleId: number, data: PutSchedule
     }
 }
 
-function toggleScheduleState(clubId: string, scheduleId: string) : AxiosRequestConfig {
+function toggleScheduleState(clubId: string, scheduleId: number) : AxiosRequestConfig {
     return {
         method: 'PUT',
         url: `${baseURL}/${clubId}/schedules/${scheduleId}/toggle`,

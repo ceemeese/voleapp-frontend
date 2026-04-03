@@ -38,9 +38,9 @@ export const useSchedule = () => {
         }
     }
 
-        const toggleSchedule = async(clubId: string, scheduleId: number) : Promise<void> => {
+    const toggleSchedule = async(clubId: string, scheduleId: number) :Promise<void> => {
         isLoading.value = true;
-        
+
         try {
             await toggleScheduleStatusAction(clubId, scheduleId);
         } finally {

@@ -2,7 +2,7 @@ import { getCourtByIdAction, getCourtsAction, getCourtsByClubIdAction, registerC
 import type { AddCourt, Court, PutCourt } from "@/modules/club/interfaces";
 import { ref } from "vue";
 
-export const useCourts = () => {
+export const useCourt = () => {
     const isLoading = ref(false);
 
     const getAllCourts = async (): Promise<Court[]> => {
