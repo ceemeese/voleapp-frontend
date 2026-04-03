@@ -13,7 +13,7 @@ import { zodResolver } from '@primevue/forms/resolvers/zod';
 import { updateSchema } from '../schemas/update.schema';
 
 
-const { getUsers, deleteUser, updateUser } = useUser();
+const { getUsers, deactivateUser, updateUser } = useUser();
 const userStore = useAuthStore()
 const users = ref<User[]>([]);
 const confirmPopup = useConfirm();
@@ -53,7 +53,7 @@ const headerColumns : ColumnConfig<User>[] = [
                 isVisible: (user) => user.username !== 'superadmin' && user.isActive,
                 icon: 'pi pi-trash',
                 class: '!text-red-600',
-                action: (user, event) => handleDelete(user, event)
+                action: (user, event) => handleDeactivate(user, event)
             }
         ]
     }
@@ -98,7 +98,7 @@ const onSaveModifiedUser = async (updatedData: User) => {
     
 }
 
-const handleDelete = (user: User, event: PointerEvent) => {
+const handleDeactivate = (user: User, event: PointerEvent) => {
     console.log('usuario:', user.id)
     const target = event.currentTarget as HTMLElement;
     confirmPopup.require({
@@ -115,7 +115,7 @@ const handleDelete = (user: User, event: PointerEvent) => {
         },
         accept: async () => {
             try {
-                await deleteUser(user.id)
+                await deactivateUser(user.id)
 
                 user.isActive = false;
 

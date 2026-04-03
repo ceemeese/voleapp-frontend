@@ -1,4 +1,4 @@
-import { getUserByEmailAction, getUserByIdAction, getUsersAction, deleteUserAction, updateUserAction } from "@/modules/user/actions";
+import { getUserByEmailAction, getUserByIdAction, getUsersAction, deactivateUserAction, updateUserAction } from "@/modules/user/actions";
 import type { PutUser, User } from "@/modules/user/interfaces";
 import { ref } from "vue";
 
@@ -40,11 +40,11 @@ export const useUser = () => {
     }
 
 
-    const deleteUser = async (id: string): Promise<void> => {
+    const deactivateUser = async (id: string): Promise<void> => {
         isLoading.value = true;
 
         try {
-            await deleteUserAction(id);
+            await deactivateUserAction(id);
         } finally {
             isLoading.value = false;
         }
@@ -61,15 +61,12 @@ export const useUser = () => {
         }
     }
     
-
-
-
     return {
         isLoading,
         getUsers,
         getUserById,
         getUserByEmail,
-        deleteUser,
+        deactivateUser,
         updateUser,
     }
 }

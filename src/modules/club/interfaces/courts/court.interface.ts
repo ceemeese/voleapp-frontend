@@ -10,5 +10,5 @@ export interface Court {
 
 export interface CourtType {
     id: number;
-    day: string;
+    name: string;
 }

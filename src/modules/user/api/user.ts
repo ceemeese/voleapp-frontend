@@ -26,10 +26,10 @@ function getUserByEmail(email: string) : AxiosRequestConfig {
     }
 }
 
-function deleteUser(id: string) : AxiosRequestConfig {
+function deactivateUser(id: string) : AxiosRequestConfig {
     return {
-        method: 'DELETE',
-        url: `${baseURL}/${id}`,
+        method: 'PATCH',
+        url: `${baseURL}/${id}/deactivate`,
     }
 }
 
@@ -45,7 +45,7 @@ export default {
     getUsers,
     getUserById,
     getUserByEmail,
-    deleteUser,
+    deactivateUser,
     putUser,
 }
 

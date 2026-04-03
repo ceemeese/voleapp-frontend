@@ -4,9 +4,9 @@ import type { AxiosError } from "axios";
 import type { ProblemDetails } from "@/types/problemDetails";
 import { ConnectionError, Forbidden, NotAuthorizedError, NotFoundError } from "@/api/errorsApi";
 
-export const deleteUserAction = async (id: string) : Promise<void> => {
+export const deactivateUserAction = async (id: string) : Promise<void> => {
     try {
-        const config = user.deleteUser(id);
+        const config = user.deactivateUser(id);
         await clientApi.request<void>(config);
     } catch (error : unknown) {
         const axiosError = error as AxiosError<ProblemDetails>;

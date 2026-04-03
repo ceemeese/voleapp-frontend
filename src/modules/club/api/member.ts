@@ -35,8 +35,8 @@ function putMember(clubId: string, memberId: string, data: PutMember) : AxiosReq
 
 function deactivateMember(clubId: string, memberId: string) : AxiosRequestConfig {
     return {
-        method: 'DELETE',
-        url: `${baseURL}/${clubId}/members/${memberId}`,
+        method: 'PATCH',
+        url: `${baseURL}/${clubId}/members/${memberId}/deactivate`,
     }
 }
 

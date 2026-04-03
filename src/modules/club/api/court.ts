@@ -42,8 +42,8 @@ function putCourt(courtId: string, data : PutCourt) : AxiosRequestConfig<PutCour
 
 function deactivateCourt(courtId: string) : AxiosRequestConfig {
     return {
-        method: 'DELETE',
-        url: `${baseURL}/${courtId}`,
+        method: 'PATCH',
+        url: `${baseURL}/${courtId}/deactivate`,
     }
 }
 
