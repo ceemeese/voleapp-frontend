@@ -10,13 +10,14 @@ export const deactivateUserAction = async (id: string) : Promise<void> => {
         await clientApi.request<void>(config);
     } catch (error : unknown) {
         const axiosError = error as AxiosError<ProblemDetails>;
-        const status = axiosError.response?.status;
+        if (!axiosError.response) throw new ConnectionError('El servidor no responde');
+
+        const status = axiosError.response.status;
 
         if (status === 400) throw new NotAuthorizedError('No se puede realizar esta acción');
         if (status === 401) throw new NotAuthorizedError('Sesión expirada');
         if (status === 403) throw new Forbidden('Usuario sin permisos');
         if (status === 404) throw new NotFoundError('Usuario no encontrado');
-        if (!axiosError.response) throw new ConnectionError('El servidor no responde');
         
         throw error;
     }

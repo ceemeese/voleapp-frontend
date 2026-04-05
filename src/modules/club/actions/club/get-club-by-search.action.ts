@@ -12,10 +12,12 @@ export const getClubBySearchAction = async (clubId: string) : Promise<Summarized
         return data;
     } catch (error : unknown) {
         const axiosError = error as AxiosError<ProblemDetails>;
-        const status = axiosError.response?.status;
+        if (!axiosError.response) throw new ConnectionError('El servidor no responde');
+        
+        const status = axiosError.response.status;
 
         if (status === 404) throw new NotFoundError('El club solicitado no existe o no está disponible')
-        if (!axiosError.response) throw new ConnectionError('El servidor no responde');
+        
 
         throw error;
     }

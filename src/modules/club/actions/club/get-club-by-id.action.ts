@@ -15,11 +15,12 @@ export const getClubByIdAction = async (clubId: string) : Promise<Club> => {
         }
     } catch (error : unknown) {
         const axiosError = error as AxiosError<ProblemDetails>;
-        const status = axiosError.response?.status;
-
-        if (status === 404) throw new NotFoundError('El club solicitado no existe o no está disponible')
         if (!axiosError.response) throw new ConnectionError('El servidor no responde');
 
+        const status = axiosError.response.status;
+
+        if (status === 404) throw new NotFoundError('El club solicitado no existe o no está disponible')
+        
         throw error;
     }
 }

@@ -15,12 +15,13 @@ export const getCourtsAction = async () : Promise<Court[]> => {
         }));
     } catch (error : unknown) {
         const axiosError = error as AxiosError<ProblemDetails>;
-        const status = axiosError.response?.status;
+        if (!axiosError.response) throw new ConnectionError('El servidor no responde');
+        
+        const status = axiosError.response.status;
 
         if (status === 401) throw new NotAuthorizedError('Sesión expirada');
         if (status === 403) throw new Forbidden('Usuario sin permisos');
-        if (!axiosError.response) throw new ConnectionError('El servidor no responde');
-
+        
         throw error;
     }
 }

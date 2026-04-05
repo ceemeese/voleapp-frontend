@@ -15,12 +15,13 @@ export const getUserByEmailAction = async (email: string) : Promise<User> => {
         }
     } catch (error : unknown) {
         const axiosError = error as AxiosError<ProblemDetails>;
-        const status = axiosError.response?.status;
+        if (!axiosError.response) throw new ConnectionError('El servidor no responde');
+
+        const status = axiosError.response.status;
         
         if (status === 401) throw new NotAuthorizedError('Sesión expirada');
         if (status === 403) throw new Forbidden('Usuario sin permisos');
         if (status === 404) throw new NotFoundError('No existe usuario con ese email');
-        if (!axiosError.response) throw new ConnectionError('El servidor no responde');
         
         throw error;
     }
