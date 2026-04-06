@@ -4,6 +4,13 @@ import type { PutClub } from "../interfaces/club/club-update.interface";
 
 const baseURL = "/api/clubs";
 
+function getAdminClubContext() : AxiosRequestConfig {
+    return {
+        method: 'GET',
+        url: `${baseURL}/admin-context`,
+    }
+}
+
 function getClubs() : AxiosRequestConfig {
     return {
         method: 'GET',
@@ -58,6 +65,7 @@ function activateClub(clubId: string) : AxiosRequestConfig {
 
 
 export default {
+    getAdminClubContext,
     getClubs,
     getClubById,
     getClubsBySearch,

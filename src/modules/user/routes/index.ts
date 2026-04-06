@@ -11,9 +11,14 @@ export const userRoutes: RouteRecordRaw = {
             component: () => import('@/modules/user/views/UserListView.vue'),
         },
         {
+            path: 'members',
+            name: 'admin-members',
+            component: () => import('@/modules/club/views/MemberView.vue'),
+        },
+        {
             path: 'profile',
             name: 'admin-profile',
-            component: () => import('@/modules/user/views/UserListView.vue'),
+            component: () => import('@/modules/user/views/ProfileView.vue'),
         },
     ]
 }

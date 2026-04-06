@@ -8,6 +8,7 @@ import member from "../../api/member";
 
 export const updateMemberAction = async (clubId: string, memberId: string, dataForm : PutMember) : Promise<void> => {
     try {
+        console.log('CLUUUUB', clubId, 'MEMBERRRR', memberId)
         const config = member.putMember(clubId, memberId, dataForm);
         await clientApi.request<void>(config);
     } catch (error: unknown) {

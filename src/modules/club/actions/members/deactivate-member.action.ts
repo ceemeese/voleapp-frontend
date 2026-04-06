@@ -28,13 +28,13 @@ export const deactivateMemberAction = async (clubId: string, memberId: string) :
         if (status === 403) throw new Forbidden('Usuario sin permisos');
         
         if (status === 404) {
-            const isNotFoundClubError = data.title.includes('Club');
+            const isNotFoundMemberError = data.title.includes('MemberNotFound');
 
-            if (isNotFoundClubError) {
-                throw new NotFoundError('El club solicitado no existe o no está disponible')
+            if (isNotFoundMemberError) {
+                throw new NotFoundError('El usuario que buscas no pertenece a este club');
+                
             }
-
-            throw new NotFoundError('El usuario que buscas no pertenece a este club');
+            throw new NotFoundError('El club solicitado no existe o no está disponible')
         }
 
 

@@ -1,5 +1,5 @@
 export interface PutMember {
     role: string;
-    memberShipNumber?: string,
-    ismember: boolean,
+    membershipNumber?: string,
+    isMember: boolean,
 }

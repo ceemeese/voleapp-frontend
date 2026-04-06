@@ -1,9 +1,25 @@
 import { activateClubAction, deactivateClubAction, getClubByIdAction, getClubBySearchAction, getClubsAction, registerClubAction, updateClubAction } from "@/modules/club/actions";
+import { getAdminContextAction } from "@/modules/club/actions/club/get-admin-context.action";
 import type { AddClub, Club, PutClub, SummarizedClub } from "@/modules/club/interfaces";
-import { ref } from "vue";
+import { useClubStore } from "@/stores/clubStore";
+import { computed, ref } from "vue";
 
 export const useClub = () => {
+    const clubStore = useClubStore();
     const isLoading = ref(false);
+    const activeClubId = computed(() => clubStore.activeClubId);
+
+    const getAdminContext = async (): Promise<void> => {
+        if (activeClubId.value) return;
+        isLoading.value = true;
+
+        try {
+            const data: string = await getAdminContextAction();
+            clubStore.activeClubId = data;
+        } finally {
+            isLoading.value = false;
+        }
+    }
 
     const getClubs = async (): Promise<SummarizedClub[]> => {
         isLoading.value = true;
@@ -49,11 +65,12 @@ export const useClub = () => {
         }
     }
 
-    const updateClub = async (clubId: string, dataForm: PutClub): Promise<void> => {
+    const updateClub = async (dataForm: PutClub): Promise<void> => {
         isLoading.value = true;
 
+
         try {
-            await updateClubAction(clubId, dataForm);
+            await updateClubAction(activeClubId.value!, dataForm);
         } finally {
             isLoading.value = false;
         }
@@ -78,6 +95,8 @@ export const useClub = () => {
 
 
     return {
+        activeClubId,
+        getAdminContext,
         getClubs,
         getClubById,
         getClubBySearch,

@@ -1,16 +1,16 @@
 
 import { ref } from "vue";
-import type { AddMember, Member, PutMember } from "@/modules/club/interfaces";
+import type { AddMember, MemberComplete, PutMember } from "@/modules/club/interfaces";
 import { getMemberByIdAction, getMembersAction, registerMemberAction, updateMemberAction, deactivateMemberAction, activateMemberAction, toggleFavouriteAction } from "@/modules/club/actions/"
 
 export const useMember = () => {
     const isLoading = ref(false);
 
-    const getMembers = async (clubId : string): Promise<Member[]> => {
+    const getMembers = async (clubId : string): Promise<MemberComplete[]> => {
         isLoading.value = true;
 
         try {
-            const data: Member[] = await getMembersAction(clubId)
+            const data: MemberComplete[] = await getMembersAction(clubId)
             return data;
         } finally {
             isLoading.value = false;
@@ -18,11 +18,11 @@ export const useMember = () => {
     }
 
 
-    const getMember = async (clubId : string, memberId: string): Promise<Member> => {
+    const getMember = async (clubId : string, memberId: string): Promise<MemberComplete> => {
         isLoading.value = true;
 
         try {
-            const data: Member = await getMemberByIdAction(clubId, memberId)
+            const data: MemberComplete = await getMemberByIdAction(clubId, memberId)
             return data;
         } finally {
             isLoading.value = false;

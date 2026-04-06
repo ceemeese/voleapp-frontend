@@ -3,9 +3,9 @@ import type { AxiosError } from "axios";
 import type { ProblemDetails } from "@/types/problemDetails";
 import { ConnectionError, Forbidden, NotAuthorizedError, NotFoundError } from "@/api/errorsApi";
 import member from "../../api/member";
-import type { MemberResponse, Member } from "../../interfaces";
+import type { MemberResponse, MemberComplete } from "../../interfaces";
 
-export const getMembersAction = async (clubId: string) : Promise<Member[]> => {
+export const getMembersAction = async (clubId: string) : Promise<MemberComplete[]> => {
     try {
         const config = member.getMembersByClub(clubId);
         const { data } = await clientApi.request<MemberResponse[]>(config);
