@@ -1,6 +1,6 @@
 import { clientApi } from "@/api/clientApi";
 import { AxiosError } from "axios";
-import type { ProblemDetails } from "@/types/problemDetails";
+import type { ProblemDetails } from "@/types/problemDetails.interface";
 import { BusinessError, ConnectionError, Forbidden, NotAuthorizedError, NotFoundError, ValidationError } from "@/api/errorsApi";
 import court from "../../api/court";
 

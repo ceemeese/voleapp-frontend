@@ -1,16 +1,20 @@
 import { clientApi } from "@/api/clientApi";
 import { AxiosError } from "axios";
-import type { ProblemDetails } from "@/types/problemDetails";
+import type { ProblemDetails } from "@/types/problemDetails.interface";
 import { BusinessError, ConnectionError, Forbidden, NotAuthorizedError, NotFoundError, ValidationError } from "@/api/errorsApi";
-import type { AddSchedule } from "../../interfaces";
+import type { AddSchedule, Schedule, ScheduleResponse } from "../../interfaces";
 import schedule from "../../api/schedule";
 
 
-export const registerScheduleAction = async (clubId: string, dataForm : AddSchedule) : Promise<number> => {
+export const registerScheduleAction = async (clubId: string, dataForm : AddSchedule) : Promise<Schedule> => {
     try {
         const config = schedule.registerScheduleByClub(clubId, dataForm);
-        const { data } = await clientApi.request<number>(config);
-        return data;
+        const { data } = await clientApi.request<ScheduleResponse>(config);
+        return {
+            ...data,
+            openingTime: new Date(data.openingTime),
+            closingTime: new Date(data.openingTime),
+        }
     } catch (error: unknown) {
         const axiosError = error as AxiosError<ProblemDetails>;
 

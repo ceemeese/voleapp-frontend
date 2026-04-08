@@ -2,7 +2,7 @@ export interface MemberResponse {
     id: number;
     userId: string;
     name: string;
-    lasName: string;
+    lastName: string;
     email: string;
     role: RoleTypeResponse;
     isMember: boolean;

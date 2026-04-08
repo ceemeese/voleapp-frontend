@@ -4,7 +4,7 @@ export interface CourtResponse {
     id: string;
     clubId: string;
     name: string;
-    type: CourtTypeResponse;
+    courtType: CourtTypeResponse;
     basePrice: number;
     isActive: boolean;
     createdAt: string;

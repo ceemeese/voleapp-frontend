@@ -1,15 +1,18 @@
 import { clientApi } from "@/api/clientApi";
 import type { AxiosError } from "axios";
-import type { ProblemDetails } from "@/types/problemDetails";
+import type { ProblemDetails } from "@/types/problemDetails.interface";
 import { BusinessError, ConnectionError, Forbidden, NotAuthorizedError, NotFoundError, ValidationError } from "@/api/errorsApi";
 import event from "../../api/event";
-import type { AddEvent } from "../../interfaces";
+import type { AddEvent, Event, EventResponse } from "../../interfaces";
 
-export const registerEventAction = async (courtId: string, dataForm: AddEvent) : Promise<number> => {
+export const registerEventAction = async (courtId: string, dataForm: AddEvent) : Promise<Event> => {
     try {
         const config = event.registerEventInCourt(courtId, dataForm);
-        const { data } = await clientApi.request<number>(config);
-        return data;
+        const { data } = await clientApi.request<EventResponse>(config);
+        return {
+            ...data,
+            createdAt: new Date(data.createdAt)
+        }
     } catch (error : unknown) {
         const axiosError = error as AxiosError<ProblemDetails>;
         

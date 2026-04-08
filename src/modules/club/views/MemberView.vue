@@ -64,7 +64,7 @@ const inputsDialog : BaseInputProps[] = [
         optionValue: 'name'
     },
     { field: 'membershipNumber', label: 'Nº Socio', icon: 'pi pi-id-card' },
-    { field: 'isMember', label: 'Es socio del club?', icon: 'pi pi-phone', type: 'boolean' },
+    { field: 'isMember', label: 'Es socio del club?', type: 'boolean' },
 ]
 
 const headerColumns : ColumnConfig<MemberComplete>[] = [
@@ -90,7 +90,6 @@ const headerColumns : ColumnConfig<MemberComplete>[] = [
                     }
                     
                     memberDialogRef.value.open(selectedMember.value);
-                    console.log(selectedMember.value)
                 }
             },
             {
@@ -123,7 +122,6 @@ const loadMembers = async () => {
             ...member,
             fullname: `${member.name} ${member.lastName}`
         }))
-        console.log('Miembros', members.value);
     } catch (error: unknown) {
         const message = error instanceof Error ? error.message : 'Error inesperado';
         errorMessage.value = message;
@@ -141,28 +139,17 @@ const onSaveModifiedMember = async (updatedData: MemberUpdateForm) => {
     const memberId = selectedMember.value?.userId;
     
     try {
-        await putMember(activeClubId.value!, memberId!, {
+        const updatedMember = await putMember(activeClubId.value!, memberId!, {
             role: updatedData.role,
             membershipNumber: updatedData.membershipNumber,
             isMember: updatedData.isMember
         });
 
-        const roleObj = ROLE_OPTIONS.find(r => r.name === updatedData.role);
-
-        const index = members.value.findIndex(m => m.id === updatedData.id);
-        if (index !== -1) {
-            const original = members.value[index];
-
-            members.value[index] = {
-                ...original, 
-                ...updatedData,
-                role: {
-                    id: roleObj?.id || original?.role.id,
-                    name: updatedData.role
-                }
-            } as MemberComplete;
+        const oldMemberIndex = members.value.findIndex(m => m.userId == memberId);
+        if (oldMemberIndex !== -1){
+            members.value[oldMemberIndex] = updatedMember;
         }
-        
+
         toast.add({ 
             severity: 'info', 
             summary: 'Confirmado', 
@@ -193,9 +180,8 @@ const searchUsers = async (event: AutoCompleteCompleteEvent) => {
     try {
         const data = await getUserByEmail(query);
         searchResults.value = [data];
-    } catch (error: unknown) {
+    } catch {
         searchResults.value = [];
-        console.log(error);
     }
 }
 
@@ -206,11 +192,12 @@ const onAddMemberToClub = async () => {
     }
 
     try {
-        await addMember(activeClubId.value!, {   
+        const newMember = await addMember(activeClubId.value!, {   
             userId:selectedUserToAdd.value?.id, 
             role:'Player' 
         });
-        console.log('USUARIOOOO CREADO');
+
+        members.value.unshift(newMember);
         
     } catch (error: unknown) {
         const message = error instanceof Error ? error.message : 'Error inesperado';
@@ -227,7 +214,6 @@ const onAddMemberToClub = async () => {
 
 
 const handleToggleStatus = (member: MemberComplete, event: PointerEvent) => {
-    console.log('usuario:', member.id)
 
     const isActivating = !member.isActive;
     const actionText = isActivating ? 'activar' : 'desactivar';
@@ -279,7 +265,7 @@ const handleToggleStatus = (member: MemberComplete, event: PointerEvent) => {
 </script>
 
 <template>
-    <BaseCard padding="ui:p-4">
+    <BaseCard padding="p-4">
         <BaseDataTable
         :value="members"
         :columns="headerColumns"
@@ -372,6 +358,9 @@ const handleToggleStatus = (member: MemberComplete, event: PointerEvent) => {
                             <span class="font-bold">{{ slotProps.option.name }} {{ slotProps.option.lastName }}</span>
                             <span class="text-xs text-slate-500">{{ slotProps.option.email }}</span>
                         </div>
+                    </template>
+                    <template #empty>
+                        <div>No se han encontrado ningún usuario con ese email</div>
                     </template>
                 </AutoComplete>
                 <div class="h-5 flex items-center "> 

@@ -54,23 +54,23 @@ export const useClub = () => {
         }
     }
 
-    const createClub = async (dataForm: AddClub): Promise<string> => {
+    const createClub = async (dataForm: AddClub): Promise<Club> => {
         isLoading.value = true;
 
         try {
-            const data: string = await registerClubAction(dataForm);
+            const data: Club = await registerClubAction(dataForm);
             return data;
         } finally {
             isLoading.value = false;
         }
     }
 
-    const updateClub = async (dataForm: PutClub): Promise<void> => {
+    const updateClub = async (dataForm: PutClub): Promise<Club> => {
         isLoading.value = true;
 
-
         try {
-            await updateClubAction(activeClubId.value!, dataForm);
+            const data: Club = await updateClubAction(activeClubId.value!, dataForm);
+            return data;
         } finally {
             isLoading.value = false;
         }

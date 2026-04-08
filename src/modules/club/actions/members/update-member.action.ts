@@ -1,16 +1,19 @@
 import { clientApi } from "@/api/clientApi";
 import { AxiosError } from "axios";
-import type { ProblemDetails } from "@/types/problemDetails";
+import type { ProblemDetails } from "@/types/problemDetails.interface";
 import { BusinessError, ConnectionError, Forbidden, NotAuthorizedError, NotFoundError, ValidationError } from "@/api/errorsApi";
-import type { PutMember } from "../../interfaces";
+import type { MemberComplete, MemberResponse, PutMember } from "../../interfaces";
 import member from "../../api/member";
 
 
-export const updateMemberAction = async (clubId: string, memberId: string, dataForm : PutMember) : Promise<void> => {
+export const updateMemberAction = async (clubId: string, memberId: string, dataForm : PutMember) : Promise<MemberComplete> => {
     try {
-        console.log('CLUUUUB', clubId, 'MEMBERRRR', memberId)
         const config = member.putMember(clubId, memberId, dataForm);
-        await clientApi.request<void>(config);
+        const { data } = await clientApi.request<MemberResponse>(config);
+        return {
+            ...data,
+            registeredOn: new Date(data.registeredOn)
+        }
     } catch (error: unknown) {
         const axiosError = error as AxiosError<ProblemDetails>;
 
@@ -22,12 +25,13 @@ export const updateMemberAction = async (clubId: string, memberId: string, dataF
 
 
         if (status == 400) {
-            const isValidationError = data.title.includes('Validation');
-
+            
+            const isValidationError = data.title.includes('ClubMember.NotEmptymembershipNumbe');
+           
             if (isValidationError) {
-                throw new ValidationError('Los datos introducidos no son válidos. Por favor, revísalos')
+                throw new ValidationError('Los datos introducidos no son válidos. Por favor, revísalos');
             }
-            throw new BusinessError('Ha habido un error en el registro. Intente de nuevo')
+            throw new BusinessError('Ha habido un error en el registro. Intente de nuevo');
         }
 
         if (status === 401) throw new NotAuthorizedError('Sesión expirada');

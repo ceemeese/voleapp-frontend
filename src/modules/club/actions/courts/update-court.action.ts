@@ -1,15 +1,19 @@
 import { clientApi } from "@/api/clientApi";
 import { AxiosError } from "axios";
-import type { ProblemDetails } from "@/types/problemDetails";
+import type { ProblemDetails } from "@/types/problemDetails.interface";
 import { BusinessError, ConnectionError, Forbidden, NotAuthorizedError, NotFoundError, ValidationError } from "@/api/errorsApi";
-import type { PutCourt } from "../../interfaces";
+import type { Court, CourtResponse, PutCourt } from "../../interfaces";
 import court from "../../api/court";
 
 
-export const updateCourtAction = async (courtId: string, dataForm : PutCourt) : Promise<void> => {
+export const updateCourtAction = async (courtId: string, dataForm : PutCourt) : Promise<Court> => {
     try {
         const config = court.putCourt(courtId, dataForm);
-        await clientApi.request<void>(config);
+        const { data } = await clientApi.request<CourtResponse>(config);
+        return {
+            ...data,
+            createdAt: new Date(data.createdAt)
+        }
     } catch (error: unknown) {
         const axiosError = error as AxiosError<ProblemDetails>;
 

@@ -17,22 +17,23 @@ export const useSchedule = () => {
     }
 
 
-    const registerSchedule = async(clubId: string, dataForm: AddSchedule) : Promise<number> => {
+    const registerSchedule = async(clubId: string, dataForm: AddSchedule) : Promise<Schedule> => {
         isLoading.value = true;
         
         try {
-            const data: number = await registerScheduleAction(clubId, dataForm)
+            const data: Schedule = await registerScheduleAction(clubId, dataForm)
             return data;
         } finally {
             isLoading.value = false;
         }
     }
 
-    const updateSchedule = async(clubId: string, scheduleId: number, dataForm: PutSchedule) : Promise<void> => {
+    const updateSchedule = async(clubId: string, scheduleId: number, dataForm: PutSchedule) : Promise<Schedule> => {
         isLoading.value = true;
         
         try {
-            await putScheduleAction(clubId, scheduleId, dataForm);
+            const data: Schedule = await putScheduleAction(clubId, scheduleId, dataForm);
+            return data;
         } finally {
             isLoading.value = false;
         }

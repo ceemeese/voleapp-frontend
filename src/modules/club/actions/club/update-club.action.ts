@@ -1,16 +1,19 @@
 import { clientApi } from "@/api/clientApi";
 import { AxiosError } from "axios";
-import type { ProblemDetails } from "@/types/problemDetails";
+import type { ProblemDetails } from "@/types/problemDetails.interface";
 import { BusinessError, ConnectionError, Forbidden, NotAuthorizedError, NotFoundError, ValidationError } from "@/api/errorsApi";
 import club from "../../api/club";
-import type { PutClub } from "../../interfaces";
+import type { Club, ClubResponse, PutClub } from "../../interfaces";
 
 
-export const updateClubAction = async (clubId: string, dataForm : PutClub) : Promise<void> => {
+export const updateClubAction = async (clubId: string, dataForm : PutClub) : Promise<Club> => {
     try {
         const config = club.putClub(clubId, dataForm);
-        const { data } = await clientApi.request<void>(config);
-        return data;
+        const { data } = await clientApi.request<ClubResponse>(config);
+        return {
+            ...data,
+            createdAt: new Date(data.createdAt)
+        }
     } catch (error: unknown) {
         const axiosError = error as AxiosError<ProblemDetails>;
 

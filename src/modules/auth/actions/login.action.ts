@@ -2,7 +2,7 @@ import { clientApi } from "@/api/clientApi";
 import { AxiosError } from "axios";
 import auth from "../api/auth";
 import { BusinessError, ConnectionError, NotAuthorizedError } from "@/api/errorsApi";
-import type { ProblemDetails } from "@/types/problemDetails";
+import type { ProblemDetails } from "@/types/problemDetails.interface";
 import type { LoginResponse, Login } from "../interfaces";
 
 

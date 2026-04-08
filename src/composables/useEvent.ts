@@ -38,22 +38,23 @@ export const useEvent = () => {
         }
     }
 
-    const createEvent = async (courtId: string, dataForm: AddEvent) :Promise<number> => {
+    const createEvent = async (courtId: string, dataForm: AddEvent) :Promise<Event> => {
         isLoading.value = true;
         
         try {
-            const data: number = await registerEventAction(courtId, dataForm);
+            const data: Event = await registerEventAction(courtId, dataForm);
             return data;
         } finally {
             isLoading.value = false;
         }
     }
 
-    const updateEvent = async (courtId: string, eventId: number, dataForm: PutEvent) :Promise<void> => {
+    const updateEvent = async (courtId: string, eventId: number, dataForm: PutEvent) :Promise<Event> => {
         isLoading.value = true;
         
         try {
-            await updateEventAction(courtId, eventId, dataForm);
+            const data: Event = await updateEventAction(courtId, eventId, dataForm);
+            return data;
         } finally {
             isLoading.value = false;
         }

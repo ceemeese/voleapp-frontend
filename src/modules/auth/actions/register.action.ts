@@ -1,15 +1,20 @@
 import { clientApi } from "@/api/clientApi";
 import { AxiosError } from "axios";
 import auth from "../api/auth";
-import type { ProblemDetails } from "@/types/problemDetails";
+import type { ProblemDetails } from "@/types/problemDetails.interface";
 import { BusinessError, ConnectionError, ValidationError } from "@/api/errorsApi";
 import type { Register } from "../interfaces";
+import type { User, UserResponse } from "@/modules/user/interfaces";
 
 
-export const registerAction = async (dataForm : Register) : Promise<void> => {
+export const registerAction = async (dataForm : Register) : Promise<User> => {
     try {
         const config = auth.register(dataForm);
-        await clientApi.request<void>(config);
+        const { data } = await clientApi.request<UserResponse>(config);
+        return {
+            ...data,
+            createdAt: new Date(data.createdAt)
+        }
     } catch (error: unknown) {
         const axiosError = error as AxiosError<ProblemDetails>;
 

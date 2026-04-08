@@ -1,6 +1,6 @@
 import { clientApi } from "@/api/clientApi";
 import type { AxiosError } from "axios";
-import type { ProblemDetails } from "@/types/problemDetails";
+import type { ProblemDetails } from "@/types/problemDetails.interface";
 import { ConnectionError, Forbidden, NotAuthorizedError, NotFoundError } from "@/api/errorsApi";
 import schedule from "../../api/schedule";
 import type { Schedule, ScheduleResponse } from "../../interfaces";

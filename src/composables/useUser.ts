@@ -51,11 +51,12 @@ export const useUser = () => {
     }
 
 
-    const updateUser = async (id: string, data: PutUser): Promise<void> => {
+    const updateUser = async (id: string, dataForm: PutUser): Promise<User> => {
         isLoading.value = true;
 
         try {
-            await updateUserAction(id, data);
+            const data: User = await updateUserAction(id, dataForm);
+            return data;
         } finally {
             isLoading.value = false;
         }

@@ -10,7 +10,7 @@ export const useMember = () => {
         isLoading.value = true;
 
         try {
-            const data: MemberComplete[] = await getMembersAction(clubId)
+            const data: MemberComplete[] = await getMembersAction(clubId);
             return data;
         } finally {
             isLoading.value = false;
@@ -22,29 +22,30 @@ export const useMember = () => {
         isLoading.value = true;
 
         try {
-            const data: MemberComplete = await getMemberByIdAction(clubId, memberId)
+            const data: MemberComplete = await getMemberByIdAction(clubId, memberId);
             return data;
         } finally {
             isLoading.value = false;
         }
     }
 
-    const addMember = async (clubId : string, dataForm: AddMember) : Promise<string> => {
+    const addMember = async (clubId : string, dataForm: AddMember) : Promise<MemberComplete> => {
         isLoading.value = true;
 
         try {
-            const data: string = await registerMemberAction(clubId, dataForm)
+            const data: MemberComplete = await registerMemberAction(clubId, dataForm);
             return data;
         } finally {
             isLoading.value = false;
         }
     }
 
-    const putMember = async (clubId : string, memberId: string, dataForm: PutMember) : Promise<void> => {
+    const putMember = async (clubId : string, memberId: string, dataForm: PutMember) : Promise<MemberComplete> => {
         isLoading.value = true;
 
         try {
-            await updateMemberAction(clubId, memberId, dataForm)
+            const data: MemberComplete = await updateMemberAction(clubId, memberId, dataForm);
+            return data;
         } finally {
             isLoading.value = false;
         }
@@ -54,7 +55,7 @@ export const useMember = () => {
         isLoading.value = true;
 
         try {
-            await deactivateMemberAction(clubId, memberId)
+            await deactivateMemberAction(clubId, memberId);
         } finally {
             isLoading.value = false;
         }
@@ -64,7 +65,7 @@ export const useMember = () => {
         isLoading.value = true;
 
         try {
-            await activateMemberAction(clubId, memberId)
+            await activateMemberAction(clubId, memberId);
         } finally {
             isLoading.value = false;
         }

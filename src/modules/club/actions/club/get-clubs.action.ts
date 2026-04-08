@@ -1,6 +1,6 @@
 import { clientApi } from "@/api/clientApi";
 import type { AxiosError } from "axios";
-import type { ProblemDetails } from "@/types/problemDetails";
+import type { ProblemDetails } from "@/types/problemDetails.interface";
 import { ConnectionError } from "@/api/errorsApi";
 import club from "../../api/club";
 import type { SummarizedClubResponse } from "../../interfaces";

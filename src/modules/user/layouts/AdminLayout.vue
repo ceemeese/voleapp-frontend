@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useAuthStore } from '@/stores/authStore';
 import { useUserStore } from '@/stores/userStore';
-import type { AppNavigationGroup } from '@/types/navigation';
+import type { AppNavigationGroup } from '@/types/navigation.interface';
 import { onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { useToast } from 'primevue/usetoast';
@@ -51,7 +51,7 @@ const ADMIN_MENU : AppNavigationGroup[] = [
     {
         label: 'Gestión operativa',
         items: [
-            { label: 'Gestión de pistas', to: {name: 'login'}, icon: 'pi pi-map'},
+            { label: 'Gestión de pistas', to: {name: 'admin-courts'}, icon: 'pi pi-map'},
             { label: 'Calendario y reservas', to: {name: 'login'}, icon: 'pi pi-calendar'},
             { label: 'Configurador de precios', to: {name: 'login'}, icon: 'pi pi-money-bill'},
         ]

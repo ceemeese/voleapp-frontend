@@ -1,6 +1,6 @@
 export interface AddCourt {
     name: string;
-    type: string;
+    courtType: string;
     basePrice: number;
     isActive: boolean;
 }
