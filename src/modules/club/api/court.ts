@@ -34,7 +34,7 @@ function registerCourt(clubId: string, data : AddCourt) : AxiosRequestConfig<Add
 
 function putCourt(courtId: string, data : PutCourt) : AxiosRequestConfig<PutCourt> {
     return {
-        method: 'POST',
+        method: 'PUT',
         url: `${baseURL}/${courtId}`,
         data: data,
     }

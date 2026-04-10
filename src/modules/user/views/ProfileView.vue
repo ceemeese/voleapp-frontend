@@ -5,7 +5,7 @@ import { UserCardProfile } from 'ui';
 import { computed, onMounted } from 'vue';
 import { ref } from 'vue';
 import { zodResolver } from '@primevue/forms/resolvers/zod';
-import { updateSchema } from '../schemas/update.schema';
+import { updateUserSchema } from '../schemas/updateUser.schema';
 import { BaseDialog } from 'ui';
 import type { User } from '../interfaces';
 import { useUser } from '@/composables/useUser';
@@ -15,7 +15,7 @@ import { storeToRefs } from 'pinia';
 const userStore = useUserStore();
 const toast = useToast();
 const errorMessage = ref<string>('');
-const resolver = zodResolver(updateSchema);
+const resolver = zodResolver(updateUserSchema);
 const userDialogRef = ref();
 const { updateUser } = useUser();
 const { profile } = storeToRefs(userStore);
@@ -40,7 +40,6 @@ onMounted(async () => {
     if (!profile.value) {
         try {
             await userStore.fetchProfile();
-            console.log(userStore.profile?.username, 'Apodo');
         } catch (error: unknown) {
             const message = error instanceof Error ? error.message : 'Error inesperado';
             errorMessage.value = message;
@@ -112,7 +111,7 @@ const formattedDate = computed(() => {
 
 
 <template>
-    <div class="mx-auto w-full max-w-7xl">
+    <div class="mx-auto w-full h-full max-w-7xl p-4">
         <UserCardProfile 
         :main-text="userFullName"
         :subtext="'@' + (userStore.profile?.username) || ''"

@@ -11,4 +11,9 @@ export const clubRoutes: RouteRecordRaw[] = [
         name: 'admin-courts',
         component: () => import('@/modules/club/views/CourtView.vue'),
     },
+    {  
+        path: 'club',
+        name: 'admin-club',
+        component: () => import('@/modules/club/views/ClubView.vue'),
+    },
 ]

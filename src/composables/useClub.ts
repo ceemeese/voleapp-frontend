@@ -8,18 +8,24 @@ export const useClub = () => {
     const clubStore = useClubStore();
     const isLoading = ref(false);
     const activeClubId = computed(() => clubStore.activeClubId);
+    const currentClubInfo = computed(() => clubStore.currentClubData);
 
     const getAdminContext = async (): Promise<void> => {
-        if (activeClubId.value) return;
+        if (activeClubId.value && currentClubInfo.value) return;
         isLoading.value = true;
 
         try {
-            const data: string = await getAdminContextAction();
-            clubStore.activeClubId = data;
+            const clubId: string = await getAdminContextAction();
+            clubStore.activeClubId = clubId;
+
+            const clubData: Club = await getClubById(clubId); 
+            clubStore.currentClubData = clubData;
+
         } finally {
             isLoading.value = false;
         }
     }
+
 
     const getClubs = async (): Promise<SummarizedClub[]> => {
         isLoading.value = true;
@@ -65,11 +71,11 @@ export const useClub = () => {
         }
     }
 
-    const updateClub = async (dataForm: PutClub): Promise<Club> => {
+    const updateClub = async (clubId: string, dataForm: PutClub): Promise<Club> => {
         isLoading.value = true;
 
         try {
-            const data: Club = await updateClubAction(activeClubId.value!, dataForm);
+            const data: Club = await updateClubAction(clubId, dataForm);
             return data;
         } finally {
             isLoading.value = false;
@@ -96,6 +102,7 @@ export const useClub = () => {
 
     return {
         activeClubId,
+        currentClubInfo,
         getAdminContext,
         getClubs,
         getClubById,

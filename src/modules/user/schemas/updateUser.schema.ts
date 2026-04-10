@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-export const updateSchema = z.object({
+export const updateUserSchema = z.object({
     username: z.string().min(1, 'El apodo es obligatorio'),
     email: z.email('Introduce un email correcto'),
     phoneNumber: z
@@ -10,4 +10,4 @@ export const updateSchema = z.object({
         .regex(/^[0-9]+$/, 'El teléfono solo puede contener números'),
 });
 
-export type UpdateData = z.infer<typeof updateSchema>;
+export type UpdateUserData = z.infer<typeof updateUserSchema>;

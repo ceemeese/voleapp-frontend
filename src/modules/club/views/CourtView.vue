@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import type { ActionColumn, BaseButton, BaseCard, BaseDialog, BaseInputProps } from 'ui';
+import type {  BaseInputProps, ActionColumn } from 'ui';
+import { BaseButton, BaseCard, BaseDialog } from 'ui'
 import { useCourt } from '@/composables/useCourt';
 import { useClub } from '@/composables/useClub';
 import { onMounted } from 'vue';
@@ -9,7 +10,8 @@ import { useToast } from 'primevue/usetoast';
 import Tag from 'primevue/tag';
 import { useConfirm } from "primevue/useconfirm";
 import { zodResolver } from '@primevue/forms/resolvers/zod';
-import { addCourtSchema } from '../schemas/addCourt.schema';
+import { addCourtSchema, updateCourtSchema } from '../schemas/addCourt.schema';
+
 
 interface CourtForm {
     name: string;
@@ -27,13 +29,15 @@ const COURT_TYPE_OTIONS = [
 const toast = useToast();
 const confirmPopup = useConfirm();
 const { activeClubId } = useClub();
-const resolver = zodResolver(addCourtSchema);
+const resolverAdd = zodResolver(addCourtSchema);
+const resolverUpdate = zodResolver(updateCourtSchema);
 const selectedCourt = ref<Court>();
 const { getCourtsByClubId, activateCourt, deactivateCourt, updateCourt, registerCourt} = useCourt();
 const courts = ref<Court[]>([]);
 const errorMessage = ref<string>('');
 const courtAddDialogRef = ref();
 const courtEditDialogRef = ref();
+const isMounted = ref(false);
 
 const addInputsDialog : BaseInputProps[] = [
     { field: 'name', label: 'Nombre de pista', icon: 'pi pi-table'},
@@ -48,6 +52,7 @@ const editInputsDialog : BaseInputProps[] = [
 ]
 
 onMounted(async () => {
+    isMounted.value = true;
     if (activeClubId.value){
         await loadCourts();
     }
@@ -86,7 +91,6 @@ const isActionVisible = <T>(
 const onEditCourtDialog = (court: Court) => {
     selectedCourt.value = {...court};
     courtEditDialogRef.value.open(selectedCourt.value);
-    console.log('MOSTRAR PISTA SELECCIONADA', selectedCourt.value);
 }
 
 const onOpenCreateDialog = () => {
@@ -99,7 +103,6 @@ const loadCourts = async () => {
         courts.value = rawCourts.map(court => ({
             ...court,
         }))
-        console.log('PISTASSS', courts.value);
     } catch (error: unknown) {
         const message = error instanceof Error ? error.message : 'Error inesperado';
         errorMessage.value = message;
@@ -196,9 +199,9 @@ const onSaveModifiedCourt = async (updatedData: CourtForm) => {
             basePrice: updatedData.basePrice
         });
 
-        const oldCourtModified = courts.value.findIndex(c => c.id === courtId);
-        if (oldCourtModified !== -1){
-            courts.value[oldCourtModified] = updatedCourt;
+        const oldCourtIndex = courts.value.findIndex(c => c.id === courtId);
+        if (oldCourtIndex !== -1){
+            courts.value[oldCourtIndex] = updatedCourt;
         }
         
         toast.add({ 
@@ -223,88 +226,97 @@ const onSaveModifiedCourt = async (updatedData: CourtForm) => {
 </script>
 
 <template>
-    <div class="p-4 w-full h-full overflow-auto">
-        <div class="flex justify-between items-center mb-8">
-            <div>
-                <h1 class="text-2xl font-black text-slate-800">Gestión de pistas</h1>
-                <p class="text-slate-500">Configura y gestiona </p>
-            </div>
-            <BaseButton 
-                label="Añadir Pista" 
-                icon="pi pi-plus" 
+    <div class="flex flex-col overflow-hidden h-full w-full">
+        <section to="#header-actions" v-if="isMounted" class="flex items-center gap-2 pl-4 pr-4">
+                <span class="text-xs font-black text-slate-400 uppercase tracking-widest border-r border-slate-200">
+                    Pistas
+                </span>
+                <!--<button 
+                    @click="onOpenCreateDialog"
+                    class="bg-black text-white px-4 py-2 rounded-full text-xs font-bold flex items-center gap-2 hover:bg-slate-800 transition-all"
+                >
+                    <i class="pi pi-plus"></i>
+                    Nueva Pista
+                </button>-->
+                <BaseButton 
+                icon="pi pi-plus"
+                label="Aňadir"
+                class="!bg-black !border-none"
+                size="small"
                 rounded
-                outlined
-                @click="onOpenCreateDialog" 
-            />
-        </div>
+                @click="onOpenCreateDialog"
+                >
+                </BaseButton>
+        </section>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-
-            <BaseCard 
-                v-for="court in courts" 
-                :key="court.id"
-                class="hover:shadow-md transition-shadow cursor-pointer"
-            >
-                <template #default>
-                    <div class="flex flex-col gap-4">
-                        <div class="flex justify-between items-start">
-                            <Tag 
-                                :severity="court.isActive ? 'success' : 'danger'" 
-                                :value="court.isActive ? 'Activa' : 'Mantenimiento'"
-                                class="text-xs"
-                            />
-                        </div>
-                    </div>
-
-                    <div class="py-2 mt-2">
-                        <div>
-                            <h3 class="font-extrabold text-xl text-slate-900 leading-tight">{{ court.name }}</h3>
-                            <p class="text-sm font-medium text-slate-500">{{ court.courtType?.name || 'Indoor' }}</p>
-                        </div>
-
-                        <div class="flex items-center gap-1.5 mt-1">
-                            <div class="bg-emerald-50 text-emerald-700 px-2 py-1 rounded-md border border-emerald-100 flex items-center gap-2">
-                                <span class="text-xs font-bold uppercase">Precio Base</span>
-                                <span class="text-sm font-black"> {{ court.basePrice }}€</span> 
+        <div class="flex-1 overflow-y-auto p-4 custom-scrollbar">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                <BaseCard 
+                    v-for="court in courts" 
+                    :key="court.id"
+                    class="hover:shadow-md transition-shadow cursor-pointer"
+                >
+                    <template #default>
+                        <div class="flex flex-col gap-4">
+                            <div class="flex justify-between items-start">
+                                <Tag 
+                                    :severity="court.isActive ? 'success' : 'danger'" 
+                                    :value="court.isActive ? 'Activa' : 'Mantenimiento'"
+                                    class="text-xs"
+                                />
                             </div>
                         </div>
-                    </div>
 
-                    <div class="flex justify-end gap-1 pt-4 mt-auto border-tborder-slate-100">
-                        <BaseButton 
-                            v-for="(btn, index) in courtActions"
-                            v-show="isActionVisible(btn.isVisible, court)"
-                            :key="index"
-                            :icon="getActionValue(btn.icon, court)" 
-                            text 
-                            rounded 
-                            size="small" 
-                            @click="btn.action?.(court, $event)" 
-                            :class="[getActionValue(btn.class, court), 'hover:bg-blue-50 w-10 h-10']"
-                        />
-                    </div>
-                </template>
-            </BaseCard>
+                        <div class="py-2 mt-2">
+                            <div>
+                                <h3 class="font-extrabold text-xl text-slate-900 leading-tight">{{ court.name }}</h3>
+                                <p class="text-sm font-medium text-slate-500">{{ court.courtType?.name || 'Indoor' }}</p>
+                            </div>
 
-            <BaseDialog
-                ref="courtAddDialogRef"
-                header="Añadir pista"
-                subtitle="Rellene los campos solicitados"
-                :resolver="resolver"
-                :inputs-dialog="addInputsDialog"
-                :model-value="selectedCourt"
-                @save="onSaveAddedCourt"
-            />
+                            <div class="flex items-center gap-1.5 mt-1">
+                                <div class="bg-emerald-50 text-emerald-700 px-2 py-1 rounded-md border border-emerald-100 flex items-center gap-2">
+                                    <span class="text-xs font-bold uppercase">Precio Base</span>
+                                    <span class="text-sm font-black"> {{ court.basePrice }}€</span> 
+                                </div>
+                            </div>
+                        </div>
 
-            <BaseDialog
-                ref="courtEditDialogRef"
-                header="Añadir pista"
-                subtitle="Rellene los campos solicitados"
-                :resolver="resolver"
-                :inputs-dialog="editInputsDialog"
-                :model-value="selectedCourt"
-                @save="onSaveModifiedCourt"
-            />
+                        <div class="flex justify-end gap-1 pt-4 mt-auto border-tborder-slate-100">
+                            <BaseButton 
+                                v-for="(btn, index) in courtActions"
+                                v-show="isActionVisible(btn.isVisible, court)"
+                                :key="index"
+                                :icon="getActionValue(btn.icon, court)" 
+                                text 
+                                rounded 
+                                size="small" 
+                                @click="btn.action?.(court, $event)" 
+                                :class="[getActionValue(btn.class, court), 'hover:bg-blue-50 w-10 h-10']"
+                            />
+                        </div>
+                    </template>
+                </BaseCard>
+
+                <BaseDialog
+                    ref="courtAddDialogRef"
+                    header="Añadir pista"
+                    subtitle="Rellene los campos solicitados"
+                    :resolver="resolverAdd"
+                    :inputs-dialog="addInputsDialog"
+                    :model-value="selectedCourt"
+                    @save="onSaveAddedCourt"
+                />
+
+                <BaseDialog
+                    ref="courtEditDialogRef"
+                    header="Añadir pista"
+                    subtitle="Rellene los campos solicitados"
+                    :resolver="resolverUpdate"
+                    :inputs-dialog="editInputsDialog"
+                    :model-value="selectedCourt"
+                    @save="onSaveModifiedCourt"
+                />
+            </div>
         </div>
     </div>
 </template>

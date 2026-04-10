@@ -1,16 +1,14 @@
 <script setup lang="ts">
 import { useMember } from '@/composables/useMember';
 import type { MemberComplete } from '../interfaces';
-import type { BaseCard, ColumnConfig,  BaseInputProps, } from 'ui';
+import type { ColumnConfig,  BaseInputProps, } from 'ui';
 import { useConfirm } from "primevue/useconfirm";
 import { useToast } from 'primevue/usetoast';
-import { BaseDialog, BaseButton } from 'ui';
+import { BaseDialog, BaseButton, BaseCard} from 'ui';
 import { zodResolver } from '@primevue/forms/resolvers/zod';
 import { updateMemberSchema } from '../schemas/updateMember.schema';
-import { onMounted } from 'vue';
-import { ref } from 'vue';
 import { useClub } from '@/composables/useClub'
-import { watch } from 'vue';
+import { watch, ref, onMounted } from 'vue';
 import AutoComplete from 'primevue/autocomplete';
 import { useUser } from '@/composables/useUser'
 import type { User } from '@/modules/user/interfaces';
@@ -146,7 +144,7 @@ const onSaveModifiedMember = async (updatedData: MemberUpdateForm) => {
         });
 
         const oldMemberIndex = members.value.findIndex(m => m.userId == memberId);
-        if (oldMemberIndex !== -1){
+        if (oldMemberIndex !== 1){
             members.value[oldMemberIndex] = updatedMember;
         }
 

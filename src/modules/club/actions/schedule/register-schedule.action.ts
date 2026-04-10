@@ -37,7 +37,7 @@ export const registerScheduleAction = async (clubId: string, dataForm : AddSched
         if (status === 401) throw new NotAuthorizedError('Sesión expirada');
         if (status === 403) throw new Forbidden('Usuario sin permisos');
         if (status === 404) throw new NotFoundError('El club solicitado no existe o no está disponible')
-        if (status === 409) throw new BusinessError('Ya existe un horario para el día solicitado');
+        if (status === 409) throw new BusinessError('No puede haber solapamiento de horarios en el mismo día');
 
         throw error;
     }

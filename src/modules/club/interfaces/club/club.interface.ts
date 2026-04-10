@@ -1,8 +1,10 @@
+import type { Address } from "./address.interface";
+
 export interface Club {
     id: string,
     name: string,
     cif: string,
-    address: string,
+    address: Address,
     phoneNumber: string,
     email: string,
     isActive: boolean,

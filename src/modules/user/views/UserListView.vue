@@ -10,7 +10,7 @@ import { useConfirm } from "primevue/useconfirm";
 import { useToast } from 'primevue/usetoast';
 import { BaseDialog } from 'ui';
 import { zodResolver } from '@primevue/forms/resolvers/zod';
-import { updateSchema } from '../schemas/update.schema';
+import { updateUserSchema } from '../schemas/updateUser.schema';
 
 
 const { getUsers, deactivateUser, updateUser } = useUser();
@@ -21,7 +21,7 @@ const toast = useToast();
 const errorMessage = ref('');
 const userDialogRef = ref();
 const selectedUser = ref<User>();
-const resolver = zodResolver(updateSchema);
+const resolver = zodResolver(updateUserSchema);
 
 const inputsDialog : BaseInputProps[] = [
     { field: 'username', label: 'Apodo', icon: 'pi pi-user' },
@@ -46,7 +46,6 @@ const headerColumns : ColumnConfig<User>[] = [
                 action: (user) => {
                     selectedUser.value = {...user};
                     userDialogRef.value.open(selectedUser.value);
-                    console.log(selectedUser.value)
                 }
             },
             {
@@ -63,7 +62,6 @@ const headerColumns : ColumnConfig<User>[] = [
 onMounted(async () => {
     if (userStore.isSuperadmin) {
         users.value = await getUsers();
-        console.log('Datos', users.value);
     }
 })
 
@@ -99,7 +97,6 @@ const onSaveModifiedUser = async (updatedData: User) => {
 }
 
 const handleDeactivate = (user: User, event: PointerEvent) => {
-    console.log('usuario:', user.id)
     const target = event.currentTarget as HTMLElement;
     confirmPopup.require({
         target: target,

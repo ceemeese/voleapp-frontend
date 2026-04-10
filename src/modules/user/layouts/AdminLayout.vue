@@ -7,8 +7,9 @@ import { useRouter } from 'vue-router';
 import { useToast } from 'primevue/usetoast';
 import { ref } from 'vue';
 import { useClub } from '@/composables/useClub';
+import { NavUserCard, Navbar } from 'ui';
 
-const { getAdminContext } = useClub();
+const { getAdminContext, currentClubInfo } = useClub();
 const authStore = useAuthStore();
 const userStore = useUserStore();
 const toast = useToast();
@@ -24,7 +25,6 @@ onMounted(async () => {
             await getAdminContext();
         }
         
-        console.log(userStore.profile?.username, 'Apodo');
     } catch (error: unknown) {
         const message = error instanceof Error ? error.message : 'Error inesperado';
         errorMessage.value = message;
@@ -39,6 +39,7 @@ onMounted(async () => {
     }
 })
 
+
 const ADMIN_MENU : AppNavigationGroup[] = [
     {
         label: 'Análisis y rendimiento',
@@ -51,7 +52,7 @@ const ADMIN_MENU : AppNavigationGroup[] = [
     {
         label: 'Gestión operativa',
         items: [
-            { label: 'Gestión de pistas', to: {name: 'admin-courts'}, icon: 'pi pi-map'},
+            { label: 'Gestión de pistas', to: {name: 'admin-courts'}, icon: 'pi pi-table'},
             { label: 'Calendario y reservas', to: {name: 'login'}, icon: 'pi pi-calendar'},
             { label: 'Configurador de precios', to: {name: 'login'}, icon: 'pi pi-money-bill'},
         ]
@@ -61,6 +62,12 @@ const ADMIN_MENU : AppNavigationGroup[] = [
         items: [
             //{ label: 'Usuarios', to: {name: 'admin-users'}, icon: 'pi pi-users'},
             { label: 'Miembros del club', to: {name: 'admin-members'}, icon: 'pi pi-users'},
+        ]
+    },
+    {
+        label: 'Configuración',
+        items: [
+            { label: 'Mi club', to: {name: 'admin-club'}, icon: 'pi pi-home'},
             { label: 'Mi perfil', to: {name: 'admin-profile'}, icon: 'pi pi-user'},
         ]
     }
@@ -87,11 +94,7 @@ const handleLogout = async () => {
     <div class="h-screen flex overflow-hidden bg-gray-50 p-6 gap-6">
 
         <Navbar
-            :username="userStore.profile?.username"
-            :user-role="authStore.role"
             :navigation-items="ADMIN_MENU"
-            @logout="handleLogout"
-            
         >
             <template #logo>
                 <img 
@@ -102,11 +105,37 @@ const handleLogout = async () => {
             </template>
         </Navbar>
 
-        <main class="flex-1">
-                <div v-if="isInitialLoading" class="flex items-center justify-center h-full">
-                    <i class="pi pi-spin pi-spinner text-4xl text-blue-500"></i>
+        <main class="flex-1 flex flex-col h-full min-w-0 overflow-hidden">
+            <header class="flex justify-between items-center p-4">
+                <div class="flex items-center gap-2">
+                   <slot name="header-actions">
+                        <span class="text-sm font-bold text-gray-700 uppercase tracking-widest">
+                            {{ currentClubInfo?.name }} Admin
+                        </span>
+                    </slot>
                 </div>
-                <RouterView />
+
+                <div class="w-fit min-w-60">
+                    <NavUserCard
+                    :username="userStore.profile?.username!"
+                    :user-role="authStore.role!"
+                    nagivate-to="admin-profile"
+                    @logout="handleLogout"
+                    >
+                    </NavUserCard>
+                </div>
+            </header>
+
+            <div v-if="isInitialLoading" class="flex items-center justify-center h-full">
+                <i class="pi pi-spin pi-spinner text-4xl text-blue-500"></i>
+            </div>
+            <RouterView v-else v-slot="{ Component }">
+                <component :is="Component">
+                    <template #header-actions>
+                        <slot name="header-actions" />
+                    </template>
+                </component>
+            </RouterView>
         </main>
 
     </div>

@@ -27,7 +27,6 @@ export const useAuthStore = defineStore('auth', () => {
     const tokenInfo = computed(() => {
         if (!isAuthenticated.value || !token.value) return undefined;
         const decoded = jwtDecode<TokenInfo>(token.value);
-        console.log('CONTENIDO TOKEN', decoded);
         return decoded;
     })
 
