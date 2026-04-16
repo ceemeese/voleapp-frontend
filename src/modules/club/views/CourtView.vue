@@ -63,7 +63,7 @@ const courtActions : ActionColumn<Court>[] = [
         isVisible: true,
         icon: 'pi pi-pencil',
         class: 'text-blue-600',
-        action: (court) => onEditCourtDialog(court)
+        action: (court) => handleCourtEditDialog(court)
     },
     {
         isVisible: true,
@@ -88,7 +88,7 @@ const isActionVisible = <T>(
     return typeof visible === 'function' ? visible(item) : visible;
 };
 
-const onEditCourtDialog = (court: Court) => {
+const handleCourtEditDialog = (court: Court) => {
     selectedCourt.value = {...court};
     courtEditDialogRef.value.open(selectedCourt.value);
 }

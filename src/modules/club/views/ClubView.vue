@@ -1,23 +1,37 @@
 <script setup lang="ts">
 import { useToast } from 'primevue/usetoast';
 import { computed, onMounted, ref } from 'vue';
-import { BaseCard, BaseInfoField, UserCardProfile } from 'ui';
-import type { InfoFieldProps, BaseInputProps } from 'ui';
+import { BaseCard, BaseInfoField, UserCardProfile, ScheduleManager } from 'ui';
+import type { InfoFieldProps, BaseInputProps, ActionColumn } from 'ui';
 import { useClub } from '@/composables/useClub';
 import { COUNTRY_FLAGS_DATA, getCountryFlag, getCountryName } from '@/utils/country-utils';
 import { zodResolver } from '@primevue/forms/resolvers/zod';
 import { updateClubSchema } from '../schemas/updateClub.schema';
-import type { Club } from '../interfaces';
+import type { Club, Schedule } from '../interfaces';
 import { useClubStore } from '@/stores/clubStore';
+import { useSchedule } from '@/composables/useSchedule';
+import { DAYS_EN, DAYS_TRANSLATION } from '@/utils/day-utils';
+import { useConfirm } from "primevue/useconfirm";
 
+
+const confirmPopup = useConfirm();
 const clubStore = useClubStore();
 const toast = useToast();
 const errorMessage = ref<string>('');
 const clubDialogRef = ref();
+const sheduleDialogRef = ref();
 const resolver = zodResolver(updateClubSchema);
 const { activeClubId, currentClubInfo, getAdminContext, updateClub } = useClub();
+const { getSchedule, updateSchedule, registerSchedule, toggleSchedule } = useSchedule();
+const clubSchedules = ref<Schedule[]>([]);
 
-const inputsDialog : BaseInputProps[] = [
+
+const inputsEditScheduleDialog : BaseInputProps[] = [
+    { field: 'openingTime', label: 'Apertura', type: 'time', icon: 'pi pi-clock' },
+    { field: 'closingTime', label: 'Cierre', type: 'time', icon: 'pi pi-clock' },
+]
+
+const inputsClubDialog : BaseInputProps[] = [
     { field: 'name', label: 'Nombre', icon: 'pi pi-user' },
     { field: 'cif', label: 'CIF', icon: 'pi pi-id-card' },
     { field: 'street', label: 'Calle', icon: 'pi-address-book' },
@@ -41,10 +55,40 @@ const profileClubField = computed<InfoFieldProps[]>(() => [
     { label: 'Teléfono', value: currentClubInfo.value?.phoneNumber, icon: 'pi pi-phone'}
 ])
 
+const scheduleActions = {
+    day: [
+        {
+            isVisible: true,
+            icon: 'pi pi-plus',
+            action: (dayData) => {
+                const dayId = Number(dayData.dayOfWeek?.id || dayData.id);
+                handleScheduleCreateDialog(dayId);
+            }
+        }
+    ] as ActionColumn<Schedule>[],
+    slot: [
+        {
+            isVisible: (slot: Schedule) => !slot.isClosed,
+            icon: 'pi pi-pencil',
+            action: (slot) => handleScheduleEditDialog(slot)
+        },
+        {
+            isVisible: true,
+            icon: (slot: Schedule) => slot.isClosed ? 'pi pi-lock' : 'pi pi-lock-open',
+            class: (slot: Schedule) => slot.isClosed ? '!text-red-400 hover:!text-red-600' : 'text-green-400 hover:!text-green-600',
+            action: (slot, event) => handleToggleSchedule(slot, event)
+        }
+    ] as ActionColumn<Schedule>[]
+}
+
+
 onMounted(async () => {
-    if (activeClubId.value) {
+    if (!activeClubId.value) {
         await getAdminContext();
     }
+
+    clubSchedules.value = await getSchedule(activeClubId.value!);
+    console.log('SCHEDULESSSS', clubSchedules.value);
 });
 
 
@@ -74,7 +118,7 @@ const formattedDate = computed(() => {
 });
 
 //aplanar objeto para poder mostrar dirección
-const handleOpenEdit = () => {
+const handleClubEditDialog = () => {
     const clubDataForm = {
         ...currentClubInfo.value,
         street: currentClubInfo.value?.address.street,
@@ -83,6 +127,11 @@ const handleOpenEdit = () => {
         country: currentClubInfo.value?.address.country,
     }
     clubDialogRef.value.open(clubDataForm);
+}
+
+const handleScheduleEditDialog = (schedule : Schedule) => {
+    console.log(schedule, 'LO QUE SE MANDAAAA')
+    sheduleDialogRef.value.open(schedule);
 }
 
 const onSaveModifiedClub = async (updatedData: Club) => {
@@ -104,7 +153,8 @@ const onSaveModifiedClub = async (updatedData: Club) => {
             severity: 'info', 
             summary: 'Confirmado', 
             detail: 'Club modificado', 
-            life: 3000});
+            life: 3000
+        });
     } catch (error: unknown) {
         const message = error instanceof Error ? error.message : 'Error inesperado';
         errorMessage.value = message;
@@ -115,20 +165,135 @@ const onSaveModifiedClub = async (updatedData: Club) => {
             life: 5000 
         });
     }
-    
 }
+
+
+const onSaveModifiedSchedule = async (updatedData: Schedule) => {
+    try {
+        if (updatedData.id) {
+            await updateSchedule(activeClubId.value!, updatedData!.id, {
+                openingTime: updatedData.openingTime,
+                closingTime: updatedData.closingTime
+            })
+
+            clubSchedules.value = clubSchedules.value.map(schedule => 
+                schedule.id === updatedData.id
+                ? {... schedule, ...updatedData}
+                : schedule
+            );
+
+            toast.add({ 
+                severity: 'info', 
+                summary: 'Confirmado', 
+                detail: 'Club modificado', 
+                life: 3000
+            });
+        } else {
+            const newSlot = await registerSchedule(activeClubId.value!, {
+                dayOfWeek: updatedData.dayOfWeek.name,
+                openingTime: updatedData.openingTime,
+                closingTime: updatedData.closingTime
+            });
+
+            clubSchedules.value = [...clubSchedules.value, {...newSlot}];
+
+            toast.add({ 
+                severity: 'info', 
+                summary: 'Confirmado', 
+                detail: 'Horario añadido', 
+                life: 3000
+            });
+        }
+        
+    } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : 'Error inesperado';
+        errorMessage.value = message;
+        toast.add({ 
+            severity: 'error', 
+            summary: 'Error de acceso', 
+            detail: errorMessage.value, 
+            life: 5000 
+        });
+    }
+}
+
+
+const handleScheduleCreateDialog = (dayId : number) => {
+    const newScheduleData = {
+        dayOfWeek: {
+            id: dayId,
+            name: DAYS_EN[dayId]
+        },
+        openingTime: "09:00",
+        closingTime: "14:00",
+    }
+
+    sheduleDialogRef.value.open(newScheduleData);
+};
+
+const handleToggleSchedule = (schedule: Schedule, event: PointerEvent) => {
+    const isOpening = schedule.isClosed;
+    const actionText = isOpening ? 'abrir' : 'cerrar';
+    const severity = isOpening ? 'success' : 'danger'
+    const target = event.currentTarget as HTMLElement;
+
+    confirmPopup.require({
+        target: target,
+        message: `Estás seguro de que quieres ${actionText} esta franja horaria?`,
+        icon: 'pi pi-exclamation-triangle',
+        rejectProps: {
+            label: 'Cancelar',
+            severity: 'secondary',
+            outlined: true
+        } ,
+        acceptProps: {
+            label: isOpening ? 'Abrir' : 'Cerrar',
+            severity: severity,
+        },
+        accept: async () => {
+            try {
+
+                await toggleSchedule(activeClubId.value!, schedule.id);
+
+                clubSchedules.value = clubSchedules.value.map(s =>
+                    s.id === schedule.id
+                        ? {...s, isClosed: !s.isClosed}
+                        : s
+                )
+
+                toast.add({ 
+                    severity: 'info', 
+                    summary: 'Confirmado', 
+                    detail: `Horario ${isOpening ? 'abierto' : 'cerrado'} con éxito`, 
+                    life: 3000});
+
+            } catch (error: unknown) {
+                const message = error instanceof Error ? error.message : 'Error inesperado';
+                errorMessage.value = message;
+                toast.add({ 
+                    severity: 'error', 
+                    summary: 'Error de acceso', 
+                    detail: errorMessage.value, 
+                    life: 5000 
+                });
+            }
+        },
+    });
+}
+
+
 </script>
 
 
 <template>
-    <div class="mx-auto w-full h-full max-w-7xl p-4">
+    <div class="mx-auto w-full h-full max-w-7xl p-4 overflow-y-auto custom-scrollbar">
         <UserCardProfile 
         :main-text="currentClubInfo?.name"
         :subtext="locationSubtext"
         :initials="clubInitials"
         size="xlarge"
         shape="circle"
-        @edit="handleOpenEdit"
+        @edit="handleClubEditDialog"
         padding="p-2"
         >
     
@@ -158,14 +323,37 @@ const onSaveModifiedClub = async (updatedData: Club) => {
             </div>
         </BaseCard>
 
+        <BaseCard class="p-6 mt-3">
+            <div class="flex items-center justify-between mb-8">
+                <h3 class="text-lg font-bold text-slate-800">Horarios</h3>
+            </div>
+
+            <ScheduleManager
+                :value="clubSchedules"
+                :day-names="DAYS_TRANSLATION"
+                :actions="scheduleActions">
+            </ScheduleManager>
+        </BaseCard>
+
         <BaseDialog
             ref="clubDialogRef"
             header="Editar club"
             subtitle="Actualiza la información de tu club"
             :resolver="resolver"
-            :inputs-dialog="inputsDialog"
+            :inputs-dialog="inputsClubDialog"
             @save="onSaveModifiedClub"
             />
+
+            
+        <BaseDialog
+            ref="sheduleDialogRef"
+            header="Configurar Horarios"
+            subtitle="Gestiona los turnos de apertura y cierre de cada día"
+            :inputs-dialog="inputsEditScheduleDialog"
+            @save="onSaveModifiedSchedule"
+        >
+
+        </BaseDialog>
 
     </div>
 

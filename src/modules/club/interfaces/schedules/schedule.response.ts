@@ -9,5 +9,5 @@ export interface ScheduleResponse {
 
 export interface DayOfWeekResponse {
     id: number;
-    day: string;
+    name: string;
 }

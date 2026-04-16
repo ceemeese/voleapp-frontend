@@ -1,4 +1,4 @@
 export interface PutSchedule {
-    openingTime: Date,
-    closingTime: Date,
+    openingTime: string,
+    closingTime: string,
 }

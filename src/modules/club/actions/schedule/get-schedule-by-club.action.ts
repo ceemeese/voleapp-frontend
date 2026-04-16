@@ -11,8 +11,6 @@ export const getScheduleByIdClubAction = async (clubId: string) : Promise<Schedu
         const { data } = await clientApi.request<ScheduleResponse[]>(config);
         return data.map(schedule => ({
                 ...schedule,
-                openingTime: new Date(schedule.openingTime),
-                closingTime: new Date(schedule.closingTime)
             }))
     } catch (error : unknown) {
         const axiosError = error as AxiosError<ProblemDetails>;

@@ -22,6 +22,7 @@ export const useSchedule = () => {
         
         try {
             const data: Schedule = await registerScheduleAction(clubId, dataForm)
+            console.log(data, 'DTA DEVUELTAAAA')
             return data;
         } finally {
             isLoading.value = false;

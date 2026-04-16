@@ -10,11 +10,7 @@ export const putScheduleAction = async (clubId: string, scheduleId: number, data
     try {
         const config = schedule.putScheduleByClub(clubId, scheduleId, dataForm);
         const { data } = await clientApi.request<ScheduleResponse>(config);
-        return {
-            ...data,
-            openingTime: new Date(data.openingTime),
-            closingTime: new Date(data.closingTime)
-        }
+        return data;
 
     } catch (error: unknown) {
         const axiosError = error as AxiosError<ProblemDetails>;
