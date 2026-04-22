@@ -1,6 +1,6 @@
 export interface AddEvent {
-    startTime: Date;
-    endTime: Date;
+    startTime: string;
+    endTime: string;
     eventName: string;
     description?: string;
 }

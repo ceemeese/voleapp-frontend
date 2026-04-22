@@ -1,8 +1,8 @@
 export interface EventResponse {
     id: number;
     courtId: string;
-    startTime: Date;
-    endTime: Date;
+    startTime: string;
+    endTime: string;
     eventName: string;
     description?: string;
     createdAt: string;

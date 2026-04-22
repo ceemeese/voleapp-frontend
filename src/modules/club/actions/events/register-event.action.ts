@@ -11,6 +11,8 @@ export const registerEventAction = async (courtId: string, dataForm: AddEvent) :
         const { data } = await clientApi.request<EventResponse>(config);
         return {
             ...data,
+            startTime: new Date(data.startTime),
+            endTime: new Date(data.endTime),
             createdAt: new Date(data.createdAt)
         }
     } catch (error : unknown) {

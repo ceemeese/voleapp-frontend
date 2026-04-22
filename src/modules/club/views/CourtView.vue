@@ -37,7 +37,6 @@ const courts = ref<Court[]>([]);
 const errorMessage = ref<string>('');
 const courtAddDialogRef = ref();
 const courtEditDialogRef = ref();
-const isMounted = ref(false);
 
 const addInputsDialog : BaseInputProps[] = [
     { field: 'name', label: 'Nombre de pista', icon: 'pi pi-table'},
@@ -52,10 +51,10 @@ const editInputsDialog : BaseInputProps[] = [
 ]
 
 onMounted(async () => {
-    isMounted.value = true;
     if (activeClubId.value){
         await loadCourts();
     }
+    console.log(courts.value, 'COURTS DE COURTSSS')
 });
 
 const courtActions : ActionColumn<Court>[] = [
@@ -227,26 +226,16 @@ const onSaveModifiedCourt = async (updatedData: CourtForm) => {
 
 <template>
     <div class="flex flex-col overflow-hidden h-full w-full">
-        <section to="#header-actions" v-if="isMounted" class="flex items-center gap-2 pl-4 pr-4">
-                <span class="text-xs font-black text-slate-400 uppercase tracking-widest border-r border-slate-200">
-                    Pistas
-                </span>
-                <!--<button 
-                    @click="onOpenCreateDialog"
-                    class="bg-black text-white px-4 py-2 rounded-full text-xs font-bold flex items-center gap-2 hover:bg-slate-800 transition-all"
-                >
-                    <i class="pi pi-plus"></i>
-                    Nueva Pista
-                </button>-->
-                <BaseButton 
-                icon="pi pi-plus"
-                label="Aňadir"
-                class="!bg-black !border-none"
-                size="small"
-                rounded
-                @click="onOpenCreateDialog"
-                >
-                </BaseButton>
+        <section class="flex items-center gap-2 pl-4 pr-4">
+
+            <BaseButton 
+            icon="pi pi-plus"
+            label="Añadir pista"
+            class="!bg-black !border-none"
+            size="small"
+            rounded
+            @click="onOpenCreateDialog"
+            />
         </section>
 
         <div class="flex-1 overflow-y-auto p-4 custom-scrollbar">

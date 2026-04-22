@@ -7,10 +7,12 @@ import type { Event, EventResponse, PutEvent } from "../../interfaces";
 
 export const updateEventAction = async (courtId: string, eventId: number, dataForm: PutEvent) : Promise<Event> => {
     try {
-        const config = event.updateEventInCourt(courtId, eventId, dataForm);
+         const config = event.updateEventInCourt(courtId, eventId, dataForm);
         const { data } = await clientApi.request<EventResponse>(config);
         return {
             ...data,
+            startTime: new Date(data.startTime),
+            endTime: new Date(data.endTime),
             createdAt: new Date(data.createdAt)
         }
     } catch (error : unknown) {
@@ -22,7 +24,7 @@ export const updateEventAction = async (courtId: string, eventId: number, dataFo
 
         const {status, data} = axiosError.response;
 
-        if (status == 400) {
+        if (status === 400) {
             const isValidationError = data.title.includes('Validation');
 
             if (isValidationError) {

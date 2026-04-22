@@ -18,7 +18,7 @@ function getEventsRangeByCourt(courtId: string, startRange: string|Date, endRang
 function getEventsRangeByClub(clubId: string, startRange: string|Date, endRange?: string|Date ) : AxiosRequestConfig {
     return {
         method: 'GET',
-        url: `/api/clubs/${clubId}/events/search`,
+        url: `/api/clubs/${clubId}/courts/events/search`,
         params: {
             startRange : startRange instanceof Date ? startRange.toISOString() : startRange,
             endRange : endRange instanceof Date ? endRange.toISOString() : endRange,
