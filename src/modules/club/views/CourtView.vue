@@ -54,7 +54,6 @@ onMounted(async () => {
     if (activeClubId.value){
         await loadCourts();
     }
-    console.log(courts.value, 'COURTS DE COURTSSS')
 });
 
 const courtActions : ActionColumn<Court>[] = [

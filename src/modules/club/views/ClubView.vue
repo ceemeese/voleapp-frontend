@@ -16,14 +16,13 @@ import { useConfirm } from "primevue/useconfirm";
 
 const confirmPopup = useConfirm();
 const clubStore = useClubStore();
+const { schedules } = useSchedule();
 const toast = useToast();
-const errorMessage = ref<string>('');
 const clubDialogRef = ref();
 const sheduleDialogRef = ref();
 const resolver = zodResolver(updateClubSchema);
 const { activeClubId, currentClubInfo, getAdminContext, updateClub } = useClub();
 const { getSchedule, updateSchedule, registerSchedule, toggleSchedule } = useSchedule();
-const clubSchedules = ref<Schedule[]>([]);
 
 
 const inputsEditScheduleDialog : BaseInputProps[] = [
@@ -87,8 +86,9 @@ onMounted(async () => {
         await getAdminContext();
     }
 
-    clubSchedules.value = await getSchedule(activeClubId.value!);
-    console.log('SCHEDULESSSS', clubSchedules.value);
+    if (schedules.value.length === 0) {
+        await getSchedule(activeClubId.value!);
+    }
 });
 
 
@@ -130,7 +130,6 @@ const handleClubEditDialog = () => {
 }
 
 const handleScheduleEditDialog = (schedule : Schedule) => {
-    console.log(schedule, 'LO QUE SE MANDAAAA')
     sheduleDialogRef.value.open(schedule);
 }
 
@@ -157,63 +156,39 @@ const onSaveModifiedClub = async (updatedData: Club) => {
         });
     } catch (error: unknown) {
         const message = error instanceof Error ? error.message : 'Error inesperado';
-        errorMessage.value = message;
-        toast.add({ 
-            severity: 'error', 
-            summary: 'Error de acceso', 
-            detail: errorMessage.value, 
-            life: 5000 
-        });
+        toast.add({ severity: 'error', summary: 'Error de acceso', detail: message, life: 5000 });
     }
 }
 
 
 const onSaveModifiedSchedule = async (updatedData: Schedule) => {
+    const isEditing = !!updatedData.id;
+
     try {
-        if (updatedData.id) {
+        if (isEditing) {
             await updateSchedule(activeClubId.value!, updatedData!.id, {
                 openingTime: updatedData.openingTime,
                 closingTime: updatedData.closingTime
             })
 
-            clubSchedules.value = clubSchedules.value.map(schedule => 
-                schedule.id === updatedData.id
-                ? {... schedule, ...updatedData}
-                : schedule
-            );
-
-            toast.add({ 
-                severity: 'info', 
-                summary: 'Confirmado', 
-                detail: 'Club modificado', 
-                life: 3000
-            });
         } else {
-            const newSlot = await registerSchedule(activeClubId.value!, {
+            await registerSchedule(activeClubId.value!, {
                 dayOfWeek: updatedData.dayOfWeek.name,
                 openingTime: updatedData.openingTime,
                 closingTime: updatedData.closingTime
             });
 
-            clubSchedules.value = [...clubSchedules.value, {...newSlot}];
-
             toast.add({ 
                 severity: 'info', 
                 summary: 'Confirmado', 
-                detail: 'Horario añadido', 
+                detail: `Horario ${isEditing ? 'modificado': 'añadido'}`, 
                 life: 3000
             });
         }
         
     } catch (error: unknown) {
         const message = error instanceof Error ? error.message : 'Error inesperado';
-        errorMessage.value = message;
-        toast.add({ 
-            severity: 'error', 
-            summary: 'Error de acceso', 
-            detail: errorMessage.value, 
-            life: 5000 
-        });
+        toast.add({ severity: 'error', summary: 'Error de acceso', detail: message, life: 5000 });
     }
 }
 
@@ -255,12 +230,6 @@ const handleToggleSchedule = (schedule: Schedule, event: PointerEvent) => {
 
                 await toggleSchedule(activeClubId.value!, schedule.id);
 
-                clubSchedules.value = clubSchedules.value.map(s =>
-                    s.id === schedule.id
-                        ? {...s, isClosed: !s.isClosed}
-                        : s
-                )
-
                 toast.add({ 
                     severity: 'info', 
                     summary: 'Confirmado', 
@@ -269,13 +238,7 @@ const handleToggleSchedule = (schedule: Schedule, event: PointerEvent) => {
 
             } catch (error: unknown) {
                 const message = error instanceof Error ? error.message : 'Error inesperado';
-                errorMessage.value = message;
-                toast.add({ 
-                    severity: 'error', 
-                    summary: 'Error de acceso', 
-                    detail: errorMessage.value, 
-                    life: 5000 
-                });
+                toast.add({ severity: 'error', summary: 'Error de acceso', detail: message, life: 5000 });
             }
         },
     });
@@ -329,7 +292,7 @@ const handleToggleSchedule = (schedule: Schedule, event: PointerEvent) => {
             </div>
 
             <ScheduleManager
-                :value="clubSchedules"
+                :value="schedules"
                 :day-names="DAYS_TRANSLATION"
                 :actions="scheduleActions">
             </ScheduleManager>
