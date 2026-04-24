@@ -27,7 +27,6 @@ export const useAuthStore = defineStore('auth', () => {
     const tokenInfo = computed(() => {
         if (!isAuthenticated.value || !token.value) return undefined;
         const decoded = jwtDecode<TokenInfo>(token.value);
-        console.log('CONTENIDO TOKEN', decoded);
         return decoded;
     })
 
@@ -41,7 +40,7 @@ export const useAuthStore = defineStore('auth', () => {
 
     const userId = computed(() => tokenInfo.value?.sub);
     const username = computed(() => tokenInfo.value?.["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"]);
-    
+    const email = computed(() => tokenInfo.value?.email)
 
     function setToken(newToken : string) {
         token.value = newToken;
@@ -70,6 +69,7 @@ export const useAuthStore = defineStore('auth', () => {
         userId,
         username,
         role,
+        email,
     }
 
 },

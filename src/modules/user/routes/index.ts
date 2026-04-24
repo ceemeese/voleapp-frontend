@@ -1,8 +1,10 @@
+import { clubRoutes } from "@/modules/club/routes";
 import type { RouteRecordRaw } from "vue-router";
 
 export const userRoutes: RouteRecordRaw = {
     path: '/admin',
     name: 'admin',
+    meta: { requiresAuth: true, requiresAdmin: true},
     component: () => import('@/modules/user/layouts/AdminLayout.vue'),
     children: [
         {
@@ -13,7 +15,8 @@ export const userRoutes: RouteRecordRaw = {
         {
             path: 'profile',
             name: 'admin-profile',
-            component: () => import('@/modules/user/views/UserListView.vue'),
+            component: () => import('@/modules/user/views/ProfileView.vue'),
         },
+        ...clubRoutes
     ]
 }

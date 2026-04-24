@@ -1,42 +1,42 @@
 import type { AxiosRequestConfig } from "axios";
 import type { PutUser } from "../interfaces";
 
-const baseURL = "/Users";
+const baseURL = "/api/Users";
 
 
 function getUsers() : AxiosRequestConfig {
     return {
         method: 'GET',
-        url: `api${baseURL}`,
+        url: `${baseURL}`,
     }
 }
 
 function getUserById(id: string) : AxiosRequestConfig {
     return {
         method: 'GET',
-        url: `api${baseURL}/${id}`,
+        url: `${baseURL}/${id}`,
     }
 }
 
 function getUserByEmail(email: string) : AxiosRequestConfig {
     return {
         method: 'GET',
-        url: `api${baseURL}/search`,
+        url: `${baseURL}/search`,
         params: {email}
     }
 }
 
-function deleteUser(id: string) : AxiosRequestConfig {
+function deactivateUser(id: string) : AxiosRequestConfig {
     return {
-        method: 'DELETE',
-        url: `api${baseURL}/${id}`,
+        method: 'PATCH',
+        url: `${baseURL}/${id}/deactivate`,
     }
 }
 
 function putUser(id: string, data: PutUser) : AxiosRequestConfig<PutUser> {
     return {
         method: 'PUT',
-        url: `api${baseURL}/${id}`,
+        url: `${baseURL}/${id}`,
         data: data,
     }
 }
@@ -45,7 +45,7 @@ export default {
     getUsers,
     getUserById,
     getUserByEmail,
-    deleteUser,
+    deactivateUser,
     putUser,
 }
 

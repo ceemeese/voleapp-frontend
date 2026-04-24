@@ -1,4 +1,4 @@
-import { getUserByEmailAction, getUserByIdAction, getUsersAction, deleteUserAction, updateUserAction } from "@/modules/user/actions";
+import { getUserByEmailAction, getUserByIdAction, getUsersAction, deactivateUserAction, updateUserAction } from "@/modules/user/actions";
 import type { PutUser, User } from "@/modules/user/interfaces";
 import { ref } from "vue";
 
@@ -40,35 +40,34 @@ export const useUser = () => {
     }
 
 
-    const deleteUser = async (id: string): Promise<void> => {
+    const deactivateUser = async (id: string): Promise<void> => {
         isLoading.value = true;
 
         try {
-            await deleteUserAction(id);
+            await deactivateUserAction(id);
         } finally {
             isLoading.value = false;
         }
     }
 
 
-    const updateUser = async (id: string, data: PutUser): Promise<void> => {
+    const updateUser = async (id: string, dataForm: PutUser): Promise<User> => {
         isLoading.value = true;
 
         try {
-            await updateUserAction(id, data);
+            const data: User = await updateUserAction(id, dataForm);
+            return data;
         } finally {
             isLoading.value = false;
         }
     }
-
-
-
+    
     return {
         isLoading,
         getUsers,
         getUserById,
         getUserByEmail,
-        deleteUser,
+        deactivateUser,
         updateUser,
     }
 }

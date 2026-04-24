@@ -2,6 +2,7 @@ import { loginAction, registerAction } from "@/modules/auth/actions";
 import { useAuthStore } from "@/stores/authStore"
 import { ref } from "vue";
 import type { LoginResponse, Login, Register } from "@/modules/auth/interfaces";
+import type { User } from "@/modules/user/interfaces";
 
 export const  useAuth = () => {
     const userStore = useAuthStore();
@@ -21,11 +22,12 @@ export const  useAuth = () => {
     };
 
 
-    const register = async (registerData : Register): Promise<void> => {
+    const register = async (registerData : Register): Promise<User> => {
         isLoading.value = true;
 
         try {
-            await registerAction(registerData);
+            const data: User = await registerAction(registerData);
+            return data;
         } finally {
             isLoading.value = false;
         }

@@ -42,7 +42,6 @@ const onLoginSubmit = async (formData: LoginValues) => {
       detail: errorMessage.value, 
       life: 5000 
     });
-    console.log('Error', error);
   }
 };
 </script>

@@ -1,14 +1,18 @@
 import user from "../api/user"
 import { clientApi } from "@/api/clientApi";
 import type { AxiosError } from "axios";
-import type { ProblemDetails } from "@/types/problemDetails";
+import type { ProblemDetails } from "@/types/problemDetails.interface";
 import { ConnectionError, Forbidden, NotAuthorizedError, NotFoundError, ValidationError } from "@/api/errorsApi";
-import type { PutUser } from "../interfaces";
+import type { PutUser, User, UserResponse } from "../interfaces";
 
-export const updateUserAction = async (id: string, data: PutUser) : Promise<void> => {
+export const updateUserAction = async (id: string, dataForm: PutUser) : Promise<User> => {
     try {
-        const config = user.putUser(id, data );
-        await clientApi.request<void>(config);
+        const config = user.putUser(id, dataForm );
+        const { data } = await clientApi.request<UserResponse>(config);
+        return {
+            ...data,
+            createdAt: new Date(data.createdAt)
+        }
     } catch (error : unknown) {
         const axiosError = error as AxiosError<ProblemDetails>;
 
