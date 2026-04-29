@@ -1,6 +1,5 @@
 import type { AxiosRequestConfig } from "axios";
-import type { AddClub } from "../interfaces/club/club-add.interface";
-import type { PutClub } from "../interfaces/club/club-update.interface";
+import type { AddClub, PutClub } from "../interfaces";
 
 const baseURL = "/api/clubs";
 
