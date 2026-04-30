@@ -8,11 +8,12 @@ import { BaseDialog, BaseButton, BaseCard} from 'ui';
 import { zodResolver } from '@primevue/forms/resolvers/zod';
 import { updateMemberSchema } from '../schemas/updateMember.schema';
 import { useClub } from '@/composables/useClub'
-import { watch, ref, onMounted } from 'vue';
+import { watch, ref, onMounted, nextTick } from 'vue';
 import AutoComplete from 'primevue/autocomplete';
 import { useUser } from '@/composables/useUser'
 import type { User } from '@/modules/user/interfaces';
 import type { AutoCompleteCompleteEvent } from 'primevue/autocomplete';
+import { animate, stagger } from 'animejs';
 
 
 interface SelectedMemberType extends Omit<MemberComplete, 'role'> {
@@ -120,6 +121,7 @@ const loadMembers = async () => {
             ...member,
             fullname: `${member.name} ${member.lastName}`
         }))
+        animateTableRows();
     } catch (error: unknown) {
         const message = error instanceof Error ? error.message : 'Error inesperado';
         errorMessage.value = message;
@@ -260,6 +262,20 @@ const handleToggleStatus = (member: MemberComplete, event: PointerEvent) => {
         },
     });
 }
+
+const animateTableRows = async () => {
+    // Esperamos al siguiente tick de Vue para asegurar que el DOM ya tiene las filas
+    await nextTick(); 
+    
+    // Seleccionamos las filas de la tabla (ajusta el selector si BaseDataTable usa otro)
+    animate('tbody tr', {
+        opacity: [0, 1],
+        translateX: [-20, 0],
+        delay: stagger(40), // 40ms de diferencia entre cada fila
+        duration: 600,
+        easing: 'out-quartic'
+    });
+};
 </script>
 
 <template>

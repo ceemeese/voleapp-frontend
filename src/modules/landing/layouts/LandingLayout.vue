@@ -60,12 +60,12 @@ const footerLinks = computed<NavItem[]>(() => {
                 <img 
                     src="/src/assets/voleappblack.png" 
                     alt="VoleApp Logo" 
-                    class="h-15 w-auto mb-2" 
+                    class="h-10 sm:h-15 w-auto" 
                 />
             </template>
         </HeaderM>
 
-        <main class="flex-1 w-full pt-32 mx-auto flex flex-col items-center px-6">
+        <main class="flex-1 w-full mx-auto flex flex-col items-center">
             <RouterView />
         </main>
 

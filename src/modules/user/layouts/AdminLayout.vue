@@ -130,17 +130,32 @@ const handleLogout = async () => {
                 <i class="pi pi-spin pi-spinner text-4xl text-blue-500"></i>
             </div>
             <RouterView v-else v-slot="{ Component }">
-                <component :is="Component">
-                    <template #header-actions>
-                        <slot name="header-actions" />
-                    </template>
-                </component>
+                <transition name="fade-view" mode="out-in">
+                    <component :is="Component" :key="$route.path">
+                        <template #header-actions>
+                            <slot name="header-actions" />
+                        </template>
+                    </component>
+                </transition>
             </RouterView>
         </main>
 
     </div>
 </template>
 
-<style>
+<style scoped>
+.fade-view-enter-active,
+.fade-view-leave-active {
+  transition: all 0.3s ease-out;
+}
 
+.fade-view-enter-from {
+  opacity: 0;
+  transform: translateX(5px);
+}
+
+.fade-view-leave-to {
+  opacity: 0;
+  transform: translateX(-5px);
+}
 </style>

@@ -264,51 +264,53 @@ const onSaveModifiedEvent = async (updatedData: EventForm) => {
 </script>
 
 <template>
-    <section class="flex items-center gap-2 pl-4 pr-4 mb-2">
-        <BaseButton 
-        icon="pi pi-plus"
-        label="Añadir evento"
-        class="!bg-black !border-none"
-        size="small"
-        rounded
-        @click="onOpenCreateEventDialog"
-        />
-
-        <BaseDatePicker
-            :model-value="selectedDate"
-            @update:model-value="onDateChange"
-            updateModelType="date"
-            class="!w-50"
+    <div>
+        <section class="flex items-center gap-2 pl-4 pr-4 mb-2">
+            <BaseButton 
+            icon="pi pi-plus"
+            label="Añadir evento"
+            class="!bg-black !border-none"
             size="small"
-        />
-      
-    </section>
-        
-    <BaseCard padding="p-4 !h-full" class="h-full overflow-hidden !shadow-none">
-        <EventCalendar
-            v-if="calendarResources.length > 0 && selectedDaySchedule.length > 0"
-            :events="calendarEvents"
-            :resources="calendarResources"
-            :min-time="minOpeningTime"
-            :max-time="maxClosingTime"
-            :closed-ranges="closedRanges"
-            @event-click="(e) => onOpenEditEventDialog(e.data)"
-            @cell-click="onCellClick"
-        />
-        <div v-else-if="calendarResources.length > 0 && selectedDaySchedule.length === 0" class="flex justify-center p-10 text-slate-400">
-            El club no tiene horario para este día
-        </div>
-        <div v-else class="flex justify-center p-10 text-slate-400">
-            Cargando pistas...
-        </div>
-    </BaseCard>
+            rounded
+            @click="onOpenCreateEventDialog"
+            />
 
-    <BaseDialog
-        ref="eventDialogRef"
-        :header="formData.courtId ? 'Modificar eventos' : 'Nuevo evento'"
-        :subtitle="formData.courtId ? 'Actualiza los datos' : 'Rellena los campos para crear un evento'"
-        :inputs-dialog="inputsCreateEventDialog"
-        :resolver="resolver"
-        @save="onSaveModifiedEvent"
-    />
+            <BaseDatePicker
+                :model-value="selectedDate"
+                @update:model-value="onDateChange"
+                updateModelType="date"
+                class="!w-50"
+                size="small"
+            />
+        
+        </section>
+            
+        <BaseCard padding="p-4 !h-full" class="h-full overflow-hidden !shadow-none">
+            <EventCalendar
+                v-if="calendarResources.length > 0 && selectedDaySchedule.length > 0"
+                :events="calendarEvents"
+                :resources="calendarResources"
+                :min-time="minOpeningTime"
+                :max-time="maxClosingTime"
+                :closed-ranges="closedRanges"
+                @event-click="(e) => onOpenEditEventDialog(e.data)"
+                @cell-click="onCellClick"
+            />
+            <div v-else-if="calendarResources.length > 0 && selectedDaySchedule.length === 0" class="flex justify-center p-10 text-slate-400">
+                El club no tiene horario para este día
+            </div>
+            <div v-else class="flex justify-center p-10 text-slate-400">
+                Cargando pistas...
+            </div>
+        </BaseCard>
+
+        <BaseDialog
+            ref="eventDialogRef"
+            :header="formData.courtId ? 'Modificar eventos' : 'Nuevo evento'"
+            :subtitle="formData.courtId ? 'Actualiza los datos' : 'Rellena los campos para crear un evento'"
+            :inputs-dialog="inputsCreateEventDialog"
+            :resolver="resolver"
+            @save="onSaveModifiedEvent"
+        />
+    </div>
 </template>
