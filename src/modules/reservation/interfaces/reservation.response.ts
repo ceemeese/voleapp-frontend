@@ -4,6 +4,7 @@ export interface ReservationResponse {
     id: number;
     userId: string;
     clubId: string;
+    courtId: string;
     date: string;
     startTime: string;
     endTime: string;

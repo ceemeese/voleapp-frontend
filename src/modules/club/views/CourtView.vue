@@ -237,7 +237,7 @@ const onSaveModifiedCourt = async (updatedData: CourtForm) => {
             />
         </section>
 
-        <div class="flex-1 overflow-y-auto p-4 custom-scrollbar">
+        <div class="flex-1 overflow-y-auto p-4">
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 <BaseCard 
                     v-for="court in courts" 
@@ -308,3 +308,7 @@ const onSaveModifiedCourt = async (updatedData: CourtForm) => {
         </div>
     </div>
 </template>
+
+<style scoped>
+
+</style>

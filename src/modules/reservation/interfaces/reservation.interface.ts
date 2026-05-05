@@ -2,6 +2,7 @@ export interface Reservation {
     id: number;
     userId: string;
     clubId: string;
+    courtId: string;
     date: Date;
     startTime: string;
     endTime: string;

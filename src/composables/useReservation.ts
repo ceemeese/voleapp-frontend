@@ -1,9 +1,12 @@
 import { getClubReservationsAction, getReservationByIdAction, getReservationsAction, getUserReservationsAction, registerReservationAction, updateStatusReservationAction, cancelReservationAction } from "@/modules/reservation/actions";
 import type { AddReservation, Reservation, ReservationFilters } from "@/modules/reservation/interfaces"
-import { ref } from "vue";
+import { ref, computed } from "vue";
+import { useUserStore } from "@/stores/userStore";
 
 export const useReservation = () => {
     const isLoading = ref(false);
+    const userStore = useUserStore();
+    const userReservations = computed(() => userStore.reservations);
 
 
     const getReservations = async(filters : ReservationFilters) : Promise<Reservation[]> => {
@@ -28,7 +31,7 @@ export const useReservation = () => {
         }
     }
 
-    const getClubReservations = async(clubId: string, startDateRange?: Date, endDateRange?: Date) : Promise<Reservation[]> => {
+    const getClubReservations = async(clubId: string, startDateRange?: string, endDateRange?: string) : Promise<Reservation[]> => {
         isLoading.value = true;
 
         try {
@@ -39,11 +42,14 @@ export const useReservation = () => {
         }
     }
 
-    const getUserReservations = async(userId: string, startDateRange?: Date, endDateRange?: Date) : Promise<Reservation[]> => {
+    const getUserReservations = async(userId: string, startDateRange?: string, endDateRange?: string) : Promise<Reservation[]> => {
         isLoading.value = true;
 
         try {
+            console.log('STARTRANGE', startDateRange)
+            console.log('ENDRANGE', endDateRange)
             const data: Reservation[] = await getUserReservationsAction(userId, startDateRange, endDateRange);
+            userStore.setReservations(data);
             return data;
         } finally {
             isLoading.value = false;
@@ -90,5 +96,6 @@ export const useReservation = () => {
         registerReservation,
         updateStatusReservation,
         cancelReservation,
+        userReservations
     }
 }

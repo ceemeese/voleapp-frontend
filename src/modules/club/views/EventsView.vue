@@ -11,10 +11,14 @@ import { zodResolver } from '@primevue/forms/resolvers/zod';
 import { addEventSchema } from '../schemas/event.schema';
 import { BaseDatePicker } from 'ui';
 import { useSchedule } from '@/composables/useSchedule';
+import type { Reservation } from '@/modules/reservation/interfaces';
+import { useReservation } from '@/composables/useReservation';
+import { parseTimeOnlyToDate } from '@/helpers/dateHelpers';
 
 const toast = useToast();
 const { getEventsRangeByClub, updateEvent, createEvent } = useEvent();
 const { activeClubId } = useClub();
+const { getClubReservations } = useReservation();
 const { getCourtsByClubId } = useCourt();
 const { schedules, getSchedule } = useSchedule();
 const resolver = zodResolver(addEventSchema);
@@ -23,6 +27,7 @@ const selectedDate = ref(new Date());
     
 const eventDialogRef = ref();
 const events = ref<Event[]>([]);
+const reservations = ref<Reservation[]>([]);
 const courts = ref<Court[]>([]);
 
 interface EventForm {
@@ -74,16 +79,31 @@ const calendarResources = computed(() :CalendarResource[] => {
 });
 
 const calendarEvents  = computed(() : CalendarEvent[] => {
-    return events.value.map(event => ({
+    const mappedEvents = events.value.map(event => ({
         id: event.id,
         start: event.startTime,
         end: event.endTime,
         title: event.eventName,
         content: event.description,
         resourceId: event.courtId,
+        colorClass: 'bg-[#EEF7FC] border-[#94C8E7] text-[#3A7FA6]',
         data: event,
     }));
+
+    const mappedReservations = reservations.value.map(reservation => ({
+        id: reservation.id,
+        start: parseTimeOnlyToDate(reservation.startTime, selectedDate.value),
+        end: parseTimeOnlyToDate(reservation.endTime, selectedDate.value),
+        title: 'Reserva',
+        content: reservation.notes || `Pista reservada por usuario ${reservation.userId}`,
+        resourceId: reservation.courtId,
+        colorClass:'bg-[#F3FAEA] border-[#C8E794] text-[#6B8F3A]',
+        data: reservation,
+    }))
+
+    return [...mappedEvents, ...mappedReservations];
 });
+
 
 const selectedDaySchedule = computed(() => {
     const dayIndex = selectedDate.value.getDay() === 0 ? 7 : selectedDate.value.getDay();
@@ -118,11 +138,25 @@ const closedRanges = computed(() => {
     return ranges;
 });
 
-const loadEvents = async (date: Date) => {
-    const start = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0));
-    const end = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate(), 23, 59, 59, 999));
-    events.value = await getEventsRangeByClub(activeClubId.value!, start, end);
+const loadDayData = async (date: Date) => {
+    if (!activeClubId.value) return;
+
+    const startDateTime = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0));
+    const endDateTime = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate(), 23, 59, 59, 999));
+
+    const dateOnlyStr = date.toISOString().split('T')[0];
+
+    const [eventsData, reservationsData] = await Promise.all([
+        getEventsRangeByClub(activeClubId.value, startDateTime, endDateTime),
+        getClubReservations(activeClubId.value, dateOnlyStr)
+    ]);
+
+    events.value = eventsData;
+    reservations.value = reservationsData;
+    console.log(events.value, 'EVENTOS PROMISE ALL') 
+    console.log(reservations.value, 'RESERVAR PROMISE ALL') 
 }
+
 
 onMounted(async () => {
     if (activeClubId.value){
@@ -132,13 +166,13 @@ onMounted(async () => {
     if (schedules.value.length === 0) {
         await getSchedule(activeClubId.value!);
     }
-    await loadEvents(selectedDate.value);
+    await loadDayData(selectedDate.value);
 });
 
 const onDateChange = async (date: Date) => {
     if (!date) return; 
     selectedDate.value = date;
-    await loadEvents(date);
+    await loadDayData(date);
 }
 
 const onOpenCreateEventDialog = () => {
@@ -264,8 +298,8 @@ const onSaveModifiedEvent = async (updatedData: EventForm) => {
 </script>
 
 <template>
-    <div>
-        <section class="flex items-center gap-2 pl-4 pr-4 mb-2">
+    <div class="h-screen flex flex-col overflow-hidden">
+        <section class="flex items-center gap-2 pl-4 pr-4 mb-2 flex-shrink-0">
             <BaseButton 
             icon="pi pi-plus"
             label="Añadir evento"
@@ -284,25 +318,26 @@ const onSaveModifiedEvent = async (updatedData: EventForm) => {
             />
         
         </section>
-            
-        <BaseCard padding="p-4 !h-full" class="h-full overflow-hidden !shadow-none">
-            <EventCalendar
-                v-if="calendarResources.length > 0 && selectedDaySchedule.length > 0"
-                :events="calendarEvents"
-                :resources="calendarResources"
-                :min-time="minOpeningTime"
-                :max-time="maxClosingTime"
-                :closed-ranges="closedRanges"
-                @event-click="(e) => onOpenEditEventDialog(e.data)"
-                @cell-click="onCellClick"
-            />
-            <div v-else-if="calendarResources.length > 0 && selectedDaySchedule.length === 0" class="flex justify-center p-10 text-slate-400">
-                El club no tiene horario para este día
-            </div>
-            <div v-else class="flex justify-center p-10 text-slate-400">
-                Cargando pistas...
-            </div>
+
+        <BaseCard padding="p-4" class="!shadow-none !overflow-hidden">
+                <EventCalendar
+                    v-if="calendarResources.length > 0 && selectedDaySchedule.length > 0"
+                    :events="calendarEvents"
+                    :resources="calendarResources"
+                    :min-time="minOpeningTime"
+                    :max-time="maxClosingTime"
+                    :closed-ranges="closedRanges"
+                    @event-click="(e) => onOpenEditEventDialog(e.data)"
+                    @cell-click="onCellClick"
+                />
+                <div v-else-if="calendarResources.length > 0 && selectedDaySchedule.length === 0" class="flex justify-center p-10 text-slate-400">
+                    El club no tiene horario para este día
+                </div>
+                <div v-else class="flex justify-center p-10 text-slate-400">
+                    Cargando pistas...
+                </div>
         </BaseCard>
+
 
         <BaseDialog
             ref="eventDialogRef"
@@ -314,3 +349,7 @@ const onSaveModifiedEvent = async (updatedData: EventForm) => {
         />
     </div>
 </template>
+
+<style scoped>
+
+</style>

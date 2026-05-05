@@ -6,7 +6,7 @@ import reservation from "../../api/reservation";
 import type { Reservation, ReservationResponse } from "../../interfaces";
 
 
-export const getUserReservationsAction = async (userId: string, startDateRange?: Date, endDateRange?: Date) : Promise<Reservation[]> => {
+export const getUserReservationsAction = async (userId: string, startDateRange?: string, endDateRange?: string) : Promise<Reservation[]> => {
     try {
             const config = reservation.getUserReservations(userId, startDateRange, endDateRange);
             const { data } = await clientApi.request<ReservationResponse[]>(config);

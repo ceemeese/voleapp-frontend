@@ -29,7 +29,7 @@ const onLoginSubmit = async (formData: LoginValues) => {
     if (userStore.isAdmin || userStore.isSuperadmin) {
       router.push({ name: 'admin' });
     } else {
-      router.push({ name: 'home' });
+      router.push({ name: 'user-home' });
     }
       
   } catch (error: unknown) {

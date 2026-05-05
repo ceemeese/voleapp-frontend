@@ -5,13 +5,13 @@ import ConfirmPopup from 'primevue/confirmpopup';
 </script>
 
 <template>
-  <router-view v-slot="{ Component }">
-    <transition name="page-fade" mode="out-in">
-      <component :is="Component" />
-    </transition>
-  </router-view>
-  <Toast />
-  <ConfirmPopup />
+    <router-view v-slot="{ Component }">
+        <transition name="page-fade" mode="out-in">
+          <component :is="Component" />
+        </transition>
+    </router-view>
+    <Toast />
+    <ConfirmPopup />
 </template>
 
 <style scoped>

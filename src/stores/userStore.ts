@@ -1,8 +1,9 @@
 import type { User } from "@/modules/user/interfaces";
 import { defineStore } from "pinia"
-import { ref } from "vue";
+import { ref, computed} from "vue";
 import { useAuthStore } from "./authStore";
 import { useUser } from "@/composables/useUser";
+import type { Reservation } from "@/modules/reservation/interfaces";
 
 
 export const useUserStore = defineStore('user', () => {
@@ -10,7 +11,9 @@ export const useUserStore = defineStore('user', () => {
     const authStore = useAuthStore();
     const profile = ref<User | undefined>(undefined);
     const { getUserById } = useUser()
+    const reservations = ref<Reservation[]>([]);
 
+    const hasReservations = computed(() => reservations.value.length > 0);
 
     async function fetchProfile() {
         if (profile.value){
@@ -28,11 +31,27 @@ export const useUserStore = defineStore('user', () => {
 
     function clearProfile() {
         profile.value = undefined;
+        reservations.value = [];
+    }
+
+
+    function setReservations(data: Reservation[]) {
+        reservations.value = data;
+    }
+
+    function addReservation(reservation: Reservation) {
+        reservations.value.push(reservation);
+        // Opcional: Ordenar por fecha tras añadir
+        reservations.value.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
     }
 
     return {
         fetchProfile,
         clearProfile,
-        profile
+        profile,
+        hasReservations,
+        setReservations,
+        addReservation,
+        reservations
     }
 })

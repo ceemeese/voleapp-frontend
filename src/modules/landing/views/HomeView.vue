@@ -10,10 +10,10 @@ onMounted(() => {
     if (!textRef.value || !ballRef.value) return;
     const spans = textRef.value.querySelectorAll('span');
     createTimeline().add(spans, {
-        translateX: [-100, 0],
+        translateX: [-150, 0],
         opacity: [0, 1],
-        delay: stagger(120),
-        duration: 1000,
+        delay: stagger(500),
+        duration: 1500,
         easing: 'out-quartic'
     })
         
