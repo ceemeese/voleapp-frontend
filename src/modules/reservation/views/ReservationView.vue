@@ -6,7 +6,7 @@ import { useToast } from 'primevue/usetoast';
 import FilterSelectorReservation from '@/components/FilterSelectorReservation.vue';
 import ReservationSummary from '@/components/ReservationSummary.vue';
 import { useReservation } from '@/composables/useReservation';
-import type { AddReservation } from '../interfaces';
+import type { AddReservation, ReservationDataDialog } from '../interfaces';
 
 const toast = useToast();
 const { registerReservation } = useReservation();
@@ -16,19 +16,6 @@ const cityFilter = ref<string>('');
 const reservationDialogRef = ref();
 const errorMessage = ref<string>('');
 const reservationData = ref<ReservationDataDialog>();
-
-interface ReservationDataDialog {
-    courtId: string;
-    courtName: string;
-    courtType: string;
-    clubName: string;
-    clubAddress: string;
-    date: string;
-    startTime: string;
-    endTime: string;
-    duration: number;
-    price: number
-}
 
 const formattedDate = computed(() => {
     if (!selectedDate.value) return '';
@@ -118,6 +105,7 @@ const handleConfirmReservation = async () => {
         }
         const reservation = await registerReservation(formData);
         console.log(reservation, 'RESERVAA CREADA')
+        //todo actrualizar reservas
 
         toast.add({ 
             severity: 'info', 
@@ -193,18 +181,18 @@ watch(selectedDate, async (newDate) => {
                     <span class="hidden sm:inline">Disponibles</span><span class="sm:hidden">Disp.</span></span>
                 </template>
         </GroupedList>
-    </div>
 
-    <BaseDialog
-        ref="reservationDialogRef"
-        header="Resumen de la reserva"
-        subtitle="Revisa los detalles antes de confirmar"
-        @save="handleConfirmReservation"
-    >
-        <template #default="{ data }">
-            <ReservationSummary :reservation="data"/>
-        </template>
-    </BaseDialog>
+        <BaseDialog
+            ref="reservationDialogRef"
+            header="Resumen de la reserva"
+            subtitle="Revisa los detalles antes de confirmar"
+            @save="handleConfirmReservation"
+        >
+            <template #default="{ data }">
+                <ReservationSummary :reservation="data"/>
+            </template>
+        </BaseDialog>
+    </div>
 </template>
 
 <style scoped>

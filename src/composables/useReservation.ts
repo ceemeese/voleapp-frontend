@@ -46,8 +46,6 @@ export const useReservation = () => {
         isLoading.value = true;
 
         try {
-            console.log('STARTRANGE', startDateRange)
-            console.log('ENDRANGE', endDateRange)
             const data: Reservation[] = await getUserReservationsAction(userId, startDateRange, endDateRange);
             userStore.setReservations(data);
             return data;
@@ -96,6 +94,7 @@ export const useReservation = () => {
         registerReservation,
         updateStatusReservation,
         cancelReservation,
-        userReservations
+        userReservations,
+        isLoading
     }
 }

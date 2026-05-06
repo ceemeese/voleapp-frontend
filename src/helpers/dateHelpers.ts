@@ -1,4 +1,4 @@
-//Formateo de TimeOnly(string) a objeto date con esas horas
+//Formateo de TimeOnly(string) a objeto date con esas horas de 18:00 a dia+hora
 export const parseTimeOnlyToDate = (timeStr: string, baseDate: Date) => {
     const [hours, minutes] = timeStr.split(':').map(Number);
     const date = new Date(baseDate);
@@ -6,7 +6,7 @@ export const parseTimeOnlyToDate = (timeStr: string, baseDate: Date) => {
     return date;
 };
 
-//Formateo de objeto date a TimeOnly 
+//Formateo de objeto date a "TimeOnly" 18:00
 export const formatTime = (date: Date): string => {
     return date.toLocaleTimeString([], { 
         hour: '2-digit', 
@@ -22,5 +22,15 @@ export const toDateOnlyString = (date: Date): string => {
     const day = String(date.getDate()).padStart(2, '0');
     return `${year}-${month}-${day}`;
 };
+
+//formateo de fecha date o string para formato legible bonito '06 de mayo de 2026'
+export const formatFullDate = (date: Date | string) => {
+    const d = typeof date === 'string' ? new Date(date) : date;
+    return d.toLocaleDateString('es-ES', {
+        day: '2-digit',
+        month: 'long',
+        year: 'numeric',
+    });
+}
 
 

@@ -6,4 +6,9 @@ export const reservationRoutes: RouteRecordRaw[] = [
         name: 'booking',
         component: () => import('@/modules/reservation/views/ReservationView.vue'),
     },
+    {
+        path: 'my-reservations',
+        name: 'my-reservations',
+        component: () => import('@/modules/reservation/views/MyReservationView.vue'),
+    },
 ]

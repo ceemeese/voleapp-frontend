@@ -379,6 +379,7 @@ const animateTableRows = async () => {
                         </template>
                     </AutoComplete>
                     <div class="h-5 flex items-center "> 
+                        
                         <Transition name="fade">
                             <p v-if="selectedUserToAdd?.id" 
                             class="w-full text-xs text-blue-600 p-2.5 rounded-lg border-blue-100">

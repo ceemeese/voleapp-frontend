@@ -89,11 +89,7 @@ const handleLogout = () => {
             <div v-if="isInitialLoading" class="flex items-center justify-center h-full">
                 <i class="pi pi-spin pi-spinner text-4xl text-blue-500"></i>
             </div>
-            <RouterView v-else v-slot="{ Component }">
-                <transition name="fade-view" mode="out-in">
-                    <component :is="Component" :key="$route.path" />
-                </transition>
-            </RouterView>
+            <RouterView v-else />
         </main>
 
         <Footer :navigation-items="footerLinks" title-logo="VoleApp">
@@ -103,25 +99,3 @@ const handleLogout = () => {
         </Footer>
     </div>
 </template>
-
-<style>
-.header-shrink {
-    backdrop-filter: blur(12px);
-    transition: all 0.3s ease-in-out;
-}
-
-.fade-view-enter-active,
-.fade-view-leave-active {
-    transition: all 0.3s ease-out;
-}
-
-.fade-view-enter-from {
-    opacity: 0;
-    transform: translateX(5px);
-}
-
-.fade-view-leave-to {
-    opacity: 0;
-    transform: translateX(-5px);
-}
-</style>

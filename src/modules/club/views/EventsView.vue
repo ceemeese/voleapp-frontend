@@ -153,8 +153,6 @@ const loadDayData = async (date: Date) => {
 
     events.value = eventsData;
     reservations.value = reservationsData;
-    console.log(events.value, 'EVENTOS PROMISE ALL') 
-    console.log(reservations.value, 'RESERVAR PROMISE ALL') 
 }
 
 

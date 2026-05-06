@@ -105,50 +105,49 @@ onMounted(async() => {
 <template>
     <div class="max-w-7xl mx-auto w-full flex-1 px-6 py-8 flex flex-col gap-8">
         
-        <header>
+        <div>
             <h1 class="text-3xl font-bold tracking-tight">
                 Hola, {{ userStore.profile?.name || 'Jugador' }} 👋
             </h1>
             <p class="text-gray-500 mt-1">Gestiona tus partidos y reservas</p>
-        </header>
+        </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            
             <section class="lg:col-span-1">
-            <BaseCard class="min-h-60">
-                <h3 class="font-semibold mb-4 flex items-center gap-2">
-                    <i class="pi pi-calendar"></i>
-                    Nueva Reserva
-                </h3>
-                
-                <div class="space-y-4">
-                    <p class="text-sm text-gray-600">Selecciona una fecha para ver pistas disponibles:</p>
+                <BaseCard class="min-h-60">
+                    <h3 class="font-semibold mb-4 flex items-center gap-2">
+                        <i class="pi pi-calendar"></i>
+                        Nueva Reserva
+                    </h3>
                     
-                    <BaseDatePicker v-model="selectedDate" show-icon />
-                    
-                    <BaseButton 
-                        label="Buscar pistas" 
-                        icon="pi pi-search" 
-                        class="w-full !bg-black"
-                        :disabled="!selectedDate"
-                        @click="startBooking"
-                    />
-                </div>
-            </BaseCard>
+                    <div class="space-y-4">
+                        <p class="text-sm text-gray-600">Selecciona una fecha para ver pistas disponibles:</p>
+                        
+                        <BaseDatePicker v-model="selectedDate" show-icon />
+                        
+                        <BaseButton 
+                            label="Buscar pistas" 
+                            icon="pi pi-search" 
+                            class="w-full !bg-black"
+                            :disabled="!selectedDate"
+                            @click="startBooking"
+                        />
+                    </div>
+                </BaseCard>
             </section>
 
             
             <section class="lg:col-span-2 flex flex-col gap-4">
-            <BaseCard class="min-h-60">
-                <div class="flex justify-between items-center px-2">
-                    <h3 class="font-semibold flex items-center gap-2">
-                        <i class="pi pi-ticket"></i>
-                        Mis próximas reservas
-                    </h3>
-                    <router-link to="/" class="text-xs font-bold text-slate-400 hover:text-black">
-                        VER HISTORIAL
-                    </router-link>
-                </div>
+                <BaseCard class="min-h-60">
+                    <div class="flex justify-between items-center px-2">
+                        <h3 class="font-semibold flex items-center gap-2">
+                            <i class="pi pi-ticket"></i>
+                            Mis próximas reservas
+                        </h3>
+                        <router-link :to="{ name: 'my-reservations'}" class="text-xs font-bold text-slate-400 hover:text-black">
+                            VER HISTORIAL
+                        </router-link>
+                    </div>
 
 
                     <div v-if="upcomingReservations.length === 0" 
@@ -163,22 +162,21 @@ onMounted(async() => {
                             :reservation="res" 
                         />
                     </div>
-            </BaseCard>
-                
+                </BaseCard>
             </section>
         </div>
 
         <section>
-                <BaseCard>
-                    <h3 class="font-semibold mb-4 flex items-center gap-2">
-                        <i class="pi pi-chart-line"></i>
-                        Actividad Anual
-                    </h3>
-                    
-                    <div class="h-64">
-                        <Chart type="bar" :data="chartData" :options="chartOptions" class="h-full w-full" />
-                    </div>
-                </BaseCard>
-            </section>
+            <BaseCard>
+                <h3 class="font-semibold mb-4 flex items-center gap-2">
+                    <i class="pi pi-chart-line"></i>
+                    Actividad Anual
+                </h3>
+                
+                <div class="h-64">
+                    <Chart v-if="userReservations.length > 0" type="bar" :data="chartData" :options="chartOptions" class="h-full w-full" />
+                </div>
+            </BaseCard>
+        </section>
     </div>
 </template>

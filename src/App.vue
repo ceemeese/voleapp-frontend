@@ -6,27 +6,31 @@ import ConfirmPopup from 'primevue/confirmpopup';
 
 <template>
     <router-view v-slot="{ Component }">
-        <transition name="page-fade" mode="out-in">
-          <component :is="Component" />
-        </transition>
+        <component :is="Component" :key="$route.path"></component>
     </router-view>
     <Toast />
     <ConfirmPopup />
 </template>
 
-<style scoped>
-.page-fade-enter-active,
-.page-fade-leave-active {
-  transition: opacity 0.5s ease, transform 0.5s ease;
-}
 
-.page-fade-enter-from {
-  opacity: 0;
-  transform: translateY(10px);
-}
+<style>
 
-.page-fade-leave-to {
-  opacity: 0;
-  transform: translateY(-10px);
+@media (max-width: 640px) {
+    .p-toast {
+        width: 90vw !important;
+        left: 5vw !important; 
+    }
+
+    .p-toast-message-content {
+        padding: 0.75rem !important;
+    }
+
+    .p-toast-summary {
+        font-size: 0.9rem !important;
+    }
+
+    .p-toast-detail {
+        font-size: 0.8rem !important;
+    }
 }
 </style>

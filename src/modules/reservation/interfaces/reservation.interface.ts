@@ -15,7 +15,7 @@ export interface Reservation {
 
 export interface Status {
     id: ReservationStatus;
-    name: string;
+    status: string;
 }
 
 export enum ReservationStatus {

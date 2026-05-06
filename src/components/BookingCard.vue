@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { Reservation } from '@/modules/reservation/interfaces';
-import { computed } from 'vue';
+import { STATUS_TRANSLATION } from '@/utils/status-utils';
+import { computed } from 'vue'
 
 const props = defineProps<{ reservation: Reservation }>();
 
@@ -23,7 +24,7 @@ const month = computed(() => dateObj.value.toLocaleString('es-ES', { month: 'sho
 
         <div class="text-right">
             <p class="text-lg font-black text-slate-900">{{ reservation.totalPrice }}€</p>
-            <span class="text-[10px] uppercase font-bold text-slate-400">Confirmada</span>
+            <span class="text-[10px] uppercase font-bold text-slate-400"> {{ STATUS_TRANSLATION[reservation.status.id] }} </span>
         </div>
     </div>
 </template>
