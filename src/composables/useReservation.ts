@@ -59,6 +59,7 @@ export const useReservation = () => {
 
         try {
             const data: Reservation = await registerReservationAction(formData);
+            userStore.addReservation(data);
             return data;
         } finally {
             isLoading.value = false;

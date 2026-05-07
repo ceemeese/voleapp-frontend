@@ -41,7 +41,6 @@ export const useUserStore = defineStore('user', () => {
 
     function addReservation(reservation: Reservation) {
         reservations.value.push(reservation);
-        // Opcional: Ordenar por fecha tras añadir
         reservations.value.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
     }
 

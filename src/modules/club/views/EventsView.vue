@@ -39,7 +39,7 @@ const reservationDialogRef = ref();
 const events = ref<Event[]>([]);
 const reservations = ref<Reservation[]>([]);
 const courts = ref<Court[]>([]);
-const isUpdating = ref(false);
+const isSubmitting = ref(false);
 
 interface EventForm {
     courtId: string;
@@ -350,17 +350,22 @@ const onSaveModifiedEvent = async (updatedData: EventForm) => {
 const onUpdateStatus = async (newStatus: number) => {
     if (!selectedReservation.value) return;
     
-    isUpdating.value = true;
+    isSubmitting.value = true;
     try {
         
         await updateStatusReservation(selectedReservation.value.id, newStatus);
+
+        selectedReservation.value.status.id = newStatus;
+        selectedReservation.value.status.status = ReservationStatus[newStatus] ?? 'Unknown';
+
         toast.add({ severity: 'success', summary: 'Actualizado', detail: 'Estado de la reserva actualizado', life: 3000 });
 
-        await loadDayData(selectedDate.value);
-        reservationDialogRef.value.close();
+        confirmMode.value = null;
     } catch (error: unknown) {
         const message = error instanceof Error ? error.message : 'Error inesperado';
         toast.add({ severity: 'error', summary: 'Error al cambiar estado', detail: message, life: 3000 });
+    } finally {
+        isSubmitting.value = false
     }
 }
 
@@ -429,88 +434,88 @@ const canAdminChangeStatus = (currentId: ReservationStatus | undefined): boolean
         ref="reservationDialogRef"
         header="Resumen de la reserva"
         >
-        <template #default>
-            <div class="flex flex-col gap-6">
-            <ReservationSummary v-if="selectedReservation" :reservation="summarizedReservation" />
+            <template #default>
+                <div class="flex flex-col gap-6">
+                    <ReservationSummary v-if="selectedReservation" :reservation="summarizedReservation" />
 
-            <div v-if="canAdminChangeStatus(selectedReservation?.status.id)" class="flex flex-col gap-2 border-t pt-4">
-                
-                <p class="text-xs font-bold text-slate-500 uppercase tracking-wider">
-                {{ confirmMode ? 'Confirmación requerida' : 'Gestión de reserva' }}
-                </p>
-                
-                <div v-if="!confirmMode" class="flex gap-2">
-                <BaseButton 
-                    label="Anular" 
-                    icon="pi pi-ban"
-                    severity="danger" 
-                    class="flex-1"
-                    outlined
-                    @click="confirmMode = ReservationStatus.Cancelled"
-                />
-
-                <BaseButton 
-                    v-if="selectedReservation?.status.id === ReservationStatus.Confirmed"
-                    label="Reembolsar" 
-                    icon="pi pi-refresh"
-                    severity="warning" 
-                    class="flex-1"
-                    outlined
-                    @click="confirmMode = ReservationStatus.Refunded"
-                />
-                </div>
-
-                <div v-else class="bg-slate-50 border border-slate-100 rounded-lg p-4 transition-opacity duration-300">
-                    <div class="flex items-start gap-3 mb-4">
-                        <i :class="[
-                        'pi text-xl mt-1', 
-                        confirmMode === ReservationStatus.Cancelled ? 'pi-exclamation-triangle text-red-500' : 'pi-info-circle text-orange-500'
-                        ]"></i>
-                        <div>
-                        <p class="text-sm font-bold text-slate-700">
-                            ¿Confirmas la {{ confirmMode === ReservationStatus.Cancelled ? 'anulación' : 'devolución' }}?
+                    <div v-if="canAdminChangeStatus(selectedReservation?.status.id)" class="flex flex-col gap-2 border-t pt-4">
+                        
+                        <p class="text-xs font-bold text-slate-500 uppercase tracking-wider">
+                        {{ confirmMode ? 'Confirmación requerida' : 'Gestión de reserva' }}
                         </p>
-                        <p class="text-[11px] text-slate-500 leading-tight mt-1">
-                            {{ confirmMode === ReservationStatus.Cancelled 
-                            ? 'La pista se liberará pero el club conservará el pago' 
-                            : 'Se anulará la reserva y se emitirá la orden de reembolso al usuario' 
-                            }}
-                        </p>
+                        
+                        <div v-if="!confirmMode" class="flex gap-2">
+                        <BaseButton 
+                            label="Anular" 
+                            icon="pi pi-ban"
+                            severity="danger" 
+                            class="flex-1"
+                            outlined
+                            @click="confirmMode = ReservationStatus.Cancelled"
+                        />
+
+                        <BaseButton 
+                            v-if="selectedReservation?.status.id === ReservationStatus.Confirmed"
+                            label="Reembolsar" 
+                            icon="pi pi-refresh"
+                            severity="warning" 
+                            class="flex-1"
+                            outlined
+                            @click="confirmMode = ReservationStatus.Refunded"
+                        />
+                        </div>
+
+                        <div v-else class="bg-slate-50 border border-slate-100 rounded-lg p-4 transition-opacity duration-300">
+                            <div class="flex items-start gap-3 mb-4">
+                                <i :class="[
+                                'pi text-xl mt-1', 
+                                confirmMode === ReservationStatus.Cancelled ? 'pi-exclamation-triangle text-red-500' : 'pi-info-circle text-orange-500'
+                                ]"></i>
+                                <div>
+                                <p class="text-sm font-bold text-slate-700">
+                                    ¿Confirmas la {{ confirmMode === ReservationStatus.Cancelled ? 'anulación' : 'devolución' }}?
+                                </p>
+                                <p class="text-[11px] text-slate-500 leading-tight mt-1">
+                                    {{ confirmMode === ReservationStatus.Cancelled 
+                                    ? 'La pista se liberará pero el club conservará el pago' 
+                                    : 'Se anulará la reserva y se emitirá la orden de reembolso al usuario' 
+                                    }}
+                                </p>
+                                </div>
+                            </div>
+
+                            <div class="flex gap-2">
+                                <BaseButton 
+                                    label="No, volver" 
+                                    severity="secondary" 
+                                    class="flex-1"
+                                    text
+                                    size="small"
+                                    @click="confirmMode = null" 
+                                />
+                                <BaseButton 
+                                    :label="confirmMode === ReservationStatus.Cancelled ? 'Sí, Anular' : 'Sí, Reembolsar'" 
+                                    :severity="confirmMode === ReservationStatus.Cancelled ? 'danger' : 'warning'"
+                                    class="flex-1"
+                                    :loading="isSubmitting"
+                                    size="small"
+                                    @click="onUpdateStatus(confirmMode)"
+                                />
+                            </div>
                         </div>
                     </div>
-
-                    <div class="flex gap-2">
-                        <BaseButton 
-                            label="No, volver" 
-                            severity="secondary" 
-                            class="flex-1"
-                            text
-                            size="small"
-                            @click="confirmMode = null" 
-                        />
-                        <BaseButton 
-                            :label="confirmMode === ReservationStatus.Cancelled ? 'Sí, Anular' : 'Sí, Reembolsar'" 
-                            :severity="confirmMode === ReservationStatus.Cancelled ? 'danger' : 'warning'"
-                            class="flex-1"
-                            :loading="isUpdating"
-                            size="small"
-                            @click="onUpdateStatus(confirmMode)"
-                        />
-                    </div>
                 </div>
-            </div>
-            </div>
-        </template>
+            </template>
 
-        <template #footer>
-            <BaseButton 
-            v-if="!confirmMode"
-            label="Cerrar" 
-            severity="secondary" 
-            text 
-            @click="reservationDialogRef.close" 
-            />
-        </template>
+            <template #footer>
+                <BaseButton 
+                v-if="!confirmMode"
+                label="Cerrar" 
+                severity="secondary" 
+                text 
+                @click="reservationDialogRef.close" 
+                />
+            </template>
         </BaseDialog>
     </div>
 </template>
