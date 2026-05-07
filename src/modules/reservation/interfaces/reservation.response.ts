@@ -17,5 +17,5 @@ export interface ReservationResponse {
 
 export interface StatusResponse {
     id: ReservationStatus;
-    name: string;
+    status: string;
 }

@@ -7,6 +7,7 @@ import type { Reservation, ReservationDataDialog } from '../interfaces';
 import { ReservationStatus } from '../interfaces';
 import ReservationSummary from '@/components/ReservationSummary.vue';
 import { useToast } from 'primevue/usetoast';
+import { calculateDuration } from '@/helpers/dateHelpers';
 
 const { userReservations, isLoading, cancelReservation } = useReservation();
 const reservationDialogRef = ref();
@@ -100,6 +101,8 @@ const openReservationDetail = (reservation : Reservation) => {
 
     const summarizedReservation: ReservationDataDialog = {
         id: reservation.id,
+        userId: reservation.userId,
+        clubId: reservation.clubId,
         courtId: reservation.courtId,
         courtName: reservation.courtId,
         courtType: reservation.courtId,
@@ -110,17 +113,13 @@ const openReservationDetail = (reservation : Reservation) => {
         endTime: reservation.endTime,
         status: reservation.status.status,
         duration: calculateDuration(reservation.startTime, reservation.endTime),
-        price: reservation.totalPrice,
+        totalPrice: reservation.totalPrice,
         createdAt: reservation.createdAt
     };
    reservationDialogRef.value.open(summarizedReservation);
 }
 
-const calculateDuration = (start: string, end: string): number => {
-    const [h1, m1] = start.split(':').map(Number);
-    const [h2, m2] = end.split(':').map(Number);
-    return (h2! * 60 + m2!) - (h1! * 60 + m1!);
-};
+
 
 
 const favouriteClub = computed(() => {
@@ -212,19 +211,19 @@ watch(dates, async (newDates) => {
                 <p class="text-slate-500 font-medium">No se han encontrado reservas en este periodo.</p>
             </div>
         </section>
+
+        <BaseDialog
+            ref="reservationDialogRef"
+            header="Resumen de la reserva"
+            >
+            <template #default="{ data }">
+                <ReservationSummary :reservation="data"/>
+            </template>
+
+            <template #footer="{ data }">
+                <BaseButton label="Volver" severity="secondary" @click="reservationDialogRef.close"/>
+                <BaseButton v-if="canCancelReservation" label="Anular reserva" severity="danger" @click="handleCancelReservation(data.id)" />
+            </template>
+        </BaseDialog>
     </div>
-
-    <BaseDialog
-        ref="reservationDialogRef"
-        header="Resumen de la reserva"
-    >
-        <template #default="{ data }">
-            <ReservationSummary :reservation="data"/>
-        </template>
-
-        <template #footer="{ data }">
-            <BaseButton label="Volver" severity="secondary" @click="reservationDialogRef.close"/>
-            <BaseButton v-if="canCancelReservation" label="Anular reserva" severity="danger" @click="handleCancelReservation(data.id)" />
-        </template>
-    </BaseDialog>
 </template>

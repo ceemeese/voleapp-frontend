@@ -84,7 +84,7 @@ const handleReserve = (court: AvailableCourt) => {
         startTime: startTime!,
         endTime: endTime!,
         duration: duration.value,
-        price: Number(totalPrice.toFixed(2))
+        totalPrice: Number(totalPrice.toFixed(2))
     }
     reservationData.value = summaryReservation;
 
@@ -98,7 +98,7 @@ const handleConfirmReservation = async () => {
     console.log('Reserva pendiente');
      try {
         const formData : AddReservation = {
-            courtId: reservationData.value.courtId,
+            courtId: reservationData.value.courtId!,
             date: reservationData.value.date,
             startTime: reservationData.value.startTime,
             endTime: reservationData.value.endTime,
@@ -152,7 +152,7 @@ watch(selectedDate, async (newDate) => {
         </section>
 
         <div class="max-w-7xl mx-auto px-6 relative z-20">
-            <BaseDateSelector v-model="selectedDate">
+            <BaseDateSelector v-model="selectedDate" show-time>
                 <template #additional-filters>
                     <FilterSelectorReservation
                     v-model:city="cityFilter"

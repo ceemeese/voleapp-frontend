@@ -33,4 +33,11 @@ export const formatFullDate = (date: Date | string) => {
     });
 }
 
+//calcular duracion reserva
+export const calculateDuration = (start: string, end: string): number => {
+    const [h1, m1] = start.split(':').map(Number);
+    const [h2, m2] = end.split(':').map(Number);
+    return (h2! * 60 + m2!) - (h1! * 60 + m1!);
+};
+
 
