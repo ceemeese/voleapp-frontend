@@ -249,7 +249,7 @@ const handleToggleSchedule = (schedule: Schedule, event: PointerEvent) => {
 
 
 <template>
-    <div class="mx-auto w-full h-full max-w-7xl p-4 overflow-y-auto custom-scrollbar">
+    <div class="mx-auto w-full h-full p-4 overflow-y-auto custom-scrollbar">
         <UserCardProfile 
         :main-text="currentClubInfo?.name"
         :subtext="locationSubtext"

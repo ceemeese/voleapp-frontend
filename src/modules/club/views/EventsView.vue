@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { BaseCard, EventCalendar, type BaseInputProps } from 'ui';
+import { BaseCard, EventCalendar, BaseButton, type BaseInputProps } from 'ui';
 import { useClub } from '@/composables/useClub';
 import { useEvent } from '@/composables/useEvent';
 import { computed, onMounted, ref } from 'vue';
@@ -11,19 +11,35 @@ import { zodResolver } from '@primevue/forms/resolvers/zod';
 import { addEventSchema } from '../schemas/event.schema';
 import { BaseDatePicker } from 'ui';
 import { useSchedule } from '@/composables/useSchedule';
+import { ReservationStatus, type Reservation, type ReservationDataDialog } from '@/modules/reservation/interfaces';
+import { useReservation } from '@/composables/useReservation';
+import { parseTimeOnlyToDate, calculateDuration } from '@/helpers/dateHelpers';
+import ReservationSummary from '@/components/ReservationSummary.vue';
+
+type CalendarData = Event | Reservation;
+const isReservation = (data: CalendarData): data is Reservation => {
+    return (data as Reservation).userId !== undefined;
+};
+const confirmMode = ref<ReservationStatus.Cancelled | ReservationStatus.Refunded | null>(null);
+const FINALIZED_STATUS = [ReservationStatus.Completed, ReservationStatus.Failed, ReservationStatus.Refunded, ReservationStatus.Cancelled];
 
 const toast = useToast();
 const { getEventsRangeByClub, updateEvent, createEvent } = useEvent();
 const { activeClubId } = useClub();
+const { getClubReservations, updateStatusReservation } = useReservation();
 const { getCourtsByClubId } = useCourt();
 const { schedules, getSchedule } = useSchedule();
 const resolver = zodResolver(addEventSchema);
-const selectedEvent = ref<Event>();
+const selectedEvent = ref<Event >();
+const selectedReservation = ref<Reservation | null>(null);
 const selectedDate = ref(new Date());
     
 const eventDialogRef = ref();
+const reservationDialogRef = ref();
 const events = ref<Event[]>([]);
+const reservations = ref<Reservation[]>([]);
 const courts = ref<Court[]>([]);
+const isSubmitting = ref(false);
 
 interface EventForm {
     courtId: string;
@@ -33,7 +49,6 @@ interface EventForm {
     eventName: string;
     description: string;
 }
-
 
 const formData  = ref<EventForm>({
     courtId: '',
@@ -74,16 +89,33 @@ const calendarResources = computed(() :CalendarResource[] => {
 });
 
 const calendarEvents  = computed(() : CalendarEvent[] => {
-    return events.value.map(event => ({
+    const mappedEvents = events.value.map(event => ({
         id: event.id,
         start: event.startTime,
         end: event.endTime,
         title: event.eventName,
         content: event.description,
         resourceId: event.courtId,
+        colorClass: 'bg-[#EEF7FC] border-[#94C8E7] text-[#3A7FA6]',
         data: event,
     }));
+
+    const mappedReservations = reservations.value
+    .filter(reservation => reservation.status.id !== ReservationStatus.Cancelled && reservation.status.id !== ReservationStatus.Refunded)
+    .map(reservation => ({
+        id: reservation.id,
+        start: parseTimeOnlyToDate(reservation.startTime, selectedDate.value),
+        end: parseTimeOnlyToDate(reservation.endTime, selectedDate.value),
+        title: 'Reserva',
+        content: reservation.notes || `Pista reservada por usuario ${reservation.userId}`,
+        resourceId: reservation.courtId,
+        colorClass:'bg-[#F3FAEA] border-[#C8E794] text-[#6B8F3A]',
+        data: reservation,
+    }))
+
+    return [...mappedEvents, ...mappedReservations];
 });
+
 
 const selectedDaySchedule = computed(() => {
     const dayIndex = selectedDate.value.getDay() === 0 ? 7 : selectedDate.value.getDay();
@@ -118,11 +150,29 @@ const closedRanges = computed(() => {
     return ranges;
 });
 
-const loadEvents = async (date: Date) => {
-    const start = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0));
-    const end = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate(), 23, 59, 59, 999));
-    events.value = await getEventsRangeByClub(activeClubId.value!, start, end);
+const loadDayData = async (date: Date) => {
+    if (!activeClubId.value) return;
+
+    //reservas
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const dateOnlyStr = `${year}-${month}-${day}`;
+
+    //eventos
+    const startDateTime = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0));
+    const endDateTime = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate(), 23, 59, 59, 999));
+
+
+    const [eventsData, reservationsData] = await Promise.all([
+        getEventsRangeByClub(activeClubId.value, startDateTime, endDateTime),
+        getClubReservations(activeClubId.value, dateOnlyStr)
+    ]);
+
+    events.value = eventsData;
+    reservations.value = reservationsData;
 }
+
 
 onMounted(async () => {
     if (activeClubId.value){
@@ -132,13 +182,13 @@ onMounted(async () => {
     if (schedules.value.length === 0) {
         await getSchedule(activeClubId.value!);
     }
-    await loadEvents(selectedDate.value);
+    await loadDayData(selectedDate.value);
 });
 
 const onDateChange = async (date: Date) => {
     if (!date) return; 
     selectedDate.value = date;
-    await loadEvents(date);
+    await loadDayData(date);
 }
 
 const onOpenCreateEventDialog = () => {
@@ -156,6 +206,41 @@ const onOpenCreateEventDialog = () => {
         description: '',
     };
     eventDialogRef.value.open(formData.value);
+}
+
+//TODO:hacer mapper para no tener ref porque se lo pasamos encapsulado al componente
+const summarizedReservation = computed(() : ReservationDataDialog | null =>  {
+    if (!selectedReservation.value) return null;
+
+    return {
+        id: selectedReservation.value.id,
+        userId: selectedReservation.value.userId,
+        courtId: selectedReservation.value.courtId,
+        clubId: selectedReservation.value.clubId,
+        courtName: selectedReservation.value.courtId,
+        courtType: selectedReservation.value.courtId,
+        clubName: selectedReservation.value.clubId,
+        clubAddress: selectedReservation.value.clubId,
+        date: selectedReservation.value.date.toLocaleDateString('sv-SE'),
+        startTime: selectedReservation.value.startTime,
+        endTime: selectedReservation.value.endTime,
+        status: selectedReservation.value.status.status,
+        duration: calculateDuration(selectedReservation.value.startTime, selectedReservation.value.endTime),
+        totalPrice: selectedReservation.value.totalPrice,
+        createdAt: selectedReservation.value.createdAt
+    }
+
+})
+
+const handleEventClickCalendar = (data : CalendarData) => {
+    confirmMode.value = null;
+    if (isReservation(data)) {
+        selectedReservation.value = data;
+        reservationDialogRef.value.open();
+    } else {
+        selectedEvent.value = data;
+        onOpenEditEventDialog(data)
+    }
 }
 
 const onOpenEditEventDialog = (eventData : Event) => {
@@ -261,54 +346,176 @@ const onSaveModifiedEvent = async (updatedData: EventForm) => {
     }
 }
 
+
+const onUpdateStatus = async (newStatus: number) => {
+    if (!selectedReservation.value) return;
+    
+    isSubmitting.value = true;
+    try {
+        
+        await updateStatusReservation(selectedReservation.value.id, newStatus);
+
+        selectedReservation.value.status.id = newStatus;
+        selectedReservation.value.status.status = ReservationStatus[newStatus] ?? 'Unknown';
+
+        toast.add({ severity: 'success', summary: 'Actualizado', detail: 'Estado de la reserva actualizado', life: 3000 });
+
+        confirmMode.value = null;
+    } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : 'Error inesperado';
+        toast.add({ severity: 'error', summary: 'Error al cambiar estado', detail: message, life: 3000 });
+    } finally {
+        isSubmitting.value = false
+    }
+}
+
+const canAdminChangeStatus = (currentId: ReservationStatus | undefined): boolean => {
+    if (!currentId) return false;
+    return !FINALIZED_STATUS.includes(currentId);
+};
+
+
+
+
 </script>
 
 <template>
-    <section class="flex items-center gap-2 pl-4 pr-4 mb-2">
-        <BaseButton 
-        icon="pi pi-plus"
-        label="Añadir evento"
-        class="!bg-black !border-none"
-        size="small"
-        rounded
-        @click="onOpenCreateEventDialog"
-        />
-
-        <BaseDatePicker
-            :model-value="selectedDate"
-            @update:model-value="onDateChange"
-            updateModelType="date"
-            class="!w-50"
+    <div class="h-screen flex flex-col overflow-hidden">
+        <section class="flex items-center gap-2 pl-4 pr-4 mb-2 flex-shrink-0">
+            <BaseButton 
+            icon="pi pi-plus"
+            label="Añadir evento"
+            class="!bg-black !border-none"
             size="small"
-        />
-      
-    </section>
-        
-    <BaseCard padding="p-4 !h-full" class="h-full overflow-hidden !shadow-none">
-        <EventCalendar
-            v-if="calendarResources.length > 0 && selectedDaySchedule.length > 0"
-            :events="calendarEvents"
-            :resources="calendarResources"
-            :min-time="minOpeningTime"
-            :max-time="maxClosingTime"
-            :closed-ranges="closedRanges"
-            @event-click="(e) => onOpenEditEventDialog(e.data)"
-            @cell-click="onCellClick"
-        />
-        <div v-else-if="calendarResources.length > 0 && selectedDaySchedule.length === 0" class="flex justify-center p-10 text-slate-400">
-            El club no tiene horario para este día
-        </div>
-        <div v-else class="flex justify-center p-10 text-slate-400">
-            Cargando pistas...
-        </div>
-    </BaseCard>
+            rounded
+            @click="onOpenCreateEventDialog"
+            />
 
-    <BaseDialog
-        ref="eventDialogRef"
-        :header="formData.courtId ? 'Modificar eventos' : 'Nuevo evento'"
-        :subtitle="formData.courtId ? 'Actualiza los datos' : 'Rellena los campos para crear un evento'"
-        :inputs-dialog="inputsCreateEventDialog"
-        :resolver="resolver"
-        @save="onSaveModifiedEvent"
-    />
+            <BaseDatePicker
+                :model-value="selectedDate"
+                @update:model-value="onDateChange"
+                updateModelType="date"
+                class="!w-50"
+                size="small"
+            />
+        
+        </section>
+
+        <BaseCard padding="p-4" class="!shadow-none !overflow-hidden">
+                <EventCalendar
+                    v-if="calendarResources.length > 0 && selectedDaySchedule.length > 0"
+                    :events="calendarEvents"
+                    :resources="calendarResources"
+                    :min-time="minOpeningTime"
+                    :max-time="maxClosingTime"
+                    :closed-ranges="closedRanges"
+                    @event-click="(e) => handleEventClickCalendar(e.data)"
+                    @cell-click="onCellClick"
+                />
+                <div v-else-if="calendarResources.length > 0 && selectedDaySchedule.length === 0" class="flex justify-center p-10 text-slate-400">
+                    El club no tiene horario para este día
+                </div>
+                <div v-else class="flex justify-center p-10 text-slate-400">
+                    Cargando pistas...
+                </div>
+        </BaseCard>
+
+
+        <BaseDialog
+            ref="eventDialogRef"
+            :header="selectedEvent?.id ? 'Modificar eventos' : 'Nuevo evento'"
+            :subtitle="selectedEvent?.id ? 'Actualiza los datos' : 'Rellena los campos para crear un evento'"
+            :inputs-dialog="inputsCreateEventDialog"
+            :resolver="resolver"
+            @save="onSaveModifiedEvent"
+        />
+
+        <BaseDialog
+        ref="reservationDialogRef"
+        header="Resumen de la reserva"
+        >
+            <template #default>
+                <div class="flex flex-col gap-6">
+                    <ReservationSummary v-if="selectedReservation" :reservation="summarizedReservation" />
+
+                    <div v-if="canAdminChangeStatus(selectedReservation?.status.id)" class="flex flex-col gap-2 border-t pt-4">
+                        
+                        <p class="text-xs font-bold text-slate-500 uppercase tracking-wider">
+                        {{ confirmMode ? 'Confirmación requerida' : 'Gestión de reserva' }}
+                        </p>
+                        
+                        <div v-if="!confirmMode" class="flex gap-2">
+                        <BaseButton 
+                            label="Anular" 
+                            icon="pi pi-ban"
+                            severity="danger" 
+                            class="flex-1"
+                            outlined
+                            @click="confirmMode = ReservationStatus.Cancelled"
+                        />
+
+                        <BaseButton 
+                            v-if="selectedReservation?.status.id === ReservationStatus.Confirmed"
+                            label="Reembolsar" 
+                            icon="pi pi-refresh"
+                            severity="warning" 
+                            class="flex-1"
+                            outlined
+                            @click="confirmMode = ReservationStatus.Refunded"
+                        />
+                        </div>
+
+                        <div v-else class="bg-slate-50 border border-slate-100 rounded-lg p-4 transition-opacity duration-300">
+                            <div class="flex items-start gap-3 mb-4">
+                                <i :class="[
+                                'pi text-xl mt-1', 
+                                confirmMode === ReservationStatus.Cancelled ? 'pi-exclamation-triangle text-red-500' : 'pi-info-circle text-orange-500'
+                                ]"></i>
+                                <div>
+                                <p class="text-sm font-bold text-slate-700">
+                                    ¿Confirmas la {{ confirmMode === ReservationStatus.Cancelled ? 'anulación' : 'devolución' }}?
+                                </p>
+                                <p class="text-[11px] text-slate-500 leading-tight mt-1">
+                                    {{ confirmMode === ReservationStatus.Cancelled 
+                                    ? 'La pista se liberará pero el club conservará el pago' 
+                                    : 'Se anulará la reserva y se emitirá la orden de reembolso al usuario' 
+                                    }}
+                                </p>
+                                </div>
+                            </div>
+
+                            <div class="flex gap-2">
+                                <BaseButton 
+                                    label="No, volver" 
+                                    severity="secondary" 
+                                    class="flex-1"
+                                    text
+                                    size="small"
+                                    @click="confirmMode = null" 
+                                />
+                                <BaseButton 
+                                    :label="confirmMode === ReservationStatus.Cancelled ? 'Sí, Anular' : 'Sí, Reembolsar'" 
+                                    :severity="confirmMode === ReservationStatus.Cancelled ? 'danger' : 'warning'"
+                                    class="flex-1"
+                                    :loading="isSubmitting"
+                                    size="small"
+                                    @click="onUpdateStatus(confirmMode)"
+                                />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </template>
+
+            <template #footer>
+                <BaseButton 
+                v-if="!confirmMode"
+                label="Cerrar" 
+                severity="secondary" 
+                text 
+                @click="reservationDialogRef.close" 
+                />
+            </template>
+        </BaseDialog>
+    </div>
 </template>

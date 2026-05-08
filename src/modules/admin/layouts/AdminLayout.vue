@@ -53,14 +53,14 @@ const ADMIN_MENU : AppNavigationGroup[] = [
         label: 'Gestión operativa',
         items: [
             { label: 'Gestión de pistas', to: {name: 'admin-courts'}, icon: 'pi pi-table'},
-            { label: 'Calendario y reservas', to: {name: 'admin-events'}, icon: 'pi pi-calendar'},
+            { label: 'Calendario de eventos', to: {name: 'admin-events'}, icon: 'pi pi-calendar'},
+            { label: 'Reservas', to: {name: 'admin-reservations'}, icon: 'pi pi-ticket'},
             { label: 'Configurador de precios', to: {name: 'login'}, icon: 'pi pi-money-bill'},
         ]
     },
      {
         label: 'Gestión de accesos',
         items: [
-            //{ label: 'Usuarios', to: {name: 'admin-users'}, icon: 'pi pi-users'},
             { label: 'Miembros del club', to: {name: 'admin-members'}, icon: 'pi pi-users'},
         ]
     },
@@ -129,18 +129,16 @@ const handleLogout = async () => {
             <div v-if="isInitialLoading" class="flex items-center justify-center h-full">
                 <i class="pi pi-spin pi-spinner text-4xl text-blue-500"></i>
             </div>
-            <RouterView v-else v-slot="{ Component }">
-                <component :is="Component">
-                    <template #header-actions>
-                        <slot name="header-actions" />
-                    </template>
-                </component>
-            </RouterView>
+            <router-view v-else v-slot="{ Component }">
+                <keep-alive>
+                    <component :is="Component" :key="$route.path">
+                        <template #header-actions>
+                            <slot name="header-actions" />
+                        </template>
+                    </component>
+                </keep-alive>
+            </router-view>
         </main>
 
     </div>
 </template>
-
-<style>
-
-</style>

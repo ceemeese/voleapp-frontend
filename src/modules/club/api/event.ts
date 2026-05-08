@@ -1,6 +1,5 @@
 import type { AxiosRequestConfig } from "axios";
-import type { AddEvent } from "../interfaces/events/event-add.interface";
-import type { PutEvent } from "../interfaces/events/event-update.interface";
+import type { AddEvent, PutEvent } from '../interfaces'
 
 const baseURL = "/api/courts";
 

@@ -54,29 +54,29 @@ onMounted(async () => {
 })
 
 const userInitials = computed(() => {
-    return userStore.profile?.username.charAt(0).toUpperCase() || 'U';
+    return profile.value?.username.charAt(0).toUpperCase() || 'U';
 })
 
 const userFullName = computed(() => {
-    return userStore.profile
-        ? `${userStore.profile.name} ${userStore.profile.lastName}`
+    return profile.value
+        ? `${profile.value.name} ${profile.value.lastName}`
         : 'Cargando...'
 })
 
 const handleOpenEdit = () => {
-    userDialogRef.value.open(userStore.profile)
+    userDialogRef.value.open(profile.value);
 }
 
 
 const onSaveModifiedUser = async (updatedData: User) => {
     try {
-        await updateUser(updatedData.id, {
+        await updateUser(profile.value!.id, {
             username: updatedData.username,
             email: updatedData.email,
             phoneNumber: updatedData.phoneNumber
         });
 
-        userStore.profile = {... userStore.profile, ...updatedData}
+        userStore.profile = {...profile.value, ...updatedData}
 
         toast.add({ 
             severity: 'info', 
@@ -98,8 +98,9 @@ const onSaveModifiedUser = async (updatedData: User) => {
 
 
 const formattedDate = computed(() => {
-    const dateRaw = userStore.profile?.createdAt; 
-    
+    const dateRaw = profile.value?.createdAt; 
+    if (!dateRaw) return '...';
+
     return new Date(dateRaw!).toLocaleDateString('es-ES', {
         month: 'long',
         year: 'numeric'
@@ -111,10 +112,10 @@ const formattedDate = computed(() => {
 
 
 <template>
-    <div class="mx-auto w-full h-full max-w-7xl p-4">
+    <div class="mx-auto w-full h-full">
         <UserCardProfile 
         :main-text="userFullName"
-        :subtext="'@' + (userStore.profile?.username) || ''"
+        :subtext="'@' + (profile?.username) || ''"
         :initials="userInitials"
         size="xlarge"
         shape="circle"

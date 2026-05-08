@@ -2,7 +2,7 @@
 import { useUser } from '@/composables/useUser';
 import { onMounted } from 'vue';
 import { ref } from 'vue';
-import type { User } from '../interfaces';
+import type { User } from '../../user/interfaces';
 import { useAuthStore } from '@/stores/authStore';
 import { BaseDataTable } from 'ui';
 import type { BaseCard, BaseInputProps, ColumnConfig } from 'ui';
@@ -10,7 +10,7 @@ import { useConfirm } from "primevue/useconfirm";
 import { useToast } from 'primevue/usetoast';
 import { BaseDialog } from 'ui';
 import { zodResolver } from '@primevue/forms/resolvers/zod';
-import { updateUserSchema } from '../schemas/updateUser.schema';
+import { updateUserSchema } from '../../user/schemas/updateUser.schema';
 
 
 const { getUsers, deactivateUser, updateUser } = useUser();
@@ -139,7 +139,7 @@ const handleDeactivate = (user: User, event: PointerEvent) => {
 </script>
 
 <template>
-    <BaseCard padding="ui:p-4">
+    <BaseCard padding="p-4">
         <BaseDataTable
         :value="users"
         :columns="headerColumns"

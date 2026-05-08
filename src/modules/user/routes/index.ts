@@ -1,22 +1,21 @@
-import { clubRoutes } from "@/modules/club/routes";
-import type { RouteRecordRaw } from "vue-router";
+import { reservationRoutes } from "@/modules/reservation/routes";
+import{ type RouteRecordRaw, RouterView } from "vue-router";
 
 export const userRoutes: RouteRecordRaw = {
-    path: '/admin',
-    name: 'admin',
-    meta: { requiresAuth: true, requiresAdmin: true},
-    component: () => import('@/modules/user/layouts/AdminLayout.vue'),
+    path: '/user',
+    component: RouterView,
+    meta: { requiresAuth: true, requiresAdmin: false},
     children: [
         {
-            path: 'users',
-            name: 'admin-users',
-            component: () => import('@/modules/user/views/UserListView.vue'),
+            path: 'home',
+            name: 'user-home',
+            component: () => import('@/modules/user/views/UserDashboardView.vue'),
         },
         {
             path: 'profile',
-            name: 'admin-profile',
+            name: 'user-profile',
             component: () => import('@/modules/user/views/ProfileView.vue'),
         },
-        ...clubRoutes
+        ...reservationRoutes
     ]
 }

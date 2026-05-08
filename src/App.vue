@@ -5,11 +5,32 @@ import ConfirmPopup from 'primevue/confirmpopup';
 </script>
 
 <template>
-  <RouterView />
-  <Toast />
-  <ConfirmPopup />
+    <router-view v-slot="{ Component }">
+        <component :is="Component" :key="$route.path"></component>
+    </router-view>
+    <Toast />
+    <ConfirmPopup />
 </template>
 
-<style scoped>
 
+<style>
+
+@media (max-width: 640px) {
+    .p-toast {
+        width: 90vw !important;
+        left: 5vw !important; 
+    }
+
+    .p-toast-message-content {
+        padding: 0.75rem !important;
+    }
+
+    .p-toast-summary {
+        font-size: 0.9rem !important;
+    }
+
+    .p-toast-detail {
+        font-size: 0.8rem !important;
+    }
+}
 </style>
