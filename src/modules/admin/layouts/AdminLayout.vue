@@ -53,14 +53,14 @@ const ADMIN_MENU : AppNavigationGroup[] = [
         label: 'Gestión operativa',
         items: [
             { label: 'Gestión de pistas', to: {name: 'admin-courts'}, icon: 'pi pi-table'},
-            { label: 'Calendario y reservas', to: {name: 'admin-events'}, icon: 'pi pi-calendar'},
+            { label: 'Calendario de eventos', to: {name: 'admin-events'}, icon: 'pi pi-calendar'},
+            { label: 'Reservas', to: {name: 'admin-reservations'}, icon: 'pi pi-ticket'},
             { label: 'Configurador de precios', to: {name: 'login'}, icon: 'pi pi-money-bill'},
         ]
     },
      {
         label: 'Gestión de accesos',
         items: [
-            //{ label: 'Usuarios', to: {name: 'admin-users'}, icon: 'pi pi-users'},
             { label: 'Miembros del club', to: {name: 'admin-members'}, icon: 'pi pi-users'},
         ]
     },

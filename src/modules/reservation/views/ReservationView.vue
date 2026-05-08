@@ -95,7 +95,6 @@ const handleReserve = (court: AvailableCourt) => {
 const handleConfirmReservation = async () => {
 
     if (!reservationData.value) return;
-    console.log('Reserva pendiente');
      try {
         const formData : AddReservation = {
             courtId: reservationData.value.courtId!,
