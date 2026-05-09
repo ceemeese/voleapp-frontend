@@ -54,6 +54,18 @@ function activateCourt(courtId: string) : AxiosRequestConfig {
     }
 }
 
+function availabilityCourt(city: string, dateFilter: Date, durationMinutes: number) : AxiosRequestConfig {
+    return {
+        method: 'GET',
+        url: `${baseURL}/availability`,
+        params: {
+            city: city,
+            dateFilter: dateFilter,
+            durationMinutes: durationMinutes
+        }
+    }
+}
+
 export default {
     getAllCourts,
     getCourtsByClubId,
@@ -62,4 +74,5 @@ export default {
     putCourt,
     deactivateCourt,
     activateCourt,
+    availabilityCourt,
 }
