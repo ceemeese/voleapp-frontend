@@ -15,7 +15,7 @@ import { addCourtSchema, updateCourtSchema } from '../schemas/addCourt.schema';
 
 interface CourtForm {
     name: string;
-    courtType: string;
+    type: string;
     basePrice: number;
     isActive: boolean;
 }
@@ -41,7 +41,7 @@ const courtEditDialogRef = ref();
 const addInputsDialog : BaseInputProps[] = [
     { field: 'name', label: 'Nombre de pista', icon: 'pi pi-table'},
     { field: 'basePrice', label: 'Precio base', icon: 'pi pi-euro'},
-    { field: 'courtType', label: 'Tipo de pista', icon: 'pi pi-euro', type: 'select', options: COURT_TYPE_OTIONS, optionLabel: 'name', optionValue: 'name' },
+    { field: 'type', label: 'Tipo de pista', icon: 'pi pi-euro', type: 'select', options: COURT_TYPE_OTIONS, optionLabel: 'name', optionValue: 'name' },
     { field: 'isActive', label: 'Está en funcionamiento?', icon: 'pi pi-phone', type: 'boolean' }
 ]
 
@@ -168,7 +168,7 @@ const onSaveAddedCourt = async (data: CourtForm) => {
     try {
         const newCourt = await registerCourt(activeClubId.value!, {   
             name: data.name, 
-            courtType: data.courtType,
+            type: data.type,
             basePrice: data.basePrice,
             isActive: data.isActive
         });
@@ -258,7 +258,7 @@ const onSaveModifiedCourt = async (updatedData: CourtForm) => {
                         <div class="py-2 mt-2">
                             <div>
                                 <h3 class="font-extrabold text-xl text-slate-900 leading-tight">{{ court.name }}</h3>
-                                <p class="text-sm font-medium text-slate-500">{{ court.courtType?.name || 'Indoor' }}</p>
+                                <p class="text-sm font-medium text-slate-500">{{ court.type?.name || 'Indoor' }}</p>
                             </div>
 
                             <div class="flex items-center gap-1.5 mt-1">

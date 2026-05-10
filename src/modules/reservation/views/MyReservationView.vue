@@ -66,14 +66,6 @@ const statsWidgets = computed(() => [
     }
 
 ]);
-// 3. Función de búsqueda
-/*const searchReservations = async () => {
-    if (dates.value && dates.value[0] && dates.value[1]) {
-        const start = toDateOnlyString(dates.value[0]);
-        const end = toDateOnlyString(dates.value[1]);
-        // await fetchUserReservations(authStore.activeUserId, start, end);
-    }
-};*/
 
 const totalMinutesPlayed = computed(() => {
     return userReservations.value.reduce((total, res) => {
@@ -87,7 +79,7 @@ const totalMinutesPlayed = computed(() => {
     }, 0);
 });
 
-// Para mostrarlo de forma elegante (ej: "12h 30m")
+
 const formattedTimePlayed = computed(() => {
     const hours = Math.floor(totalMinutesPlayed.value / 60);
     const mins = totalMinutesPlayed.value % 60;
@@ -105,7 +97,7 @@ const openReservationDetail = (reservation : Reservation) => {
         clubId: reservation.clubId,
         courtId: reservation.courtId,
         courtName: reservation.courtId,
-        courtType: reservation.courtId,
+        type: reservation.courtId,
         clubName: reservation.clubId,
         clubAddress: reservation.clubId,
         date: reservation.date.toLocaleDateString('sv-SE'),

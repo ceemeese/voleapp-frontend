@@ -7,15 +7,22 @@ import FilterSelectorReservation from '@/components/FilterSelectorReservation.vu
 import ReservationSummary from '@/components/ReservationSummary.vue';
 import { useReservation } from '@/composables/useReservation';
 import type { AddReservation, ReservationDataDialog } from '../interfaces';
+import type { CourtGroupedResponse, CourtSummarizedResponse } from '@/modules/club/interfaces';
+import { useCourt } from '@/composables/useCourt';
+import { useUserStore } from '@/stores/userStore';
+
 
 const toast = useToast();
+const { profile } = useUserStore();
 const { registerReservation } = useReservation();
+const { searchAvailability } = useCourt();
 const selectedDate = ref<Date>();
 const duration = ref<number | undefined>(undefined);
 const cityFilter = ref<string>('');
 const reservationDialogRef = ref();
 const errorMessage = ref<string>('');
 const reservationData = ref<ReservationDataDialog>();
+const availablesCourts = ref<CourtGroupedResponse[]>([]);
 
 const formattedDate = computed(() => {
     if (!selectedDate.value) return '';
@@ -27,28 +34,25 @@ const formattedStartTime = computed(() => {
     return selectedDate.value.toTimeString().split(' ')[0]?.slice(0,5);
 })
 
-//TODO: endpoints motor disponibilidad
-const clubsWithAvailability = ref([
-    {
-        id: 1,
-        name: 'Padel Center Victoria',
-        address: 'Calle Mayor, 12',
-        availableCourts: [
-            { id: '08de8b48-a4a4-4cc7-800d-1284cd7485b7', name: 'Pista 1 (Cristal)', time: '17:00', price: 20, type: 'Indoor', duration: 90 },
-            { id: '102', name: 'Pista 2 (Muro)', time: '18:30', price: 15, type: 'Outdoor', duration: 60 },
-            { id: '103', name: 'Pista 3 (Cristal)', time: '20:00', price: 20, type: 'Indoor', duration: 90 },
-            { id: '104', name: 'Pista 5 (Cristal)', time: '21:30', price: 18, type: 'Indoor', duration: 90 },
-            { id: '105', name: 'Pista 6 (Cristal)', time: '21:30', price: 18, type: 'Indoor', duration: 90 },
-        ]
-    }
-]);
 
-interface AvailableCourt {
-    id: string;
-    name: string;
-    price: number;
-    type: string;
+const fetchAvailabilityCourts = async () => {
+    try {
+        if (!selectedDate.value || !duration.value) return;
+        availablesCourts.value = await searchAvailability(cityFilter.value, selectedDate.value, duration.value)
+        console.log(availablesCourts.value, 'AVAILABLRES')
+        
+    } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : 'Error inesperado';
+        errorMessage.value = message;
+        toast.add({ 
+            severity: 'error', 
+            summary: 'Error de acceso', 
+            detail: errorMessage.value, 
+            life: 3000 
+        });
+    }
 }
+
 
 const calculateEndTime = (startTime: string, durationMinutes: number) => {
     const [hours, minutes] = startTime.split(':').map(Number);
@@ -59,32 +63,38 @@ const calculateEndTime = (startTime: string, durationMinutes: number) => {
     return date.toTimeString().split(' ')[0]?.slice(0, 5);
 };
 
+const calculateTotalPrice = (basePrice: number) => {
+    if (!duration.value) return 0;
+    const durationHours = duration.value / 60;
+    return Number((durationHours * basePrice).toFixed(2));
+};
 
-const handleReserve = (court: AvailableCourt) => {
+
+const handleReserve = (court: CourtSummarizedResponse, club: CourtGroupedResponse) => {
     if (!selectedDate.value || !duration.value) {
         toast.add({ severity: 'warn', summary: 'Atención', detail: 'Selecciona día, hora y duración', life: 3000 });
         return;
     }
 
-    const club = clubsWithAvailability.value[0];
     const startTime = formattedStartTime.value
     const endTime = calculateEndTime(startTime!, duration.value!);
 
-    const durationHours = duration.value / 60;
-    const totalPrice = durationHours * court.price;
+    const totalPrice = calculateTotalPrice(court.basePrice);
     
 
     const summaryReservation : ReservationDataDialog = {
         courtId: court.id,
         courtName: court.name,
-        courtType: court.type,
-        clubName: club!.name,
+        userId: profile?.id,
+        userName: `${profile?.name} ${profile?.lastName}`,
+        type: court.type.name,
+        clubName: club!.clubName,
         clubAddress: club!.address,
         date: formattedDate.value,
         startTime: startTime!,
         endTime: endTime!,
         duration: duration.value,
-        totalPrice: Number(totalPrice.toFixed(2))
+        totalPrice: totalPrice,
     }
     reservationData.value = summaryReservation;
 
@@ -102,9 +112,7 @@ const handleConfirmReservation = async () => {
             startTime: reservationData.value.startTime,
             endTime: reservationData.value.endTime,
         }
-        const reservation = await registerReservation(formData);
-        console.log(reservation, 'RESERVAA CREADA')
-        //todo actrualizar reservas
+        await registerReservation(formData);
 
         toast.add({ 
             severity: 'info', 
@@ -124,17 +132,19 @@ const handleConfirmReservation = async () => {
     }
 }
 
-watch(selectedDate, async (newDate) => {
-    console.log("Buscando disponibilidad para", newDate); 
-    //TODO endpoint de disponibilidad al cambiar la fecha en selector
+watch([selectedDate, duration, cityFilter], () => {
+    if (selectedDate.value && duration.value && cityFilter.value.length >= 3) {
+        fetchAvailabilityCourts();
+        console.log(availablesCourts.value)
+    }
 });
 
 </script>
 
 <template>
-    <div class="min-h-screen bg-slate-50 max-w-7xl mx-auto w-full flex-1 px-6 py-8 flex flex-col">
+    <div class="min-h-screen bg-slate-50 max-w-7xl w-full flex-1 px-4 sm:px-6 py-8 flex flex-col">
     
-        <section class="relative h-100 bg-slate-900 overflow-hidden -mb-12 rounded-2xl">
+        <section class="relative h-64 md:h-80 bg-slate-900 overflow-hidden -mb-12 rounded-2xl">
             <img 
                 src="/src/assets/authimage2.jpg" 
                 class="absolute inset-0 w-full h-full object-cover" 
@@ -160,27 +170,39 @@ watch(selectedDate, async (newDate) => {
             </BaseDateSelector>
         </div>
 
-            <GroupedList 
-                :groups="clubsWithAvailability" 
-                groupTitleKey="name" 
-                groupSubtitleKey="address"
-                itemKey="availableCourts"
-            >
-            
-                <template #card="{ item }">
-                    <AppItemCard 
-                    :court="item" 
-                    @reserve="handleReserve(item)" 
-                    />
-                </template>
+        <transition name="fade-slide" mode="out-in">
+            <div v-if="availablesCourts.length > 0" :key="availablesCourts.length > 0 ? 'results' : 'empty'">
+                    <GroupedList 
+                        v-if="duration && availablesCourts.length > 0"
+                        :groups="availablesCourts" 
+                        groupTitleKey="clubName" 
+                        groupSubtitleKey="address"
+                        itemKey="availableCourts"
+                    >
+                    
+                        <template #card="{ item, group }">
+                            <AppItemCard 
+                            :court="item"
+                            :duration="duration"
+                            :total-price="calculateTotalPrice(item.basePrice)"
+                            @reserve="handleReserve(item, group)" 
+                            />
+                        </template>
 
-                <template #header-action="{ count }">
-                    <span class="px-3 py-1 sm:px-4 sm:py-2 bg-[#C8E794] text-[#344533] text-[10px] sm:text-xs font-black rounded-full uppercase whitespace-nowrap">
-                    {{ count }}     
-                    <span class="hidden sm:inline">Disponibles</span><span class="sm:hidden">Disp.</span></span>
-                </template>
-        </GroupedList>
+                        <template #header-action="{ count }">
+                            <span class="px-3 py-1 sm:px-4 sm:py-2 bg-[#C8E794] text-[#344533] text-[10px] sm:text-xs font-black rounded-full uppercase whitespace-nowrap">
+                            {{ count }}     
+                            <span class="hidden sm:inline">Disponibles</span><span class="sm:hidden">Disp.</span></span>
+                        </template>
+                </GroupedList>
+            </div>
 
+            <div v-else class="text-center py-20 bg-slate-50 rounded-3xl border-2 border-dashed border-slate-200">
+                <i class="pi pi-calendar-times text-4xl text-slate-300 mb-4"></i>
+                <p class="text-slate-500 font-medium">No se han encontrado reservas en este periodo.</p>
+            </div>
+        </transition>
+        
         <BaseDialog
             ref="reservationDialogRef"
             header="Resumen de la reserva"
@@ -195,5 +217,18 @@ watch(selectedDate, async (newDate) => {
 </template>
 
 <style scoped>
+.fade-slide-enter-active,
+.fade-slide-leave-active {
+  transition: all 0.3s ease;
+}
 
+.fade-slide-enter-from {
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+.fade-slide-leave-to {
+  opacity: 0;
+  transform: translateY(-10px);
+}
 </style>

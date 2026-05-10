@@ -12,7 +12,7 @@ const props = defineProps<{
    <div v-if="props.reservation" class="flex flex-col gap-4 p-2 bg-slate-50 rounded-2xl border border-slate-100">
          <div class="flex justify-between items-center">
             <span class="text-xs font-bold text-slate-400 uppercase">Usuario</span>
-            <span class="font-bold text-slate-800">{{ props.reservation.userId }}</span>
+            <span class="font-bold text-slate-800">{{ props.reservation.userName }}</span>
         </div>
 
         <div class="flex justify-between items-center">
@@ -22,7 +22,7 @@ const props = defineProps<{
         
         <div class="flex justify-between items-center">
             <span class="text-xs font-bold text-slate-400 uppercase">Pista</span>
-            <span class="font-bold text-slate-800">{{ props.reservation.courtName }} ({{ props.reservation.courtType }})</span>
+            <span class="font-bold text-slate-800">{{ props.reservation.courtName }} ({{ props.reservation.type }})</span>
         </div>
 
         <hr class="border-slate-200" />

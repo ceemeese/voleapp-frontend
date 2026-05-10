@@ -5,10 +5,15 @@ import { clientApi } from "@/api/clientApi";
 import type { ProblemDetails } from "@/types/problemDetails.interface";
 import { ConnectionError, Forbidden, NotAuthorizedError, ValidationError } from "@/api/errorsApi";
 import type { CourtGroupedResponse } from "../../interfaces";
+import { toDateOnlyString, formatTime } from "@/helpers/dateHelpers";
 
 export const getAvailableCourtsAction = async (city: string, dateFilter: Date, durationMinutes: number ) : Promise<CourtGroupedResponse[]> => {
     try {
-        const config = court.availabilityCourt(city, dateFilter, durationMinutes);
+        const datePart = toDateOnlyString(dateFilter);
+        const timePart = formatTime(dateFilter);
+        const manualUtcString = `${datePart}T${timePart}:00.000Z`;
+
+        const config = court.availabilityCourt(city, manualUtcString, durationMinutes);
         const { data } = await clientApi.request<CourtGroupedResponse[]>(config);
         return data;
     } catch (error: unknown) {

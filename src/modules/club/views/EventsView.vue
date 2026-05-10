@@ -218,7 +218,7 @@ const summarizedReservation = computed(() : ReservationDataDialog | null =>  {
         courtId: selectedReservation.value.courtId,
         clubId: selectedReservation.value.clubId,
         courtName: selectedReservation.value.courtId,
-        courtType: selectedReservation.value.courtId,
+        type: selectedReservation.value.courtId,
         clubName: selectedReservation.value.clubId,
         clubAddress: selectedReservation.value.clubId,
         date: selectedReservation.value.date.toLocaleDateString('sv-SE'),

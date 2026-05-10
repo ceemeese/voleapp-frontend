@@ -54,7 +54,7 @@ function activateCourt(courtId: string) : AxiosRequestConfig {
     }
 }
 
-function availabilityCourt(city: string, dateFilter: Date, durationMinutes: number) : AxiosRequestConfig {
+function availabilityCourt(city: string, dateFilter: string, durationMinutes: number) : AxiosRequestConfig {
     return {
         method: 'GET',
         url: `${baseURL}/availability`,
