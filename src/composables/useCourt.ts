@@ -1,5 +1,6 @@
 import { activateCourtAction, deactivateCourtAction, getCourtByIdAction, getCourtsAction, getCourtsByClubIdAction, registerCourtAction, updateCourtAction } from "@/modules/club/actions";
-import type { AddCourt, Court, PutCourt } from "@/modules/club/interfaces";
+import { getAvailableCourtsAction } from "@/modules/club/actions/courts/get-availables-court.action";
+import type { AddCourt, Court, CourtGroupedResponse, PutCourt } from "@/modules/club/interfaces";
 import { ref } from "vue";
 
 export const useCourt = () => {
@@ -32,6 +33,17 @@ export const useCourt = () => {
 
         try {
             const data: Court = await getCourtByIdAction(courtId)
+            return data;
+        } finally {
+            isLoading.value = false;
+        }
+    }
+
+    const searchAvailability = async (city: string, dateFilter: Date, durationMinutes: number): Promise<CourtGroupedResponse[]> => {
+        isLoading.value = true;
+
+        try {
+            const data = await getAvailableCourtsAction(city, dateFilter, durationMinutes);
             return data;
         } finally {
             isLoading.value = false;
@@ -84,6 +96,7 @@ export const useCourt = () => {
         getAllCourts,
         getCourtsByClubId,
         getCourtById,
+        searchAvailability,
         registerCourt,
         updateCourt,
         deactivateCourt,

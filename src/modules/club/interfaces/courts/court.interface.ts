@@ -2,7 +2,7 @@ export interface Court {
     id: string;
     clubId: string;
     name: string;
-    courtType: CourtType;
+    type: CourtType;
     basePrice: number;
     isActive: boolean;
     createdAt: Date;

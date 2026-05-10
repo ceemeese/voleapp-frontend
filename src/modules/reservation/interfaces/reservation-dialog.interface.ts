@@ -5,7 +5,7 @@ export interface ReservationDataDialog {
     clubId?: string;
     userName?: string;
     courtName?: string;
-    courtType?: string;
+    type?: string;
     clubName?: string;
     clubAddress?: string;
     date: string;
