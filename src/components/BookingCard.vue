@@ -23,7 +23,7 @@ const month = computed(() => dateObj.value.toLocaleString('es-ES', { month: 'sho
         </div>
 
         <div class="text-right">
-            <p class="text-lg font-black text-slate-900">{{ reservation.totalPrice }}€</p>
+            <p class="text-lg font-black text-slate-900">{{ reservation.price.totalPrice }}€</p>
             <span class="text-[10px] uppercase font-bold text-slate-400"> {{ STATUS_TRANSLATION[reservation.status.id] }} </span>
         </div>
     </div>

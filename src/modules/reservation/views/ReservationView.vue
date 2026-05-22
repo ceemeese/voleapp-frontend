@@ -7,9 +7,10 @@ import FilterSelectorReservation from '@/components/FilterSelectorReservation.vu
 import ReservationSummary from '@/components/ReservationSummary.vue';
 import { useReservation } from '@/composables/useReservation';
 import type { AddReservation, ReservationDataDialog } from '../interfaces';
-import type { CourtGroupedResponse, CourtSummarizedResponse } from '@/modules/club/interfaces';
+import type { CourtGroupedResponse } from '@/modules/club/interfaces';
 import { useCourt } from '@/composables/useCourt';
 import { useUserStore } from '@/stores/userStore';
+import type { CourtAvailabilityDetail } from '@/modules/club/interfaces/courts/court-availability-detail.response';
 
 
 const toast = useToast();
@@ -63,14 +64,7 @@ const calculateEndTime = (startTime: string, durationMinutes: number) => {
     return date.toTimeString().split(' ')[0]?.slice(0, 5);
 };
 
-const calculateTotalPrice = (basePrice: number) => {
-    if (!duration.value) return 0;
-    const durationHours = duration.value / 60;
-    return Number((durationHours * basePrice).toFixed(2));
-};
-
-
-const handleReserve = (court: CourtSummarizedResponse, club: CourtGroupedResponse) => {
+const handleReserve = (court: CourtAvailabilityDetail, club: CourtGroupedResponse) => {
     if (!selectedDate.value || !duration.value) {
         toast.add({ severity: 'warn', summary: 'Atención', detail: 'Selecciona día, hora y duración', life: 3000 });
         return;
@@ -78,9 +72,6 @@ const handleReserve = (court: CourtSummarizedResponse, club: CourtGroupedRespons
 
     const startTime = formattedStartTime.value
     const endTime = calculateEndTime(startTime!, duration.value!);
-
-    const totalPrice = calculateTotalPrice(court.basePrice);
-    
 
     const summaryReservation : ReservationDataDialog = {
         courtId: court.id,
@@ -94,7 +85,7 @@ const handleReserve = (court: CourtSummarizedResponse, club: CourtGroupedRespons
         startTime: startTime!,
         endTime: endTime!,
         duration: duration.value,
-        totalPrice: totalPrice,
+        price: court.price,
     }
     reservationData.value = summaryReservation;
 
@@ -178,13 +169,13 @@ watch([selectedDate, duration, cityFilter], () => {
                         groupTitleKey="clubName" 
                         groupSubtitleKey="address"
                         itemKey="availableCourts"
+                        groupIconKey="weatherIcon"
                     >
                     
                         <template #card="{ item, group }">
                             <AppItemCard 
                             :court="item"
                             :duration="duration"
-                            :total-price="calculateTotalPrice(item.basePrice)"
                             @reserve="handleReserve(item, group)" 
                             />
                         </template>

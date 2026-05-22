@@ -26,4 +26,9 @@ export const clubRoutes: RouteRecordRaw[] = [
         name: 'admin-reservations',
         component: () => import('@/modules/club/views/ReservationListView.vue'),
     },
+    {  
+        path: 'price',
+        name: 'admin-price',
+        component: () => import('@/modules/club/views/PriceConfigView.vue'),
+    },
 ]

@@ -226,7 +226,7 @@ const summarizedReservation = computed(() : ReservationDataDialog | null =>  {
         endTime: selectedReservation.value.endTime,
         status: selectedReservation.value.status.status,
         duration: calculateDuration(selectedReservation.value.startTime, selectedReservation.value.endTime),
-        totalPrice: selectedReservation.value.totalPrice,
+        price: selectedReservation.value.price,
         createdAt: selectedReservation.value.createdAt
     }
 

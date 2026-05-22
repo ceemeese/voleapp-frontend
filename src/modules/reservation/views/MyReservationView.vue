@@ -14,13 +14,11 @@ const reservationDialogRef = ref();
 const toast = useToast();
 const selectedReservation = ref<Reservation | null>(null);
 
-// 1. Rango de fechas para el filtro (Enero - Diciembre del año actual)
 const year = new Date().getFullYear();
 const dates = ref([new Date(year, 0, 1), new Date(year, 11, 31)]);
 
-// 2. KPIs calculados dinámicamente
 const totalSpent = computed(() => 
-    userReservations.value.reduce((acc, res) => acc + (res.totalPrice || 0), 0)
+    userReservations.value.reduce((acc, res) => acc + (res.price.totalPrice || 0), 0).toFixed(2)
 );
 
 const totalMatches = computed(() => userReservations.value.length);
@@ -105,7 +103,7 @@ const openReservationDetail = (reservation : Reservation) => {
         endTime: reservation.endTime,
         status: reservation.status.status,
         duration: calculateDuration(reservation.startTime, reservation.endTime),
-        totalPrice: reservation.totalPrice,
+        price: reservation.price,
         createdAt: reservation.createdAt
     };
    reservationDialogRef.value.open(summarizedReservation);

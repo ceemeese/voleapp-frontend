@@ -170,7 +170,7 @@ onUnmounted(() => {
 <template>
     <div class="p-4">
         <div class="mb-4">
-            <h2 class="text-xl font-bold text-slate-800">Gestión de Reservas</h2>
+             <h2 class="text-xl font-black text-slate-800 uppercase italic">Gestión de reservas</h2>
         </div>
         <BaseCard padding="p-4">
             <BaseDataTable
@@ -217,8 +217,12 @@ onUnmounted(() => {
                     </div>
                 </template>
 
+                 <template #courtName="{ data }">
+                    <span class="font-bold text-slate-700">{{ data.courtId }}</span>
+                </template>
+
                 <template #totalPrice="{ data }">
-                    <span class="font-bold text-slate-700">{{ data.totalPrice }}€</span>
+                    <span class="font-bold text-slate-700">{{ data.price.totalPrice }}€</span>
                 </template>
 
                 <template #status="{ data }">

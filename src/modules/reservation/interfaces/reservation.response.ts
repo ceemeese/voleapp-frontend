@@ -9,7 +9,7 @@ export interface ReservationResponse {
     startTime: string;
     endTime: string;
     status: StatusResponse;
-    totalPrice: number;
+    price: PriceResponse;
     notes?: string;
     createdAt: string;
     updatedAt: string; 
@@ -18,4 +18,12 @@ export interface ReservationResponse {
 export interface StatusResponse {
     id: ReservationStatus;
     status: string;
+}
+
+export interface PriceResponse {
+    basePrice: number;
+    totalPrice: number;
+    discountAmount: number;
+    appliedDiscountPercent: number;
+    discountReason?: string;
 }

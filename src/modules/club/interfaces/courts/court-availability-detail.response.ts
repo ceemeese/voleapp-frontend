@@ -1,10 +1,10 @@
+import type { PriceResponse } from "@/modules/reservation/interfaces";
 import type { CourtTypeResponse } from "./court.response";
 
-export interface CourtSummarizedResponse {
+export interface CourtAvailabilityDetail {
     id: string;
     name: string;
     type: CourtTypeResponse;
-    basePrice: number;
+    price: PriceResponse;
     isActive: boolean;
 }
-
