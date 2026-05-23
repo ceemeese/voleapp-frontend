@@ -1,20 +1,43 @@
 <script setup lang="ts">
+import type { PricingConfig } from '@/modules/club/interfaces';
 import { BaseInput } from 'ui';
+import { ref } from 'vue';
 
-const pricingConfig = defineModel<{
-    coldThreshold: number;
-    hotThreshold: number;
-    windThreshold: number;
-    discountRain: number;
-    discountCold: number;
-    discountWind: number;
-    extraHot: number;
-}>('pricingConfig', { required: true });
+const pricingConfig = defineModel<PricingConfig>('pricingConfig', { required: true });
+const isEditing = ref<boolean>(false);
 
+const emit = defineEmits<{
+    (e: 'save', priceConfig: PricingConfig): void
+}>();
+
+const handleUpdateAction = () => {
+    if (isEditing.value) {
+        emit('save', pricingConfig.value);
+    }
+    isEditing.value = !isEditing.value;
+};
 </script>
 
 <template>
-    <h2 class="text-xl font-black text-slate-800 uppercase italic tracking-tight mb-10">Configuración de Precios Dinámicos</h2>
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-10 border-b border-slate-100 pb-6">
+        <div>
+            <h2 class="text-xl font-black text-slate-800 uppercase italic tracking-tight">
+                Configuración de Precios Dinámicos
+            </h2>
+            <p class="text-[11px] text-slate-400 font-medium mt-1">
+                {{ isEditing ? 'Estás modificando las reglas de precios del club' : 'Modo lectura. Activa la edición para realizar cambios' }}
+            </p>
+        </div>
+
+        <BaseButton 
+            :label="isEditing ? 'Guardar cambios' : 'Editar precios'" 
+            :icon="isEditing ? 'pi pi-check' : 'pi pi-pencil'"
+            :severity="isEditing ? 'success' : 'secondary'"
+            size="small"
+            class="self-end sm:self-auto"
+            @click="handleUpdateAction" 
+        />
+    </div>
     <div class="space-y-6">
         <div class="space-y-3">
             <h3 class="text-xs font-black text-slate-400 uppercase tracking-[0.2em] border-b border-slate-100 pb-2">Temperaturas</h3>
@@ -28,15 +51,17 @@ const pricingConfig = defineModel<{
                                 id="threshold-cold"
                                 v-model="pricingConfig.coldThreshold"
                                 type="number" 
-                                class="!p-2 font-bold focus:!border-slate-400" />
+                                class="!p-2 font-bold focus:!border-slate-400" 
+                                :disabled="!isEditing"/>
                         </div>
                         <div class="flex-1">
                             <label class="text-[10px] font-black text-slate-800 uppercase block" for="discount-cold">Dto. (%)</label>
                             <BaseInput 
                                 id="discount-cold"
-                                v-model="pricingConfig.discountCold"
+                                v-model="pricingConfig.coldDiscountPercent"
                                 type="number" 
-                                class="!p-2 font-bold focus:!border-slate-400" />
+                                class="!p-2 font-bold focus:!border-slate-400"
+                                :disabled="!isEditing" />
                         </div>
                     </div>
                 </div>
@@ -47,17 +72,19 @@ const pricingConfig = defineModel<{
                             <label class="text-[10px] font-black text-slate-800 uppercase block" for="threshold-heat">Umbral (°C)</label>
                             <BaseInput 
                                 id="threshold-heat"
-                                v-model="pricingConfig.hotThreshold" 
+                                v-model="pricingConfig.heatThreshold" 
                                 type="number" 
-                                class="!p-2 font-bold focus:!border-slate-400" />
+                                class="!p-2 font-bold focus:!border-slate-400"
+                                :disabled="!isEditing" />
                         </div>
                         <div class="flex-1">
                             <label class="text-[10px] font-black text-slate-800 uppercase block" for="discount-heat">Dto (%)</label>
                             <BaseInput 
                             id="discount-heat"
-                            v-model="pricingConfig.extraHot" 
+                            v-model="pricingConfig.heatDiscountPercent" 
                             type="number" 
-                            class="!p-2 font-bold focus:!border-slate-400" />
+                            class="!p-2 font-bold focus:!border-slate-400"
+                            :disabled="!isEditing" />
                         </div>
                     </div>
                 </div>
@@ -76,15 +103,17 @@ const pricingConfig = defineModel<{
                                 id="threshold-wind"
                                 v-model="pricingConfig.windThreshold" 
                                 type="number" 
-                                class="!p-2 font-bold focus:!border-slate-400" />
+                                class="!p-2 font-bold focus:!border-slate-400"
+                                :disabled="!isEditing" />
                         </div>
                         <div class="flex-1">
                             <label class="text-[10px] font-black text-slate-800 uppercase block" for="discount-wind">Dto. (%)</label>
                             <BaseInput 
                                 id="discount-wind"
-                                v-model="pricingConfig.discountWind" 
+                                v-model="pricingConfig.windDiscountPercent" 
                                 type="number" 
-                                class="!p-2 font-bold focus:!border-slate-400" />
+                                class="!p-2 font-bold focus:!border-slate-400"
+                                :disabled="!isEditing" />
                         </div>
                     </div>
                 </div>
@@ -94,9 +123,10 @@ const pricingConfig = defineModel<{
                         <label class="text-[10px] font-black text-slate-800 uppercase block" for="discount-rain">Dto. (%)</label>
                         <BaseInput 
                             id="discount-rain"
-                            v-model="pricingConfig.discountRain" 
+                            v-model="pricingConfig.rainDiscountPercent" 
                             type="number" 
-                            class="!p-2 font-bold focus:!border-slate-400" />
+                            class="!p-2 font-bold focus:!border-slate-400"
+                            :disabled="!isEditing" />
                     </div>
                 </div>
             </div>

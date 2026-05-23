@@ -106,7 +106,7 @@ const handleConfirmReservation = async () => {
         await registerReservation(formData);
 
         toast.add({ 
-            severity: 'info', 
+            severity: 'success', 
             summary: 'Confirmado', 
             detail: 'Reserva registrada', 
             life: 3000});

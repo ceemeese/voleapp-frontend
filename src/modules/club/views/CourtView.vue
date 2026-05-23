@@ -3,15 +3,13 @@ import type {  BaseInputProps, ActionColumn } from 'ui';
 import { BaseButton, BaseCard, BaseDialog } from 'ui'
 import { useCourt } from '@/composables/useCourt';
 import { useClub } from '@/composables/useClub';
-import { onMounted } from 'vue';
+import { onMounted, ref } from 'vue';
 import type { Court } from '../interfaces';
-import { ref } from 'vue';
 import { useToast } from 'primevue/usetoast';
 import Tag from 'primevue/tag';
 import { useConfirm } from "primevue/useconfirm";
 import { zodResolver } from '@primevue/forms/resolvers/zod';
 import { addCourtSchema, updateCourtSchema } from '../schemas/addCourt.schema';
-
 
 interface CourtForm {
     name: string;
@@ -32,9 +30,7 @@ const { activeClubId } = useClub();
 const resolverAdd = zodResolver(addCourtSchema);
 const resolverUpdate = zodResolver(updateCourtSchema);
 const selectedCourt = ref<Court>();
-const { getCourtsByClubId, activateCourt, deactivateCourt, updateCourt, registerCourt} = useCourt();
-const courts = ref<Court[]>([]);
-const errorMessage = ref<string>('');
+const { courts, getCourtsByClubId, activateCourt, deactivateCourt, updateCourt, registerCourt} = useCourt();
 const courtAddDialogRef = ref();
 const courtEditDialogRef = ref();
 
@@ -96,18 +92,16 @@ const onOpenCreateDialog = () => {
 }
 
 const loadCourts = async () => {
+
+    if (courts.value.length > 0) return;
     try {
-        const rawCourts = await getCourtsByClubId(activeClubId.value!);
-        courts.value = rawCourts.map(court => ({
-            ...court,
-        }))
+        await getCourtsByClubId(activeClubId.value!);
     } catch (error: unknown) {
         const message = error instanceof Error ? error.message : 'Error inesperado';
-        errorMessage.value = message;
         toast.add({
             severity: 'error',
             summary: 'Error',
-            detail: errorMessage.value,
+            detail: message,
             life: 5000
         })
     }
@@ -141,22 +135,19 @@ const handleToggleStatus = (court: Court, event: PointerEvent) => {
                 } else {
                     await deactivateCourt(court.id)
                 }
-                
-                court.isActive = isActivating;
 
                 toast.add({ 
-                    severity: 'info', 
+                    severity: 'success', 
                     summary: 'Confirmado', 
                     detail: `Pista ${isActivating ? 'reactivada' : 'desactivada'} con éxito`, 
                     life: 3000});
 
             } catch (error: unknown) {
                 const message = error instanceof Error ? error.message : 'Error inesperado';
-                errorMessage.value = message;
                 toast.add({ 
                     severity: 'error', 
                     summary: 'Error de acceso', 
-                    detail: errorMessage.value, 
+                    detail: message,
                     life: 5000 
                 });
             }
@@ -166,22 +157,19 @@ const handleToggleStatus = (court: Court, event: PointerEvent) => {
 
 const onSaveAddedCourt = async (data: CourtForm) => {
     try {
-        const newCourt = await registerCourt(activeClubId.value!, {   
+        await registerCourt(activeClubId.value!, {   
             name: data.name, 
             type: data.type,
             basePrice: data.basePrice,
             isActive: data.isActive
         });
 
-        courts.value.unshift(newCourt);
-
     } catch (error: unknown) {
         const message = error instanceof Error ? error.message : 'Error inesperado';
-        errorMessage.value = message;
         toast.add({ 
             severity: 'error', 
             summary: 'Error de acceso', 
-            detail: errorMessage.value, 
+            detail: message, 
             life: 5000 
         });
     }
@@ -192,34 +180,27 @@ const onSaveModifiedCourt = async (updatedData: CourtForm) => {
     const courtId = selectedCourt.value?.id;
     
     try {
-        const updatedCourt = await updateCourt(courtId!, {
+        await updateCourt(courtId!, {
             name: updatedData.name,
             basePrice: updatedData.basePrice
         });
-
-        const oldCourtIndex = courts.value.findIndex(c => c.id === courtId);
-        if (oldCourtIndex !== -1){
-            courts.value[oldCourtIndex] = updatedCourt;
-        }
         
         toast.add({ 
-            severity: 'info', 
+            severity: 'success', 
             summary: 'Confirmado', 
             detail: 'Pista modificada', 
             life: 3000});
         
     } catch (error: unknown) {
         const message = error instanceof Error ? error.message : 'Error inesperado';
-        errorMessage.value = message;
         toast.add({ 
             severity: 'error', 
             summary: 'Error de acceso', 
-            detail: errorMessage.value, 
+            detail: message, 
             life: 5000 
         });
     }
 }
-
 
 </script>
 

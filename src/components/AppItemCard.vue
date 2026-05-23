@@ -26,7 +26,7 @@ defineEmits(['reserve']);
 </script>
 
 <template>
-    <BaseCard class="min-w-60 !p-0 !shadow-sm hover:!shadow-xl hover:border-[#C8E794] transition-all duration-300 group cursor-pointer overflow-hidden h-full relative">
+    <BaseCard class="!min-w-60 !p-0 !shadow-sm hover:!shadow-xl hover:border-[#C8E794] transition-all duration-300 group cursor-pointer overflow-hidden h-full relative">
         
         <div v-if="props.court.price.appliedDiscountPercent > 0" 
              class="absolute top-3 right-3 z-10 bg-[#C8E794] text-black text-[10px] font-black px-2 py-1 rounded-full shadow-sm animate-bounce">

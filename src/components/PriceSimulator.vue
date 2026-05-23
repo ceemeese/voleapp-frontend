@@ -4,20 +4,13 @@ import type { BaseInputProps } from 'ui';
 import { Slider } from 'primevue';
 import ToggleSwitch from 'primevue/toggleswitch';
 import Message from 'primevue/message';
-import type { Court } from '@/modules/club/interfaces';
+import type { Court, PricingConfig } from '@/modules/club/interfaces';
 import { computed, ref } from 'vue';
+import Tag from 'primevue/tag';
 
 const props = defineProps<{
     courts: Court[];
-    pricingConfig: {
-        coldThreshold: number;
-        hotThreshold: number;
-        windThreshold: number;
-        discountRain: number;
-        discountCold: number;
-        discountWind: number;
-        extraHot: number;
-    }
+    pricingConfig: PricingConfig;
 }>();
 
 const selectedCourtId = ref<string>(props.courts[0]!.id);
@@ -44,10 +37,10 @@ const simulation = computed(() => {
     const base = court.basePrice;
     
 const activeDiscounts = [
-        { id: 'rain', label: 'Lluvia', val: simRain.value ? props.pricingConfig.discountRain : 0 },
-        { id: 'wind', label: 'Viento', val: simWind.value >= props.pricingConfig.windThreshold ? props.pricingConfig.discountWind : 0 },
-        { id: 'cold', label: 'Mucho Frío', val: simTemp.value <= props.pricingConfig.coldThreshold ? props.pricingConfig.discountCold : 0 },
-        { id: 'hot', label: 'Mucho Calor', val: simTemp.value >= props.pricingConfig.hotThreshold ? props.pricingConfig.extraHot : 0 }
+        { id: 'rain', label: 'Lluvia', val: simRain.value ? props.pricingConfig.rainDiscountPercent : 0 },
+        { id: 'wind', label: 'Viento', val: simWind.value >= props.pricingConfig.windThreshold ? props.pricingConfig.windDiscountPercent : 0 },
+        { id: 'cold', label: 'Mucho Frío', val: simTemp.value <= props.pricingConfig.coldThreshold ? props.pricingConfig.coldDiscountPercent : 0 },
+        { id: 'hot', label: 'Mucho Calor', val: simTemp.value >= props.pricingConfig.heatThreshold ? props.pricingConfig.heatDiscountPercent : 0 }
     ].filter(d => d.val > 0);
 
 
@@ -132,24 +125,32 @@ const activeDiscounts = [
             </div>
 
             <div class="mt-6 h-8 flex items-center justify-center relative">
-                <transition-group 
+                <Transition
                     mode="out-in"
                     enter-active-class="transition duration-300 ease-out"
-                    enter-from-class="opacity-0 -translate-y-2 scale-95"
+                    enter-from-class="opacity-0 translate-y-4 scale-95"
                     enter-to-class="opacity-100 translate-y-0 scale-100"
                     
                     leave-active-class="transition duration-200 ease-in absolute"
                     leave-from-class="opacity-100 translate-y-0 scale-100"
-                    leave-to-class="opacity-0 translate-y-2 scale-95"
+                    leave-to-class="opacity-0 -translate-y-4 scale-95"
                 >
-                   <span v-if="simulation.appliedDiscount" class="inline-flex items-center px-3 py-1 !bg-[#94C8E7]/10 text-[#94C8E7] text-[9px] font-black uppercase rounded-full border !border-[#94C8E7]/20 leading-none animate-fade-in">
-                        Dto. {{ simulation.appliedDiscount.label }} (-{{ simulation.appliedDiscount.val }}%)
-                    </span>
+                    <Tag 
+                        v-if="simulation.appliedDiscount" 
+                        :value="`Dto. ${simulation.appliedDiscount.label} (-${simulation.appliedDiscount.val}%)`"
+                        severity="info"
+                        class="!text-[9px] uppercase !whitespace-nowrap !w-max !animate-fade-in"
+                        rounded
+                    />
 
-                    <span v-else class="inline-flex items-center px-3 py-1 bg-slate-100 text-slate-400 text-[9px] font-bold uppercase rounded-full border border-slate-200 leading-none whitespace-nowrap w-max">
-                        Ningún descuento aplicado
-                    </span>
-                </transition-group>
+                    <Tag 
+                        v-else 
+                        value="Ningún descuento aplicado"
+                        severity="secondary"
+                        class="!text-[9px] uppercase !whitespace-nowrap !w-max !animate-fade-in"
+                        rounded
+                    />
+                  </Transition>
             </div>
         </div>
     </div>

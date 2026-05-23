@@ -41,7 +41,7 @@ export const useSchedule = () => {
             const data: Schedule = await putScheduleAction(clubId, scheduleId, dataForm);
             clubStore.schedules = clubStore.schedules.map(schedule => 
                 schedule.id === scheduleId
-                ? {... schedule, ...data}
+                ? {...schedule, ...data}
                 : schedule
             );
             return data;

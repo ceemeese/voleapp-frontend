@@ -1,38 +1,89 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, onMounted} from 'vue';
 import PriceConfigForm from '@/components/PriceConfigForm.vue';
 import PriceSimulator from '@/components/PriceSimulator.vue';
-import type { Court } from '../interfaces';
+import { useToast } from 'primevue/usetoast';
+import { useClub } from '@/composables/useClub';
+import { useCourt } from '@/composables/useCourt';
+import type { PricingConfig } from '../interfaces';
+import { usePricingConfig } from '@/composables/usePricingConfig';
 
-const courts = ref<Court[]>([
-    { 
-        id: "1", 
-        clubId: "1a", 
-        name: 'Pista Central', 
-        type: { id: 1, name: "indoor" }, 
-        basePrice: 35, 
-        isActive: true, 
-        createdAt: new Date() 
-    },
-]);
+const toast = useToast();
+const { activeClubId } = useClub();
+const { courts, getCourtsByClubId } = useCourt();
+const { getPricing, updatePricingConfig } = usePricingConfig();
+const pricingConfig = ref<PricingConfig>();
 
-const config = ref({
-    basePrice: 25.00,
-    
-    coldThreshold: 10,
-    hotThreshold: 30,
-    windThreshold: 20,
-    
-    discountRain: 15,
-    discountCold: 10,
-    discountWind: 5,
-    extraHot: 5,
-    
-    simTemp: 22,
-    simWind: 5,
-    simRain: false
+const loadCourts = async () => {
+
+    if (courts.value.length > 0) return;
+    try {
+        await getCourtsByClubId(activeClubId.value!);
+    } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : 'Error inesperado';
+        toast.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: message,
+            life: 3000
+        })
+    }
+}
+
+
+const loadPricingConfig = async () => {
+
+    try {
+        pricingConfig.value = await getPricing(activeClubId.value!);
+        console.log(pricingConfig.value, 'PRICINGGGG');
+    } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : 'Error inesperado';
+        toast.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: message,
+            life: 3000
+        })
+    }
+}
+
+
+const handleSaveConfig = async (configData: PricingConfig) => {
+
+    if (!activeClubId.value) return;
+    try {
+        await updatePricingConfig(activeClubId.value, {
+            rainDiscountPercent: configData.rainDiscountPercent,
+            windThreshold: configData.windThreshold,
+            windDiscountPercent: configData.windDiscountPercent,
+            heatThreshold: configData.heatThreshold,
+            heatDiscountPercent: configData.heatDiscountPercent,
+            coldThreshold: configData.coldThreshold,
+            coldDiscountPercent: configData.coldDiscountPercent
+        })
+
+        toast.add({ 
+            severity: 'success', 
+            summary: 'Confirmado', 
+            detail: 'Cambios guardados', 
+            life: 3000});
+    } catch (error:unknown) {
+        const message = error instanceof Error ? error.message : 'Error inesperado';
+        toast.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: message,
+            life: 3000
+        })
+    }
+}
+
+onMounted(async () => {
+    if (activeClubId.value){
+        await loadCourts();
+        await loadPricingConfig();
+    }
 });
-
 
 </script>
 
@@ -41,16 +92,17 @@ const config = ref({
         
         <section class="w-full max-w-5xl mx-auto">
             <BaseCard padding="p-8">
-                <PriceConfigForm 
-                :pricing-config="config"/>
+                <PriceConfigForm v-if="pricingConfig"
+                :pricing-config="pricingConfig"
+                @save="handleSaveConfig"/>
             </BaseCard>
         </section>
 
         <section class="w-full max-w-5xl mx-auto">
             <BaseCard padding="p-8">
-                <PriceSimulator 
+                <PriceSimulator v-if="pricingConfig && courts.length > 0 " 
                 :courts="courts"
-                :pricing-config="config"/>
+                :pricing-config="pricingConfig"/>
             </BaseCard>
         </section>
     </div>

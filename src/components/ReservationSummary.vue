@@ -12,8 +12,8 @@ const props = defineProps<{
    <div v-if="props.reservation" class="flex flex-col gap-4 p-4 bg-white rounded-2xl border border-slate-100 shadow-sm">
         
         <div class="flex items-center gap-3 pb-2 border-b border-slate-50">
-            <div class="p-2 bg-slate-900 rounded-lg">
-                <i class="pi pi-ticket text-[#C8E794]"></i>
+            <div class="p-2 rounded-lg">
+                <i class="pi pi-ticket"></i>
             </div>
             <div>
                 <p class="text-[10px] font-bold text-slate-400 uppercase leading-none">Detalles de la</p>

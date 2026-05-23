@@ -79,7 +79,7 @@ const onSaveModifiedUser = async (updatedData: User) => {
         }
 
         toast.add({ 
-            severity: 'info', 
+            severity: 'success', 
             summary: 'Confirmado', 
             detail: 'Usuario modificado', 
             life: 3000});
@@ -117,7 +117,7 @@ const handleDeactivate = (user: User, event: PointerEvent) => {
                 user.isActive = false;
 
                 toast.add({ 
-                    severity: 'info', 
+                    severity: 'success', 
                     summary: 'Confirmado', 
                     detail: 'Usuario desactivado', 
                     life: 3000});

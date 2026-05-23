@@ -338,7 +338,7 @@ const onSaveModifiedEvent = async (updatedData: EventForm) => {
             events.value.push(createdEvent);
         }
 
-        toast.add({ severity: 'info', summary: 'Confirmado', detail: `Evento ${actionText}`, life: 3000});
+        toast.add({ severity: 'success', summary: 'Confirmado', detail: `Evento ${actionText}`, life: 3000});
         
     } catch (error: unknown) {
         const message = error instanceof Error ? error.message : 'Error inesperado';
