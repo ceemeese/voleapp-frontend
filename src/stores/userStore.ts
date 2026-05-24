@@ -3,7 +3,7 @@ import { defineStore } from "pinia"
 import { ref, computed} from "vue";
 import { useAuthStore } from "./authStore";
 import { useUser } from "@/composables/useUser";
-import type { Reservation } from "@/modules/reservation/interfaces";
+import type { ReservationComplete } from "@/modules/reservation/interfaces";
 
 
 export const useUserStore = defineStore('user', () => {
@@ -11,7 +11,7 @@ export const useUserStore = defineStore('user', () => {
     const authStore = useAuthStore();
     const profile = ref<User | undefined>(undefined);
     const { getUserById } = useUser()
-    const reservations = ref<Reservation[]>([]);
+    const reservations = ref<ReservationComplete[]>([]);
 
     const hasReservations = computed(() => reservations.value.length > 0);
 
@@ -35,13 +35,14 @@ export const useUserStore = defineStore('user', () => {
     }
 
 
-    function setReservations(data: Reservation[]) {
+    function setReservations(data: ReservationComplete[]) {
         reservations.value = data;
     }
 
-    function addReservation(reservation: Reservation) {
-        reservations.value.push(reservation);
-        reservations.value.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+    function upsertReservations(newReservations: ReservationComplete[]){
+        const cacheMap = new Map(reservations.value.map(res => [res.id, res] ));
+        newReservations.forEach(res => cacheMap.set(res.id, res));
+        reservations.value = Array.from(cacheMap.values());
     }
 
     return {
@@ -50,7 +51,7 @@ export const useUserStore = defineStore('user', () => {
         profile,
         hasReservations,
         setReservations,
-        addReservation,
-        reservations
+        reservations,
+        upsertReservations
     }
 })

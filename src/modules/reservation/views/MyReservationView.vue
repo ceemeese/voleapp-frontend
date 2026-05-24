@@ -1,27 +1,30 @@
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue';
+import { ref, computed, watch, onMounted } from 'vue';
 import { useReservation } from '@/composables/useReservation';
 import BookingCard from '@/components/BookingCard.vue';
 import { BaseButton, BaseCard, BaseDateSelector } from 'ui';
-import type { Reservation, ReservationDataDialog } from '../interfaces';
+import type { ReservationComplete, ReservationDataDialog } from '../interfaces';
 import { ReservationStatus } from '../interfaces';
 import ReservationSummary from '@/components/ReservationSummary.vue';
 import { useToast } from 'primevue/usetoast';
 import { calculateDuration } from '@/helpers/dateHelpers';
+import { useAuthStore } from '@/stores/authStore';
 
-const { userReservations, isLoading, cancelReservation } = useReservation();
+const { userReservations, isLoading, cancelReservation, getUserReservations } = useReservation();
+const authStore = useAuthStore();
 const reservationDialogRef = ref();
 const toast = useToast();
-const selectedReservation = ref<Reservation | null>(null);
+const selectedReservation = ref<ReservationComplete | null>(null);
+const activeUserId = authStore.userId;
 
-const year = new Date().getFullYear();
-const dates = ref([new Date(year, 0, 1), new Date(year, 11, 31)]);
+const currentYear = new Date().getFullYear()
+const dates = ref([new Date(currentYear, 0, 1), new Date(currentYear, 11, 31)]);
 
 const totalSpent = computed(() => 
-    userReservations.value.reduce((acc, res) => acc + (res.price.totalPrice || 0), 0).toFixed(2)
+    filteredReservations.value.reduce((acc, res) => acc + (res.price.totalPrice || 0), 0).toFixed(2)
 );
 
-const totalMatches = computed(() => userReservations.value.length);
+const totalMatches = computed(() => filteredReservations.value.length);
 
 const FINAL_STATUS_IDS = [
     ReservationStatus.Cancelled,
@@ -66,7 +69,7 @@ const statsWidgets = computed(() => [
 ]);
 
 const totalMinutesPlayed = computed(() => {
-    return userReservations.value.reduce((total, res) => {
+    return filteredReservations.value.reduce((total, res) => {
         const [startH, startM] = res.startTime.split(':').map(Number);
         const [endH, endM] = res.endTime.split(':').map(Number);
         
@@ -84,8 +87,21 @@ const formattedTimePlayed = computed(() => {
     return `${hours}h ${mins > 0 ? mins + 'm' : ''}`;
 });
 
+const filteredReservations = computed(() => {
+    if (!dates.value || dates.value.length < 2 || !dates.value[0] || !dates.value[1]) {
+        return userReservations.value;
+    }
 
-const openReservationDetail = (reservation : Reservation) => {
+    const start = dates.value[0];
+    const end = dates.value[1];
+
+    return userReservations.value.filter(res => {
+        return res.date >= start && res.date <= end;
+    });
+})
+
+
+const openReservationDetail = (reservation : ReservationComplete) => {
 
     selectedReservation.value = reservation;
 
@@ -94,9 +110,9 @@ const openReservationDetail = (reservation : Reservation) => {
         userId: reservation.userId,
         clubId: reservation.clubId,
         courtId: reservation.courtId,
-        courtName: reservation.courtId,
+        courtName: reservation.courtName,
         type: reservation.courtId,
-        clubName: reservation.clubId,
+        clubName: reservation.clubName,
         clubAddress: reservation.clubId,
         date: reservation.date.toLocaleDateString('sv-SE'),
         startTime: reservation.startTime,
@@ -113,10 +129,10 @@ const openReservationDetail = (reservation : Reservation) => {
 
 
 const favouriteClub = computed(() => {
-    if (!userReservations.value || userReservations.value.length === 0) return '—';
+    if (!filteredReservations.value || filteredReservations.value.length === 0) return '—';
 
     const counts = userReservations.value.reduce((acc, res) => {
-        const name = res.clubId || 'Club Desconocido';
+        const name = res.clubName || 'Club Desconocido';
         acc[name] = (acc[name] || 0) + 1;
         return acc;
     }, {} as Record<string, number>);
@@ -143,8 +159,29 @@ const handleCancelReservation = async(reservationId : number) => {
 }
 
 watch(dates, async (newDates) => {
-    console.log("Buscando disponibilidad para", newDates); 
-    //TODO endpoint de disponibilidad al cambiar la fecha en selector
+    if (!newDates || newDates.length < 2 || !newDates[0] || !newDates[1]) return;
+
+    const startYear = newDates[0].getFullYear();
+
+    if (startYear !== currentYear) {
+        const isAlreadyLoaded = userReservations.value.some(res => res.date.getFullYear() === startYear);
+
+        if (!isAlreadyLoaded && activeUserId) {
+            const startDate = `${startYear}-01-01`;
+            const endDate = `${startYear}-12-31`;
+            
+            await getUserReservations(activeUserId, startDate, endDate);
+        }
+    }
+});
+
+
+onMounted(async () => {
+    if (userReservations.value.length === 0 && activeUserId) {
+        const startDate = `${currentYear}-01-01`; 
+        const endDate = `${currentYear}-12-31`;
+        await getUserReservations(activeUserId, startDate, endDate);
+    }
 });
 
 </script>

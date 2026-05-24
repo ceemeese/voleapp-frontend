@@ -12,10 +12,9 @@ import { useCourt } from '@/composables/useCourt';
 import { useUserStore } from '@/stores/userStore';
 import type { CourtAvailabilityDetail } from '@/modules/club/interfaces/courts/court-availability-detail.response';
 
-
 const toast = useToast();
 const { profile } = useUserStore();
-const { registerReservation } = useReservation();
+const { registerReservation, refreshCurrentUserReservations } = useReservation();
 const { searchAvailability } = useCourt();
 const selectedDate = ref<Date>();
 const duration = ref<number | undefined>(undefined);
@@ -104,6 +103,8 @@ const handleConfirmReservation = async () => {
             endTime: reservationData.value.endTime,
         }
         await registerReservation(formData);
+            
+        await refreshCurrentUserReservations();
 
         toast.add({ 
             severity: 'success', 

@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import type { Reservation } from '@/modules/reservation/interfaces';
+import type { ReservationComplete } from '@/modules/reservation/interfaces';
 import { STATUS_TRANSLATION } from '@/utils/status-utils';
 import { computed } from 'vue'
 
-const props = defineProps<{ reservation: Reservation }>();
+const props = defineProps<{ reservation: ReservationComplete }>();
 
 const dateObj = computed(() => new Date(props.reservation.date));
 const day = computed(() => dateObj.value.getDate());
@@ -18,8 +18,8 @@ const month = computed(() => dateObj.value.toLocaleString('es-ES', { month: 'sho
             </div>
         
         <div class="flex-1">
-            <h4 class="font-bold text-slate-800">{{ reservation.clubId }}</h4>
-            <p class="text-sm text-slate-500">{{ reservation.courtId }} • {{ reservation.startTime }}h - {{ reservation.endTime }}</p>
+            <h4 class="font-bold text-slate-800">{{ reservation.clubName }}</h4>
+            <p class="text-sm text-slate-500">{{ reservation.courtName }} • {{ reservation.startTime }}h - {{ reservation.endTime }}</p>
         </div>
 
         <div class="text-right">
