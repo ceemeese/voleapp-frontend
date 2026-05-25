@@ -32,18 +32,18 @@ export const useReservation = () => {
         }
     }
 
-    const getClubReservations = async(clubId: string, startDateRange?: string, endDateRange?: string) : Promise<Reservation[]> => {
+    const getClubReservations = async(clubId: string, startDateRange?: string, endDateRange?: string) : Promise<ReservationComplete[]> => {
         isLoading.value = true;
 
         try {
-            const data: Reservation[] = await getClubReservationsAction(clubId, startDateRange, endDateRange);
+            const data: ReservationComplete[] = await getClubReservationsAction(clubId, startDateRange, endDateRange);
             return data;
         } finally {
             isLoading.value = false;
         }
     }
 
-    const getUserReservations = async(userId: string, startDateRange?: string, endDateRange?: string) : Promise<Reservation[]> => {
+    const getUserReservations = async(userId: string, startDateRange?: string, endDateRange?: string) : Promise<ReservationComplete[]> => {
         isLoading.value = true;
 
         try {
