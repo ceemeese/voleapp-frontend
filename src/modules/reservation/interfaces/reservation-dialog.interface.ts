@@ -1,3 +1,5 @@
+import type { PriceBreakdown } from "./reservation.interface";
+
 export interface ReservationDataDialog {
     id?: number;
     userId?: string;
@@ -13,6 +15,6 @@ export interface ReservationDataDialog {
     endTime: string;
     status?: string;
     duration?: number;
-    totalPrice: number
+    price: PriceBreakdown;
     createdAt?: Date;
 }

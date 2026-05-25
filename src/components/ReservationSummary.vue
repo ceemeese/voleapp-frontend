@@ -9,43 +9,68 @@ const props = defineProps<{
 </script>
 
 <template>
-   <div v-if="props.reservation" class="flex flex-col gap-4 p-2 bg-slate-50 rounded-2xl border border-slate-100">
-         <div class="flex justify-between items-center">
-            <span class="text-xs font-bold text-slate-400 uppercase">Usuario</span>
-            <span class="font-bold text-slate-800">{{ props.reservation.userName }}</span>
-        </div>
-
-        <div class="flex justify-between items-center">
-            <span class="text-xs font-bold text-slate-400 uppercase">Club</span>
-            <span class="font-bold text-slate-800">{{ props.reservation.clubName }}</span>
-        </div>
+   <div v-if="props.reservation" class="flex flex-col gap-4 p-4 bg-white rounded-2xl border border-slate-100 shadow-sm">
         
-        <div class="flex justify-between items-center">
-            <span class="text-xs font-bold text-slate-400 uppercase">Pista</span>
-            <span class="font-bold text-slate-800">{{ props.reservation.courtName }} ({{ props.reservation.type }})</span>
-        </div>
-
-        <hr class="border-slate-200" />
-
-        <div class="grid grid-cols-2 gap-4">
-            <div>
-                <p class="text-[10px] font-bold text-slate-400 uppercase">Fecha</p>
-                <p class="font-semibold text-slate-700">{{ props.reservation.date }}</p>
+        <div class="flex items-center gap-3 pb-2 border-b border-slate-50">
+            <div class="p-2 rounded-lg">
+                <i class="pi pi-ticket"></i>
             </div>
             <div>
-                <p class="text-[10px] font-bold text-slate-400 uppercase">Horario</p>
-                <p class="font-semibold text-slate-700">{{ props.reservation.startTime }} - {{ props.reservation.endTime }}</p>
+                <p class="text-[10px] font-bold text-slate-400 uppercase leading-none">Detalles de la</p>
+                <h3 class="text-lg font-black text-slate-800 uppercase leading-tight">Reserva</h3>
             </div>
         </div>
 
-        <div class="pt-2 border-t border-dashed flex justify-between items-center">
-            <span class="font-bold text-slate-600">Total a pagar</span>
-            <span class="text-xl font-black text-[#344533]">{{ props.reservation.totalPrice }}€</span>
+        <div class="space-y-3">
+            <div class="flex justify-between items-center">
+                <span class="text-[10px] font-bold text-slate-400 uppercase">Club</span>
+                <span class="text-sm font-bold text-slate-800">{{ props.reservation.clubName }}</span>
+            </div>
+            <div class="flex justify-between items-center">
+                <span class="text-[10px] font-bold text-slate-400 uppercase">Pista</span>
+                <span class="text-sm font-bold text-slate-800">{{ props.reservation.courtName }}</span>
+            </div>
         </div>
 
-        <div v-if="props.reservation.createdAt" class="text-center">
-            <p class="text-[10px] text-slate-400 font-medium italic">
-                Reserva realizada el {{ formatFullDate(props.reservation.createdAt) }}
+        <div class="grid grid-cols-2 gap-4 bg-slate-50 p-3 rounded-xl">
+            <div>
+                <p class="text-[9px] font-bold text-slate-400 uppercase">Fecha</p>
+                <p class="text-xs font-black text-slate-700">{{ props.reservation.date }}</p>
+            </div>
+            <div>
+                <p class="text-[9px] font-bold text-slate-400 uppercase">Horario</p>
+                <p class="text-xs font-black text-slate-700">{{ props.reservation.startTime }} - {{ props.reservation.endTime }}</p>
+            </div>
+        </div>
+
+        <div class="pt-2 space-y-2">
+            <template v-if="props.reservation.price.appliedDiscountPercent > 0">
+                <div class="flex justify-between items-center text-xs">
+                    <span class="text-slate-500 font-medium">Precio base</span>
+                    <span class="text-slate-500 line-through">{{ props.reservation.price.basePrice.toFixed(2) }}€</span>
+                </div>
+                <div class="flex justify-between items-center text-xs text-red-500 font-bold">
+                    <span>Descuento ({{ props.reservation.price.appliedDiscountPercent }}%)</span>
+                    <span>-{{ props.reservation.price.discountAmount.toFixed(2) }}€</span>
+                </div>
+            </template>
+
+            <div class="pt-3 border-t border-dashed border-slate-200 flex justify-between items-end">
+                <div>
+                    <p class="text-[10px] font-black text-slate-400 uppercase leading-none">Total a pagar</p>
+                    <p v-if="props.reservation.price.discountReason" class="text-[9px] text-[#A7D16A] font-bold italic mt-1">
+                        * {{ props.reservation.price.discountReason }}
+                    </p>
+                </div>
+                <span class="text-3xl font-black text-slate-900 leading-none">
+                    {{ props.reservation.price.totalPrice.toFixed(2) }}<span class="text-lg">€</span>
+                </span>
+            </div>
+        </div>
+
+        <div v-if="props.reservation.createdAt" class="mt-2 pt-2 border-t border-slate-50 text-center">
+            <p class="text-[9px] text-slate-400 font-medium italic">
+                Reserva generada el {{ formatFullDate(props.reservation.createdAt) }}
             </p>
         </div>
     </div>

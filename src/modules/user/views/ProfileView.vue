@@ -79,7 +79,7 @@ const onSaveModifiedUser = async (updatedData: User) => {
         userStore.profile = {...profile.value, ...updatedData}
 
         toast.add({ 
-            severity: 'info', 
+            severity: 'success', 
             summary: 'Confirmado', 
             detail: 'Usuario modificado', 
             life: 3000});

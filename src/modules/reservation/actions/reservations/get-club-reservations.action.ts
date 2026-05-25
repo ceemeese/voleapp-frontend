@@ -3,13 +3,12 @@ import type { AxiosError } from "axios";
 import type { ProblemDetails } from "@/types/problemDetails.interface";
 import { ConnectionError, Forbidden, NotAuthorizedError } from "@/api/errorsApi";
 import reservation from "../../api/reservation";
-import type { Reservation, ReservationResponse } from "../../interfaces";
+import type { ReservationComplete, ReservationCompleteResponse } from "../../interfaces";
 
-
-export const getClubReservationsAction = async (clubId: string, startDateRange?: string, endDateRange?: string) : Promise<Reservation[]> => {
+export const getClubReservationsAction = async (clubId: string, startDateRange?: string, endDateRange?: string) : Promise<ReservationComplete[]> => {
     try {
             const config = reservation.getClubReservations(clubId, startDateRange, endDateRange);
-            const { data } = await clientApi.request<ReservationResponse[]>(config);
+            const { data } = await clientApi.request<ReservationCompleteResponse[]>(config);
             return data.map(reservation => ({
                 ...reservation,
                 date: new Date(reservation.date),

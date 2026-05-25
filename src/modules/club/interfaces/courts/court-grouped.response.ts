@@ -1,8 +1,9 @@
-import type { CourtSummarizedResponse } from "./court-summarized.response";
+import type { CourtAvailabilityDetail } from "./court-availability-detail.response";
 
 export interface CourtGroupedResponse {
     clubId: string;
     clubName: string;
     address: string;
-    availableCourts: CourtSummarizedResponse;
+    weatherIcon: string;
+    availableCourts: CourtAvailabilityDetail[];
 }

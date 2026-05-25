@@ -151,7 +151,7 @@ const onSaveModifiedMember = async (updatedData: MemberUpdateForm) => {
         }
 
         toast.add({ 
-            severity: 'info', 
+            severity: 'success', 
             summary: 'Confirmado', 
             detail: 'Usuario modificado', 
             life: 3000});
@@ -244,7 +244,7 @@ const handleToggleStatus = (member: MemberComplete, event: PointerEvent) => {
                 member.isActive = isActivating;
 
                 toast.add({ 
-                    severity: 'info', 
+                    severity: 'success', 
                     summary: 'Confirmado', 
                     detail: `Miembro ${isActivating ? 'reactivado' : 'desactivado'} con éxito`, 
                     life: 3000});

@@ -149,7 +149,7 @@ const onSaveModifiedClub = async (updatedData: Club) => {
         clubStore.currentClubData = {... clubStore.currentClubData, ...updatedData}
 
         toast.add({ 
-            severity: 'info', 
+            severity: 'success', 
             summary: 'Confirmado', 
             detail: 'Club modificado', 
             life: 3000
@@ -179,7 +179,7 @@ const onSaveModifiedSchedule = async (updatedData: Schedule) => {
             });
 
             toast.add({ 
-                severity: 'info', 
+                severity: 'success', 
                 summary: 'Confirmado', 
                 detail: `Horario ${isEditing ? 'modificado': 'añadido'}`, 
                 life: 3000

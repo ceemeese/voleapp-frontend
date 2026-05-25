@@ -7,7 +7,7 @@ export interface Reservation {
     startTime: string;
     endTime: string;
     status: Status;
-    totalPrice: number;
+    price: PriceBreakdown;
     notes?: string;
     createdAt: Date;
     updatedAt: Date; 
@@ -25,4 +25,12 @@ export enum ReservationStatus {
     Completed = 4,
     Failed = 5,
     Refunded = 6,
+}
+
+export interface PriceBreakdown {
+    basePrice: number;
+    totalPrice: number;
+    discountAmount: number;
+    appliedDiscountPercent: number;
+    discountReason?: string;
 }

@@ -1,7 +1,8 @@
 import { getClubReservationsAction, getReservationByIdAction, getReservationsAction, getUserReservationsAction, registerReservationAction, updateStatusReservationAction, cancelReservationAction } from "@/modules/reservation/actions";
-import type { AddReservation, Reservation, ReservationFilters } from "@/modules/reservation/interfaces"
+import { ReservationStatus, type AddReservation, type Reservation, type ReservationComplete, type ReservationFilters } from "@/modules/reservation/interfaces"
 import { ref, computed } from "vue";
 import { useUserStore } from "@/stores/userStore";
+import { STATUS_EN } from "@/utils/status-utils";
 
 export const useReservation = () => {
     const isLoading = ref(false);
@@ -31,23 +32,23 @@ export const useReservation = () => {
         }
     }
 
-    const getClubReservations = async(clubId: string, startDateRange?: string, endDateRange?: string) : Promise<Reservation[]> => {
+    const getClubReservations = async(clubId: string, startDateRange?: string, endDateRange?: string) : Promise<ReservationComplete[]> => {
         isLoading.value = true;
 
         try {
-            const data: Reservation[] = await getClubReservationsAction(clubId, startDateRange, endDateRange);
+            const data: ReservationComplete[] = await getClubReservationsAction(clubId, startDateRange, endDateRange);
             return data;
         } finally {
             isLoading.value = false;
         }
     }
 
-    const getUserReservations = async(userId: string, startDateRange?: string, endDateRange?: string) : Promise<Reservation[]> => {
+    const getUserReservations = async(userId: string, startDateRange?: string, endDateRange?: string) : Promise<ReservationComplete[]> => {
         isLoading.value = true;
 
         try {
-            const data: Reservation[] = await getUserReservationsAction(userId, startDateRange, endDateRange);
-            userStore.setReservations(data);
+            const data: ReservationComplete[] = await getUserReservationsAction(userId, startDateRange, endDateRange);
+            userStore.upsertReservations(data);
             return data;
         } finally {
             isLoading.value = false;
@@ -59,7 +60,6 @@ export const useReservation = () => {
 
         try {
             const data: Reservation = await registerReservationAction(formData);
-            userStore.addReservation(data);
             return data;
         } finally {
             isLoading.value = false;
@@ -71,6 +71,12 @@ export const useReservation = () => {
 
         try {
             await updateStatusReservationAction(reservationId, newStatus);
+            
+            const reservation = userStore.reservations.find(res => res.id === reservationId);
+        if (reservation) {
+            reservation.status.id = newStatus;
+            reservation.status.status = STATUS_EN[newStatus] ?? 'Unknown';
+        }
         } finally {
             isLoading.value = false;
         }
@@ -81,10 +87,27 @@ export const useReservation = () => {
 
         try {
             await cancelReservationAction(reservationId);
+            const reservation = userStore.reservations.find(res => res.id === reservationId);
+
+        if (reservation) {
+            reservation.status.id = ReservationStatus.Cancelled;
+            reservation.status.status = STATUS_EN[ReservationStatus.Cancelled] ?? 'Cancelled';
+        }
         } finally {
             isLoading.value = false;
         }
     }
+
+    const refreshCurrentUserReservations = async (): Promise<void> => {
+        const userId = userStore.profile?.id;
+        if (!userId) return;
+
+        const year = new Date().getFullYear();
+        const startDate = `${year}-01-01`; 
+        const endDate = `${year}-12-31`;
+
+        await getUserReservations(userId, startDate, endDate);
+    };
 
 
     return {
@@ -96,6 +119,7 @@ export const useReservation = () => {
         updateStatusReservation,
         cancelReservation,
         userReservations,
-        isLoading
+        isLoading,
+        refreshCurrentUserReservations
     }
 }

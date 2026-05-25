@@ -3,33 +3,37 @@ import { ref, onMounted, onUnmounted, nextTick, watch } from 'vue';
 import { useReservation } from '@/composables/useReservation';
 import { useClub } from '@/composables/useClub';
 import { useToast } from 'primevue/usetoast';
-import { ReservationStatus, type Reservation } from '@/modules/reservation/interfaces';
+import { ReservationStatus, type ReservationComplete, type ReservationDataDialog } from '@/modules/reservation/interfaces';
 import { BaseCard, BaseDataTable, BaseDatePicker, type ColumnConfig } from 'ui';
 import { animate, stagger } from 'animejs';
-import { toDateOnlyString } from '@/helpers/dateHelpers';
+import { calculateDuration, toDateOnlyString } from '@/helpers/dateHelpers';
 import { STATUS_TRANSLATION } from '@/utils/status-utils';
 import { useConfirm } from "primevue/useconfirm";
+import ReservationSummary from '@/components/ReservationSummary.vue';
 
 
 const { getClubReservations, updateStatusReservation } = useReservation();
 const { activeClubId } = useClub();
 const toast = useToast();
 const confirmPopup = useConfirm();
+const reservationDialogRef = ref();
 
-const reservations = ref<Reservation[]>([]);
+const selectedReservation = ref<ReservationComplete | null>(null);
+const reservations = ref<ReservationComplete[]>([]);
 
 const dateRange = ref<Date[]>([
     new Date(new Date().getFullYear(), new Date().getMonth(), 1),
     new Date(new Date().getFullYear(), new Date().getMonth() + 2, 0)
 ]);
 
-const headerColumns: ColumnConfig<Reservation>[] = [
+const headerColumns: ColumnConfig<ReservationComplete>[] = [
     { field: 'id', header: 'ID', sortable: true },
-    { field: 'userName', header: 'Cliente', sortable: false },
+    { field: 'username', header: 'Cliente', sortable: false },
     { field: 'date', header: 'Fecha', sortable: true },
     { field: 'time', header: 'Horario', sortable: false },
     { field: 'courtName', header: 'Pista', sortable: false },
-    { field: 'totalPrice', header: 'Precio', sortable: true },
+    { field: 'totalPrice', sortField: 'price.totalPrice', header: 'Precio', sortable: true },
+    { field: 'discount', sortField: 'price.discountAmount', header: 'Descuento', sortable: true },
     { field: 'status', header: 'Estado', sortable: false },
     { 
         field: 'actions', 
@@ -37,27 +41,33 @@ const headerColumns: ColumnConfig<Reservation>[] = [
         sortable: false, 
         actions: [
             {
-                isVisible: (res: Reservation) => canCancel(res),
+                isVisible: (res: ReservationComplete) => canCancel(res),
                 icon: 'pi pi-ban',
                 class: '!text-red-500',
-                action: (res: Reservation, event) => handleUpdateStatus(res, ReservationStatus.Cancelled, event)
+                action: (res: ReservationComplete, event) => handleUpdateStatus(res, ReservationStatus.Cancelled, event)
             },
             {
-                isVisible: (res: Reservation) => canRefund(res),
+                isVisible: (res: ReservationComplete) => canRefund(res),
                 icon: 'pi pi-refresh',
                 class: '!text-orange-500',
-                action: (res: Reservation, event) => handleUpdateStatus(res, ReservationStatus.Refunded, event)
+                action: (res: ReservationComplete, event) => handleUpdateStatus(res, ReservationStatus.Refunded, event)
+            },
+            {
+                isVisible: true,
+                icon: 'pi pi-eye',
+                class: '!text-slate-400',
+                action: (res: ReservationComplete) => openReservationDetail(res)
             }
         ]
     }
 ];
 
 
-const canCancel = (res: Reservation) => {
+const canCancel = (res: ReservationComplete) => {
     return ![ReservationStatus.Cancelled, ReservationStatus.Refunded, ReservationStatus.Completed].includes(res.status.id);
 };
 
-const canRefund = (res: Reservation) => {
+const canRefund = (res: ReservationComplete) => {
     return res.status.id === ReservationStatus.Confirmed;
 };
 
@@ -71,6 +81,7 @@ const loadReservations = async (startDate?: string, endDate?: string) => {
 
         const data = await getClubReservations(activeClubId.value, start, end);
         reservations.value = data;
+        console.log(reservations.value, 'reservations')
         animateTableRows();
     } catch (error : unknown) {
         const message = error instanceof Error ? error.message : 'Error inesperado';
@@ -79,7 +90,7 @@ const loadReservations = async (startDate?: string, endDate?: string) => {
 };
 
 
-const handleUpdateStatus = async (res: Reservation, newStatus: ReservationStatus , event: PointerEvent) => {
+const handleUpdateStatus = async (res: ReservationComplete, newStatus: ReservationStatus , event: PointerEvent) => {
     const actionName = newStatus === ReservationStatus.Cancelled ? 'anular' : 'reembolsar';
 
     const target = event.currentTarget as HTMLElement;
@@ -117,6 +128,30 @@ const handleUpdateStatus = async (res: Reservation, newStatus: ReservationStatus
         },
     });
 };
+
+const openReservationDetail = (reservation : ReservationComplete) => {
+
+    selectedReservation.value = reservation;
+console.log(reservation, 'RESERVATONABIERTA')
+    const summarizedReservation: ReservationDataDialog = {
+        id: reservation.id,
+        userId: reservation.userId,
+        clubId: reservation.clubId,
+        courtId: reservation.courtId,
+        courtName: reservation.courtName,
+        type: reservation.courtId,
+        clubName: reservation.clubName,
+        clubAddress: reservation.clubId,
+        date: reservation.date.toLocaleDateString('sv-SE'),
+        startTime: reservation.startTime,
+        endTime: reservation.endTime,
+        status: reservation.status.status,
+        duration: calculateDuration(reservation.startTime, reservation.endTime),
+        price: reservation.price,
+        createdAt: reservation.createdAt
+    };
+   reservationDialogRef.value.open(summarizedReservation);
+}
 
 const animateTableRows = async () => {
     await nextTick(); 
@@ -170,14 +205,14 @@ onUnmounted(() => {
 <template>
     <div class="p-4">
         <div class="mb-4">
-            <h2 class="text-xl font-bold text-slate-800">Gestión de Reservas</h2>
+             <h2 class="text-xl font-black text-slate-800 uppercase italic">Gestión de reservas</h2>
         </div>
         <BaseCard padding="p-4">
             <BaseDataTable
                 :value="reservations"
                 :columns="headerColumns"
                 :show-search="true"
-                :globalFilterFields="['id', 'userName', 'courtName']"
+                :globalFilterFields="['id', 'username', 'courtName']"
                 :removable-sort="true"
                 :rows="rowsPerPage"
                 :paginator="true"
@@ -199,10 +234,9 @@ onUnmounted(() => {
                     </div>
                 </template>
 
-                <template #userName="{ data }">
+                <template #username="{ data }">
                     <div class="flex flex-col">
-                        <span class="font-bold text-slate-700">{{ data.userName || 'Usuario' }}</span>
-                        <span class="text-xs text-slate-400">ID Usuario: {{ data.userId }}</span>
+                        <span class="font-bold text-slate-700">{{ data.username || 'Usuario' }}</span>
                     </div>
                 </template>
 
@@ -217,8 +251,24 @@ onUnmounted(() => {
                     </div>
                 </template>
 
+                 <template #courtName="{ data }">
+                    <span class="font-bold text-slate-700">{{ data.courtName }}</span>
+                </template>
+
                 <template #totalPrice="{ data }">
-                    <span class="font-bold text-slate-700">{{ data.totalPrice }}€</span>
+                    <span class="font-bold text-slate-700">{{ data.price.totalPrice }}€</span>
+                </template>
+
+                <template #discount="{ data }">
+                    <div v-if="data.price && data.price.appliedDiscountPercent > 0" class="flex gap-1">
+                        <span class="text-xs font-bold text-indigo-600">
+                            -{{ data.price.discountAmount }}€
+                        </span>
+                        <span class="text-[10px] text-slate-400 font-medium">
+                            ({{ data.price.appliedDiscountPercent }}%)
+                        </span>
+                    </div>
+                    <span v-else class="text-xs text-slate-400 italic">—</span>
                 </template>
 
                 <template #status="{ data }">
@@ -236,5 +286,14 @@ onUnmounted(() => {
                 </template>
             </BaseDataTable>
         </BaseCard>
+
+        <BaseDialog ref="reservationDialogRef" header="Resumen de la reserva">
+            <template #default="{ data }">
+                <ReservationSummary :reservation="data"/>
+            </template>
+            <template #footer>
+                <BaseButton label="Volver" severity="secondary" @click="reservationDialogRef.close"/>
+            </template>
+        </BaseDialog>
     </div>
 </template>
