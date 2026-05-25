@@ -94,7 +94,7 @@ onMounted(async () => {
             <BaseCard padding="p-8">
                 <PriceConfigForm v-if="pricingConfig"
                 :pricing-config="pricingConfig"
-                @save="handleSaveConfig"/>
+                @submit="handleSaveConfig" />
             </BaseCard>
         </section>
 
