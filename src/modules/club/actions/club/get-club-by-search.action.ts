@@ -7,7 +7,7 @@ import type { SummarizedClub, SummarizedClubResponse } from "../../interfaces";
 
 export const getClubBySearchAction = async (clubId: string) : Promise<SummarizedClub> => {
     try {
-        const config = club.getClubById(clubId);
+        const config = club.getClubsBySearch(clubId);
         const { data } = await clientApi.request<SummarizedClubResponse>(config);
         return data;
     } catch (error : unknown) {

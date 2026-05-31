@@ -27,11 +27,11 @@ export const useClub = () => {
     }
 
 
-    const getClubs = async (): Promise<SummarizedClub[]> => {
+    const getClubs = async (): Promise<Club[]> => {
         isLoading.value = true;
 
         try {
-            const data: SummarizedClub[] = await getClubsAction()
+            const data:Club[] = await getClubsAction()
             return data;
         } finally {
             isLoading.value = false;
