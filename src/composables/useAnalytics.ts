@@ -13,36 +13,36 @@ export const useAnalytics = () => {
     const clubStore = useClubStore();
     const activeClubId = computed(() => clubStore.activeClubId);
 
-    const getDashboardStats = async (clubId: string) => {
+    const getDashboardStats = async () => {
         if (!activeClubId.value) return;
 
         isLoading.value = true;
         try {
-            const data: DashboardResponse = await getDashboardStatsAction(clubId);
+            const data: DashboardResponse = await getDashboardStatsAction(activeClubId.value);
             return data;
         } finally {
             isLoading.value = false;
         }
     }
 
-    const getAnalyticsStats = async (clubId: string, year: number, month: number) => {
+    const getAnalyticsStats = async (year: number, month: number) => {
         if (!activeClubId.value) return;
 
         isLoading.value = true;
         try {
-            const data: AnalyticsResponse = await getAnalyticsStatsAction(clubId, year, month)
+            const data: AnalyticsResponse = await getAnalyticsStatsAction(activeClubId.value, year, month)
             return data;
         } finally {
             isLoading.value = false;
         }
     }
 
-    const getOccupancyStats = async (clubId: string, year: number, month: number) => {
+    const getOccupancyStats = async (year: number, month: number) => {
         if (!activeClubId.value) return;
 
         isLoading.value = true;
         try {
-            const data: OccupancyResponse = await getOccupancyStatsAction(clubId, year, month);
+            const data: OccupancyResponse = await getOccupancyStatsAction(activeClubId.value, year, month);
             return data;
         } finally {
             isLoading.value = false;
@@ -55,5 +55,6 @@ export const useAnalytics = () => {
         getDashboardStats,
         getAnalyticsStats,
         getOccupancyStats,
+        isLoading,
     }
 }
