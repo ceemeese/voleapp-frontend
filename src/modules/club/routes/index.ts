@@ -31,4 +31,19 @@ export const clubRoutes: RouteRecordRaw[] = [
         name: 'admin-price',
         component: () => import('@/modules/club/views/PriceConfigView.vue'),
     },
+    {  
+        path: 'dashboard',
+        name: 'admin-dashboard',
+        component: () => import('@/modules/club/views/DashboardView.vue'),
+    },
+        {  
+        path: 'analytics',
+        name: 'admin-analytics',
+        component: () => import('@/modules/club/views/AnalyticsView.vue'),
+    },
+    {  
+        path: 'occupancy',
+        name: 'admin-occupancy',
+        component: () => import('@/modules/club/views/OccupancyView.vue'),
+    },
 ]

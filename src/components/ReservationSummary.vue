@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { formatFullDate } from '@/helpers/dateHelpers';
 import type { ReservationDataDialog } from '@/modules/reservation/interfaces';
+import { BaseCard } from 'ui';
 
 const props = defineProps<{
     reservation: ReservationDataDialog | null;
@@ -9,7 +10,7 @@ const props = defineProps<{
 </script>
 
 <template>
-   <div v-if="props.reservation" class="flex flex-col gap-4 p-4 bg-white rounded-2xl border border-slate-100 shadow-sm">
+   <BaseCard v-if="props.reservation" class="flex flex-col gap-4 !bg-slate-100 !shadow-md">
         
         <div class="flex items-center gap-3 pb-2 border-b border-slate-50">
             <div class="p-2 rounded-lg">
@@ -32,13 +33,13 @@ const props = defineProps<{
             </div>
         </div>
 
-        <div class="grid grid-cols-2 gap-4 bg-slate-50 p-3 rounded-xl">
+        <div class="grid grid-cols-2 gap-4 p-3 rounded-xl">
             <div>
-                <p class="text-[9px] font-bold text-slate-400 uppercase">Fecha</p>
+                <p class="text-[10px] font-bold text-slate-400 uppercase">Fecha</p>
                 <p class="text-xs font-black text-slate-700">{{ props.reservation.date }}</p>
             </div>
             <div>
-                <p class="text-[9px] font-bold text-slate-400 uppercase">Horario</p>
+                <p class="text-[10px] font-bold text-slate-400 uppercase">Horario</p>
                 <p class="text-xs font-black text-slate-700">{{ props.reservation.startTime }} - {{ props.reservation.endTime }}</p>
             </div>
         </div>
@@ -57,8 +58,8 @@ const props = defineProps<{
 
             <div class="pt-3 border-t border-dashed border-slate-200 flex justify-between items-end">
                 <div>
-                    <p class="text-[10px] font-black text-slate-400 uppercase leading-none">Total a pagar</p>
-                    <p v-if="props.reservation.price.discountReason" class="text-[9px] text-[#A7D16A] font-bold italic mt-1">
+                    <p class=" font-black text-slate-400 uppercase leading-none">Total a pagar</p>
+                    <p v-if="props.reservation.price.discountReason" class="text-[10px] text-[#A7D16A] font-bold italic mt-1">
                         * {{ props.reservation.price.discountReason }}
                     </p>
                 </div>
@@ -69,9 +70,9 @@ const props = defineProps<{
         </div>
 
         <div v-if="props.reservation.createdAt" class="mt-2 pt-2 border-t border-slate-50 text-center">
-            <p class="text-[9px] text-slate-400 font-medium italic">
+            <p class="text-[10px] text-slate-400 font-medium italic">
                 Reserva generada el {{ formatFullDate(props.reservation.createdAt) }}
             </p>
         </div>
-    </div>
+   </BaseCard>
 </template>

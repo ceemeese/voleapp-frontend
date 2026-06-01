@@ -81,7 +81,6 @@ const loadReservations = async (startDate?: string, endDate?: string) => {
 
         const data = await getClubReservations(activeClubId.value, start, end);
         reservations.value = data;
-        console.log(reservations.value, 'reservations')
         animateTableRows();
     } catch (error : unknown) {
         const message = error instanceof Error ? error.message : 'Error inesperado';
@@ -132,7 +131,6 @@ const handleUpdateStatus = async (res: ReservationComplete, newStatus: Reservati
 const openReservationDetail = (reservation : ReservationComplete) => {
 
     selectedReservation.value = reservation;
-console.log(reservation, 'RESERVATONABIERTA')
     const summarizedReservation: ReservationDataDialog = {
         id: reservation.id,
         userId: reservation.userId,

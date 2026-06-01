@@ -44,9 +44,9 @@ const ADMIN_MENU : AppNavigationGroup[] = [
     {
         label: 'Análisis y rendimiento',
         items: [
-            { label: 'Dashboard', to: {name: 'login'}, icon: 'pi pi-chart-bar'},
-            { label: 'Análisis', to: {name: 'login'}, icon: 'pi pi-chart-line'},
-            { label: 'Ocupación de pistas', to: {name: 'login'}, icon: 'pi pi-percentage'},
+            { label: 'Dashboard', to: {name: 'admin-dashboard'}, icon: 'pi pi-chart-bar'},
+            { label: 'Análisis', to: {name: 'admin-analytics'}, icon: 'pi pi-chart-line'},
+            { label: 'Ocupación de pistas', to: {name: 'admin-occupancy'}, icon: 'pi pi-percentage'},
         ]
     },
     {

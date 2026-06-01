@@ -39,7 +39,6 @@ const fetchAvailabilityCourts = async () => {
     try {
         if (!selectedDate.value || !duration.value) return;
         availablesCourts.value = await searchAvailability(cityFilter.value, selectedDate.value, duration.value)
-        console.log(availablesCourts.value, 'AVAILABLRES')
         
     } catch (error: unknown) {
         const message = error instanceof Error ? error.message : 'Error inesperado';
@@ -127,7 +126,6 @@ const handleConfirmReservation = async () => {
 watch([selectedDate, duration, cityFilter], () => {
     if (selectedDate.value && duration.value && cityFilter.value.length >= 3) {
         fetchAvailabilityCourts();
-        console.log(availablesCourts.value)
     }
 });
 
