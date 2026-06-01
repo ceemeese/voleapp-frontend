@@ -1,9 +1,6 @@
 <script setup lang="ts">
 import { onMounted, ref, computed } from 'vue';
-import { useRouter } from 'vue-router';
 import { useUserStore } from '@/stores/userStore';
-import { BaseButton } from 'ui';
-import { BaseDatePicker } from 'ui';
 import { BaseCard } from 'ui';
 import BookingCard from '@/components/BookingCard.vue';
 import { useReservation } from '@/composables/useReservation';
@@ -11,23 +8,13 @@ import { useAuthStore } from '@/stores/authStore';
 import { useToast } from 'primevue';
 import Chart from 'primevue/chart';
 
-const router = useRouter();
 const userStore = useUserStore();
 const { getUserReservations, userReservations } = useReservation();
-const selectedDate = ref<Date | null>(null);
 const authStore = useAuthStore();
 const activeUserId = authStore.userId;
 const errorMessage = ref<string>('');
 const toast = useToast();
 
-const startBooking = () => {
-    if (!selectedDate.value) return;
-    
-    router.push({ 
-        name: 'search-courts', 
-        query: { date: selectedDate.value.toISOString() } 
-    });
-};
 
 const upcomingReservations = computed(() => {
     const today = new Date();
@@ -112,59 +99,34 @@ onMounted(async() => {
             <p class="text-gray-500 mt-1">Gestiona tus partidos y reservas</p>
         </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <section class="lg:col-span-1">
-                <BaseCard class="min-h-60">
-                    <h3 class="font-semibold mb-4 flex items-center gap-2">
-                        <i class="pi pi-calendar"></i>
-                        Nueva Reserva
+        <section class="lg:col-span-2 flex flex-col gap-4">
+            <BaseCard class="min-h-60">
+                <div class="flex justify-between items-center px-2">
+                    <h3 class="font-semibold flex items-center gap-2">
+                        <i class="pi pi-ticket"></i>
+                        Mis próximas reservas
                     </h3>
-                    
-                    <div class="space-y-4">
-                        <p class="text-sm text-gray-600">Selecciona una fecha para ver pistas disponibles:</p>
-                        
-                        <BaseDatePicker v-model="selectedDate" show-icon />
-                        
-                        <BaseButton 
-                            label="Buscar pistas" 
-                            icon="pi pi-search" 
-                            class="w-full !bg-black"
-                            :disabled="!selectedDate"
-                            @click="startBooking"
-                        />
-                    </div>
-                </BaseCard>
-            </section>
-
-            
-            <section class="lg:col-span-2 flex flex-col gap-4">
-                <BaseCard class="min-h-60">
-                    <div class="flex justify-between items-center px-2">
-                        <h3 class="font-semibold flex items-center gap-2">
-                            <i class="pi pi-ticket"></i>
-                            Mis próximas reservas
-                        </h3>
-                        <router-link :to="{ name: 'my-reservations'}" class="text-xs font-bold text-slate-400 hover:text-black">
-                            VER HISTORIAL
-                        </router-link>
-                    </div>
+                    <router-link :to="{ name: 'my-reservations'}" class="text-xs font-bold text-slate-400 hover:text-black">
+                        VER HISTORIAL
+                    </router-link>
+                </div>
 
 
-                    <div v-if="upcomingReservations.length === 0" 
-                            class="flex flex-col items-center justify-center p-12 bg-slate-50 rounded-2xl border border-dashed">
-                            <i class="pi pi-calendar-times text-4xl text-gray-300 mb-3"></i>
-                            <p class="text-gray-500">No tienes reservas activas para esta semana</p>
-                        </div>
-                    <div v-if="upcomingReservations.length > 0" class="flex flex-col gap-3">
-                        <BookingCard 
-                            v-for="res in upcomingReservations" 
-                            :key="res.id" 
-                            :reservation="res" 
-                        />
+                <div v-if="upcomingReservations.length === 0" 
+                        class="flex flex-col items-center justify-center p-12 bg-slate-50 rounded-2xl border border-dashed mt-3">
+                        <i class="pi pi-calendar-times text-4xl text-gray-300 mb-3"></i>
+                        <p class="text-gray-500">No tienes reservas activas para esta semana</p>
                     </div>
-                </BaseCard>
-            </section>
-        </div>
+                <div v-if="upcomingReservations.length > 0" class="mt-3 flex flex-col gap-3">
+                    <BookingCard 
+                        v-for="res in upcomingReservations" 
+                        :key="res.id" 
+                        :reservation="res" 
+                    />
+                </div>
+            </BaseCard>
+        </section>
+
 
         <section>
             <BaseCard>

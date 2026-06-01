@@ -35,7 +35,6 @@ const loadPricingConfig = async () => {
 
     try {
         pricingConfig.value = await getPricing(activeClubId.value!);
-        console.log(pricingConfig.value, 'PRICINGGGG');
     } catch (error: unknown) {
         const message = error instanceof Error ? error.message : 'Error inesperado';
         toast.add({
@@ -90,7 +89,7 @@ onMounted(async () => {
 <template>
     <div class="flex flex-col gap-8 p-4 w-full h-full overflow-y-auto bg-slate-50">
         
-        <section class="w-full max-w-5xl mx-auto">
+        <section class="w-full mx-auto">
             <BaseCard padding="p-8">
                 <PriceConfigForm v-if="pricingConfig"
                 :pricing-config="pricingConfig"
@@ -98,7 +97,7 @@ onMounted(async () => {
             </BaseCard>
         </section>
 
-        <section class="w-full max-w-5xl mx-auto">
+        <section class="w-full mx-auto">
             <BaseCard padding="p-8">
                 <PriceSimulator v-if="pricingConfig && courts.length > 0 " 
                 :courts="courts"

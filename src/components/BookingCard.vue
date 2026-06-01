@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { ReservationComplete } from '@/modules/reservation/interfaces';
 import { STATUS_TRANSLATION } from '@/utils/status-utils';
+import { BaseCard } from 'ui';
 import { computed } from 'vue'
 
 const props = defineProps<{ reservation: ReservationComplete }>();
@@ -11,7 +12,9 @@ const month = computed(() => dateObj.value.toLocaleString('es-ES', { month: 'sho
 </script>
 
 <template>
-    <div class="flex items-center gap-4 p-4 bg-white border border-slate-100 !rounded-2xl !hover:border-[#C8E794] transition-colors">
+    <BaseCard 
+    padding="p-4"
+    class="!flex-row !items-center !gap-4 hover:!border-[#C8E794] !transition-colors !shadow-md">
         <div class="!bg-[#94C8E7] text-black p-3 rounded-xl flex flex-col items-center min-w-[60px]">
             <span class="text-xs uppercase font-bold">{{ month }}</span>
             <span class="text-xl font-black">{{ day }}</span>
@@ -26,5 +29,5 @@ const month = computed(() => dateObj.value.toLocaleString('es-ES', { month: 'sho
             <p class="text-lg font-black text-slate-900">{{ reservation.price.totalPrice }}€</p>
             <span class="text-[10px] uppercase font-bold text-slate-400"> {{ STATUS_TRANSLATION[reservation.status.id] }} </span>
         </div>
-    </div>
+    </BaseCard>
 </template>

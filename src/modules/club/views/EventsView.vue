@@ -11,13 +11,13 @@ import { zodResolver } from '@primevue/forms/resolvers/zod';
 import { addEventSchema } from '../schemas/event.schema';
 import { BaseDatePicker } from 'ui';
 import { useSchedule } from '@/composables/useSchedule';
-import { ReservationStatus, type Reservation, type ReservationDataDialog } from '@/modules/reservation/interfaces';
+import { ReservationStatus, type Reservation, type ReservationComplete, type ReservationDataDialog } from '@/modules/reservation/interfaces';
 import { useReservation } from '@/composables/useReservation';
 import { parseTimeOnlyToDate, calculateDuration } from '@/helpers/dateHelpers';
 import ReservationSummary from '@/components/ReservationSummary.vue';
 
-type CalendarData = Event | Reservation;
-const isReservation = (data: CalendarData): data is Reservation => {
+type CalendarData = Event | ReservationComplete;
+const isReservation = (data: CalendarData): data is ReservationComplete => {
     return (data as Reservation).userId !== undefined;
 };
 const confirmMode = ref<ReservationStatus.Cancelled | ReservationStatus.Refunded | null>(null);
@@ -31,13 +31,13 @@ const { getCourtsByClubId } = useCourt();
 const { schedules, getSchedule } = useSchedule();
 const resolver = zodResolver(addEventSchema);
 const selectedEvent = ref<Event >();
-const selectedReservation = ref<Reservation | null>(null);
+const selectedReservation = ref<ReservationComplete | null>(null);
 const selectedDate = ref(new Date());
     
 const eventDialogRef = ref();
 const reservationDialogRef = ref();
 const events = ref<Event[]>([]);
-const reservations = ref<Reservation[]>([]);
+const reservations = ref<ReservationComplete[]>([]);
 const courts = ref<Court[]>([]);
 const isSubmitting = ref(false);
 
@@ -107,7 +107,7 @@ const calendarEvents  = computed(() : CalendarEvent[] => {
         start: parseTimeOnlyToDate(reservation.startTime, selectedDate.value),
         end: parseTimeOnlyToDate(reservation.endTime, selectedDate.value),
         title: 'Reserva',
-        content: reservation.notes || `Pista reservada por usuario ${reservation.userId}`,
+        content: reservation.notes || `${reservation.username}`,
         resourceId: reservation.courtId,
         colorClass:'bg-[#F3FAEA] border-[#C8E794] text-[#6B8F3A]',
         data: reservation,
@@ -217,10 +217,9 @@ const summarizedReservation = computed(() : ReservationDataDialog | null =>  {
         userId: selectedReservation.value.userId,
         courtId: selectedReservation.value.courtId,
         clubId: selectedReservation.value.clubId,
-        courtName: selectedReservation.value.courtId,
+        courtName: selectedReservation.value.courtName,
         type: selectedReservation.value.courtId,
-        clubName: selectedReservation.value.clubId,
-        clubAddress: selectedReservation.value.clubId,
+        clubName: selectedReservation.value.clubName,
         date: selectedReservation.value.date.toLocaleDateString('sv-SE'),
         startTime: selectedReservation.value.startTime,
         endTime: selectedReservation.value.endTime,

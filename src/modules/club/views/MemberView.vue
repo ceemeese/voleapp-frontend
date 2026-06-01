@@ -264,14 +264,12 @@ const handleToggleStatus = (member: MemberComplete, event: PointerEvent) => {
 }
 
 const animateTableRows = async () => {
-    // Esperamos al siguiente tick de Vue para asegurar que el DOM ya tiene las filas
     await nextTick(); 
     
-    // Seleccionamos las filas de la tabla (ajusta el selector si BaseDataTable usa otro)
     animate('tbody tr', {
         opacity: [0, 1],
         translateX: [-20, 0],
-        delay: stagger(40), // 40ms de diferencia entre cada fila
+        delay: stagger(40),
         duration: 600,
         easing: 'out-quartic'
     });

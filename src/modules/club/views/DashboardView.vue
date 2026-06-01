@@ -27,14 +27,13 @@ const loadMetrics = async () => {
 
 onMounted(async () => {
     await loadMetrics();
-    console.log(metrics.value, 'METRICS')
 });
         
 
 </script>
 
 <template>
-    <div class="p-4 space-y-6 bg-slate-50 min-h-screen">
+    <div class="flex flex-col p-4 space-y-6 w-full h-full overflow-y-auto">
         
         <div>
             <h2 class="text-xl font-black text-slate-800 uppercase italic">Resumen Diario</h2>

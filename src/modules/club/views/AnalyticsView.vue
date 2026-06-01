@@ -73,16 +73,17 @@ const chartData = computed(() => {
                 backgroundColor: '#10b981', 
                 borderColor: '#10b981',                     
                 borderWidth: 1,
-                tension: 0.3, 
+                tension: 0.5, 
                 type: 'line',
                 yAxisID: 'yRevenue',
             },
             {
                 label: 'Reservas Totales',
                 data: reservationsData,
-                backgroundColor: '#000000',
+                backgroundColor: 'rgba(0, 0, 0, 0.60)',
+                borderColor: '#000000',
                 borderWidth: 1,
-                borderRadius: 6,
+                borderRadius: 5,
                 borderSkipped: false,
                 type: 'bar',
                 yAxisID: 'yReservations',
@@ -154,7 +155,7 @@ watch([selectedYear, selectedMonth], async () => {
 </script>
 
 <template>
-    <div class="p-4 space-y-6 bg-slate-50 min-h-screen">
+    <div class="flex flex-col p-4 space-y-6 w-full h-full overflow-y-auto">
         
         <div class="flex flex-col md:flex-row md:justify-between md:items-end gap-4 mb-6">
 
@@ -187,7 +188,6 @@ watch([selectedYear, selectedMonth], async () => {
 
         </div>
 
-
         <section v-if="analyticsData" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
             <BaseCard padding="p-5">
                 <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Ticket promedio</p>
@@ -196,7 +196,7 @@ watch([selectedYear, selectedMonth], async () => {
                 </p>
             </BaseCard>
 
-            <BaseCard padding="p-5">
+            <BaseCard padding="p-4">
                 <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Nuevos usuarios Mensual</p>
                 <p class="text-3xl font-extrabold text-purple-600 mt-2">
                 {{ analyticsData.totalNewUsersCount }}
