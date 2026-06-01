@@ -10,7 +10,7 @@ const props = defineProps<{
 </script>
 
 <template>
-   <BaseCard v-if="props.reservation" class="flex flex-col gap-4 !bg-slate-100">
+   <BaseCard v-if="props.reservation" class="flex flex-col gap-4 !bg-slate-100 !shadow-md">
         
         <div class="flex items-center gap-3 pb-2 border-b border-slate-50">
             <div class="p-2 rounded-lg">
