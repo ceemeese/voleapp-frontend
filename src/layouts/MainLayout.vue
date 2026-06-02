@@ -43,23 +43,23 @@ const headerLinks = computed<NavItem[]>(() => {
     }
     return [
         { title: 'Inicio', to: { name: 'home' }, icon: 'pi pi-home' },
-        { title: 'Usuarios', to: { name: 'login' }, icon: 'pi pi-users' },
-        { title: 'Clubs', to: { name: 'login' }, icon: 'pi pi-shop' },
+        { title: 'Usuarios', to: { name: 'usuarios' }, icon: 'pi pi-users' },
+        { title: 'Clubs', to: { name: 'clubs' }, icon: 'pi pi-shop' },
     ];
 });
 
 const footerLinks = computed<NavItem[]>(() => {
     if (isUserLogged.value) {
         return [
-            { title: 'Soporte', to: { name: 'user-home' } },
-            { title: 'Términos', to: { name: 'user-home' } },
-            { title: 'Privacidad', to: { name: 'user-profile' } },
+            { title: 'Inicio', to: { name: 'user-home' } },
+            { title: 'Perfil', to: { name: 'user-profile' } },
+            { title: 'Reservar', to: { name: 'booking' } },
+            { title: 'Contacto', to: { name: 'contact' } },
         ];
     }
     return [
-        { title: 'Sobre Nosotros', to: { name: 'home' } },
-        { title: 'Tarifas', to: { name: 'home' } },
-        { title: 'Contacto', to: { name: 'home' } },
+        { title: 'Sobre Nosotros', to: { name: 'about' } },
+        { title: 'Contacto', to: { name: 'contact' } },
     ];
 });
 
