@@ -19,7 +19,13 @@ const router = createRouter({
         },
         ...adminRoutes,
         authRoutes,      
-    ]
+    ],
+    scrollBehavior(to, from, savedPosition) {
+        if (savedPosition) {
+            return savedPosition;
+        }
+        return { top: 0 };
+    }
 })
 
 
