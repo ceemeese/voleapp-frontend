@@ -1,16 +1,29 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { BaseButton } from 'ui';
+import type { ContactForm } from '../interfaces';
+import { useContact } from '@/composables/useContact';
+import { useToast } from 'primevue/usetoast';
 
-const form = ref({
+const { sendContactForm } = useContact();
+const toast = useToast();
+
+const form = ref<ContactForm>({
     name: '',
     email: '',
     message: ''
 });
 
-const handleSubmit = () => {
-    console.log('Formulario enviado:', form.value);
+const handleSubmit = async () => {
+    try {
+        await sendContactForm(form.value);
+        toast.add({ severity: 'success', summary: 'Actualizado', detail: 'Mensaje enviado', life: 3000 });
+    } catch (error: unknown){
+        const message = error instanceof Error ? error.message : 'Error inesperado';
+        toast.add({ severity: 'error', summary: 'Error al cambiar estado', detail: message, life: 3000 });
+    }
 };
+
 </script>
 
 <template>
