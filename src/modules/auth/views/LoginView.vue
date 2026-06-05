@@ -22,7 +22,7 @@ const onLoginSubmit = async (formData: LoginValues) => {
         await new Promise(resolve => setTimeout(resolve, 2000))
 
         if (userStore.isAdmin || userStore.isSuperadmin) {
-            router.push({ name: 'admin' });
+            router.push({ name: 'admin-root' });
         } else {
             router.push({ name: 'user-home' });
         }  

@@ -4,6 +4,7 @@ import type { AddClub, Club, PutClub, SummarizedClub } from "@/modules/club/inte
 import { useClubStore } from "@/stores/clubStore";
 import { computed, ref } from "vue";
 
+
 export const useClub = () => {
     const clubStore = useClubStore();
     const isLoading = ref(false);
@@ -110,5 +111,6 @@ export const useClub = () => {
         createClub,
         updateClub,
         toggleStatusClub,
+        isLoading
     }
 }

@@ -2,7 +2,7 @@
 import { useAuthStore } from '@/stores/authStore';
 import { useUserStore } from '@/stores/userStore';
 import type { AppNavigationGroup } from '@/types/navigation.interface';
-import { onMounted } from 'vue';
+import { computed, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { useToast } from 'primevue/usetoast';
 import { ref } from 'vue';
@@ -40,7 +40,7 @@ onMounted(async () => {
 })
 
 
-const ADMIN_MENU : AppNavigationGroup[] = [
+const CLUB_ADMIN_MENU : AppNavigationGroup[] = [
     {
         label: 'Análisis y rendimiento',
         items: [
@@ -71,7 +71,38 @@ const ADMIN_MENU : AppNavigationGroup[] = [
             { label: 'Mi perfil', to: {name: 'admin-profile'}, icon: 'pi pi-user'},
         ]
     }
-]
+];
+
+const SUPER_ADMIN_MENU: AppNavigationGroup[] = [
+    {
+        label: 'Control Global',
+        items: [
+            { label: 'Global Dashboard', to: { name: 'admin-users' }, icon: 'pi pi-globe' },
+            { label: 'Clubs', to: { name: 'admin-clubs' }, icon: 'pi pi-shop' },
+            { label: 'Usuarios', to: { name: 'admin-users' }, icon: 'pi pi-users' },
+        ]
+    },
+        {
+        label: 'Configuración',
+        items: [
+            { label: 'Mi perfil', to: {name: 'admin-profile'}, icon: 'pi pi-user'},
+        ]
+    }
+];
+
+const currentMenu = computed<AppNavigationGroup[]>(() => {
+    if (authStore.role === 'SuperAdmin'){
+        return SUPER_ADMIN_MENU;
+    }
+    return CLUB_ADMIN_MENU;
+})
+
+const headerTitle = computed(() => {
+    if (authStore.role === 'SuperAdmin'){
+        return 'VoleApp Global Admin';
+    }
+    return `${currentClubInfo.value?.name || 'Club'}  Admin`
+})
 
 
 const handleLogout = async () => {
@@ -94,7 +125,7 @@ const handleLogout = async () => {
     <div class="h-screen flex overflow-hidden bg-gray-50 p-6 gap-6">
 
         <Navbar
-            :navigation-items="ADMIN_MENU"
+            :navigation-items="currentMenu"
         >
             <template #logo>
                 <img 
@@ -110,15 +141,15 @@ const handleLogout = async () => {
                 <div class="flex items-center gap-2">
                    <slot name="header-actions">
                         <span class="text-sm font-bold text-gray-700 uppercase tracking-widest">
-                            {{ currentClubInfo?.name }} Admin
+                            {{ headerTitle}}
                         </span>
                     </slot>
                 </div>
 
                 <div class="w-fit min-w-60">
                     <NavUserCard
-                    :username="userStore.profile?.username!"
-                    :user-role="authStore.role!"
+                    :username="userStore.profile?.username ?? 'Cargando..'"
+                    :user-role="authStore.role ?? 'Admin'"
                     nagivate-to="admin-profile"
                     @logout="handleLogout"
                     >

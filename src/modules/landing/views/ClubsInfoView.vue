@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import { Tag } from 'primevue';
-import { BaseButton, BaseCard } from 'ui';
+import { BaseButton, BaseCard, BasePill } from 'ui';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
@@ -20,9 +19,7 @@ const goToContact = () => {
 
     <section class="w-full bg-white pt-32 sm:pt-40 pb-12 px-6 border-b border-slate-100">
         <div class="max-w-3xl mx-auto text-center flex flex-col items-center gap-4">
-            <Tag class="text-xs font-black tracking-widest !text-[#6B8F3A] uppercase !bg-[#F3FAEA] px-3 py-1.5 !rounded-full border !border-[#C8E794]/40">
-                Para Centros Deportivos
-            </Tag>
+            <BasePill text="Para Centros Deportivos" type="success" size="normal"/>
             <h1 class="text-3xl sm:text-5xl font-black text-slate-950 tracking-tight max-w-2xl">
                 Automatiza tus reservas y llena tus pistas
             </h1>

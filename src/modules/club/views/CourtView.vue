@@ -1,15 +1,15 @@
 <script setup lang="ts">
 import type {  BaseInputProps, ActionColumn } from 'ui';
-import { BaseButton, BaseCard, BaseDialog } from 'ui'
+import { BaseButton, BaseDialog } from 'ui'
 import { useCourt } from '@/composables/useCourt';
 import { useClub } from '@/composables/useClub';
 import { onMounted, ref } from 'vue';
 import type { Court } from '../interfaces';
 import { useToast } from 'primevue/usetoast';
-import Tag from 'primevue/tag';
 import { useConfirm } from "primevue/useconfirm";
 import { zodResolver } from '@primevue/forms/resolvers/zod';
 import { addCourtSchema, updateCourtSchema } from '../schemas/addCourt.schema';
+import CourtAdminCard from '@/components/CourtAdminCard.vue';
 
 interface CourtForm {
     name: string;
@@ -66,21 +66,6 @@ const courtActions : ActionColumn<Court>[] = [
         action: (court, event) => handleToggleStatus(court, event)
     }
 ]
-
-const getActionValue = <T>( 
-    value: string | ((data: T) => string) | undefined, 
-    item: T
-): string => {
-    if (!value) return '';
-    return typeof value === 'function' ? value(item) : value;
-};
-
-const isActionVisible = <T>(
-    visible: boolean | ((row: T) => boolean), 
-    item: T
-): boolean => {
-    return typeof visible === 'function' ? visible(item) : visible;
-};
 
 const handleCourtEditDialog = (court: Court) => {
     selectedCourt.value = {...court};
@@ -209,62 +194,25 @@ const onSaveModifiedCourt = async (updatedData: CourtForm) => {
         <section class="flex items-center gap-2 pl-4 pr-4">
 
             <BaseButton 
-            icon="pi pi-plus"
-            label="Añadir pista"
-            class="!bg-black !border-none"
-            size="small"
-            rounded
-            @click="onOpenCreateDialog"
+                icon="pi pi-plus"
+                label="Añadir pista"
+                class="!bg-black !border-none"
+                size="small"
+                rounded
+                @click="onOpenCreateDialog"
             />
         </section>
 
         <div class="flex-1 overflow-y-auto p-4">
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                <BaseCard 
+                
+                <CourtAdminCard 
                     v-for="court in courts" 
                     :key="court.id"
-                    class="hover:shadow-md transition-shadow cursor-pointer"
-                >
-                    <template #default>
-                        <div class="flex flex-col gap-4">
-                            <div class="flex justify-between items-start">
-                                <Tag 
-                                    :severity="court.isActive ? 'success' : 'danger'" 
-                                    :value="court.isActive ? 'Activa' : 'Mantenimiento'"
-                                    class="text-xs"
-                                />
-                            </div>
-                        </div>
-
-                        <div class="py-2 mt-2">
-                            <div>
-                                <h3 class="font-extrabold text-xl text-slate-900 leading-tight">{{ court.name }}</h3>
-                                <p class="text-sm font-medium text-slate-500">{{ court.type?.name || 'Indoor' }}</p>
-                            </div>
-
-                            <div class="flex items-center gap-1.5 mt-1">
-                                <div class="bg-emerald-50 text-emerald-700 px-2 py-1 rounded-md border border-emerald-100 flex items-center gap-2">
-                                    <span class="text-xs font-bold uppercase">Precio Base</span>
-                                    <span class="text-sm font-black"> {{ court.basePrice }}€</span> 
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="flex justify-end gap-1 pt-4 mt-auto border-tborder-slate-100">
-                            <BaseButton 
-                                v-for="(btn, index) in courtActions"
-                                v-show="isActionVisible(btn.isVisible, court)"
-                                :key="index"
-                                :icon="getActionValue(btn.icon, court)" 
-                                text 
-                                rounded 
-                                size="small" 
-                                @click="btn.action?.(court, $event)" 
-                                :class="[getActionValue(btn.class, court), 'hover:bg-blue-50 w-10 h-10']"
-                            />
-                        </div>
-                    </template>
-                </BaseCard>
+                    :court="court"
+                    :actions="courtActions"
+                    @actionClick="({ btn, court, event }) => btn.action?.(court, event)"
+                />
 
                 <BaseDialog
                     ref="courtAddDialogRef"

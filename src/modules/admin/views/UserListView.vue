@@ -14,11 +14,10 @@ import { updateUserSchema } from '../../user/schemas/updateUser.schema';
 
 
 const { getUsers, deactivateUser, updateUser } = useUser();
-const userStore = useAuthStore()
+const authStore = useAuthStore()
 const users = ref<User[]>([]);
 const confirmPopup = useConfirm();
 const toast = useToast();
-const errorMessage = ref('');
 const userDialogRef = ref();
 const selectedUser = ref<User>();
 const resolver = zodResolver(updateUserSchema);
@@ -60,10 +59,25 @@ const headerColumns : ColumnConfig<User>[] = [
 
 
 onMounted(async () => {
-    if (userStore.isSuperadmin) {
-        users.value = await getUsers();
+    if (authStore.isSuperadmin) {
+        await loadUsers();
     }
 })
+
+
+const loadUsers = async () => {
+    try {
+        users.value = await getUsers();
+    } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : 'Error inesperado';
+        toast.add({ 
+            severity: 'error', 
+            summary: 'Error de acceso', 
+            detail: message, 
+            life: 5000 
+        });
+    }
+};
 
 const onSaveModifiedUser = async (updatedData: User) => {
     try {
@@ -85,11 +99,10 @@ const onSaveModifiedUser = async (updatedData: User) => {
             life: 3000});
     } catch (error: unknown) {
         const message = error instanceof Error ? error.message : 'Error inesperado';
-        errorMessage.value = message;
         toast.add({ 
             severity: 'error', 
             summary: 'Error de acceso', 
-            detail: errorMessage.value, 
+            detail: message, 
             life: 5000 
         });
     }
@@ -124,11 +137,10 @@ const handleDeactivate = (user: User, event: PointerEvent) => {
 
             } catch (error: unknown) {
                 const message = error instanceof Error ? error.message : 'Error inesperado';
-                errorMessage.value = message;
                 toast.add({ 
                     severity: 'error', 
                     summary: 'Error de acceso', 
-                    detail: errorMessage.value, 
+                    detail: message, 
                     life: 5000 
                 });
             }
@@ -139,40 +151,49 @@ const handleDeactivate = (user: User, event: PointerEvent) => {
 </script>
 
 <template>
-    <BaseCard padding="p-4">
-        <BaseDataTable
-        :value="users"
-        :columns="headerColumns"
-        :show-search="true"
-        :removable-sort="true"
-        :rows="7"
-        :paginator="true"
-        >
-            <template #fullName="{ data }">
-                <div class="flex flex-col">
-                    <span class="font-bold text-slate-700">{{ data.name }} {{ data.lastName }}</span>
-                    <span class="text-xs text-slate-400">@{{ data.username }}</span>
-                </div>
-            </template>
+    <div class="p-6 min-h-screen">
+        <div class="mb-4 flex justify-between items-center">
+            <div>
+                <h2 class="text-xl font-black text-slate-800 uppercase italic">Gestión de Usuarios</h2>
+                <p class="text-xs text-slate-500">Administra los usuarios de alta en VoleApp</p>
+            </div>
+        </div>
 
-            <template #isActive="{ data }">
-                <span :class="['px-3 py-1 rounded-full text-xs font-bold', data.isActive 
-                        ? 'bg-green-100 text-green-700' 
-                        : 'bg-red-100 text-red-700']"
-                >
-                    {{ data.isActive ? 'Activo' : 'Inactivo' }}
-                </span>
-            </template>
-        </BaseDataTable>
+        <BaseCard padding="p-4">
+            <BaseDataTable
+            :value="users"
+            :columns="headerColumns"
+            :show-search="true"
+            :removable-sort="true"
+            :rows="7"
+            :paginator="true"
+            >
+                <template #fullName="{ data }">
+                    <div class="flex flex-col">
+                        <span class="font-bold text-slate-700">{{ data.name }} {{ data.lastName }}</span>
+                        <span class="text-xs text-slate-400">@{{ data.username }}</span>
+                    </div>
+                </template>
 
-         <BaseDialog
-            ref="userDialogRef"
-            header="Editar usuario"
-            subtitle="Actualiza la información del usuario seleccionado"
-            :resolver="resolver"
-            :inputs-dialog="inputsDialog"
-            :model-value="selectedUser"
-            @save="onSaveModifiedUser"
-            />
-    </BaseCard>
+                <template #isActive="{ data }">
+                    <span :class="['px-3 py-1 rounded-full text-xs font-bold', data.isActive 
+                            ? 'bg-green-100 text-green-700' 
+                            : 'bg-red-100 text-red-700']"
+                    >
+                        {{ data.isActive ? 'Activo' : 'Inactivo' }}
+                    </span>
+                </template>
+            </BaseDataTable>
+
+            <BaseDialog
+                ref="userDialogRef"
+                header="Editar usuario"
+                subtitle="Actualiza la información del usuario seleccionado"
+                :resolver="resolver"
+                :inputs-dialog="inputsDialog"
+                :model-value="selectedUser"
+                @save="onSaveModifiedUser"
+                />
+        </BaseCard>
+    </div>
 </template>

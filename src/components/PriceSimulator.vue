@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { BaseInput } from 'ui';
-import type { BaseInputProps } from 'ui';
+import type { BaseInputProps, BasePill } from 'ui';
 import { Slider } from 'primevue';
 import ToggleSwitch from 'primevue/toggleswitch';
 import Message from 'primevue/message';
@@ -135,20 +135,18 @@ const activeDiscounts = [
                     leave-from-class="opacity-100 translate-y-0 scale-100"
                     leave-to-class="opacity-0 -translate-y-4 scale-95"
                 >
-                    <Tag 
+                    <BasePill 
                         v-if="simulation.appliedDiscount" 
-                        :value="`Dto. ${simulation.appliedDiscount.label} (-${simulation.appliedDiscount.val}%)`"
-                        severity="info"
-                        class="!text-[9px] uppercase !whitespace-nowrap !w-max !animate-fade-in"
-                        rounded
+                        :text="`Dto. ${simulation.appliedDiscount.label} (-${simulation.appliedDiscount.val}%)`"
+                        type="info"
+                        class=" !whitespace-nowrap !w-max !animate-fade-in"
                     />
 
-                    <Tag 
+                    <BasePill 
                         v-else 
-                        value="Ningún descuento aplicado"
-                        severity="secondary"
-                        class="!text-[9px] uppercase !whitespace-nowrap !w-max !animate-fade-in"
-                        rounded
+                        text="Ningún descuento aplicado"
+                        type="secondary"
+                        class="!whitespace-nowrap !w-max !animate-fade-in"
                     />
                   </Transition>
             </div>

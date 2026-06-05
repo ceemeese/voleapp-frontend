@@ -45,15 +45,15 @@ defineEmits(['reserve']);
                         {{ props.duration }} min
                     </span>
                 </div>
-                <h3 class="text-xl font-black text-slate-900 group-hover:text-[#344533] transition-colors leading-tight min-h-[3rem] mt-2">
+                <h3 class="text-xl font-black text-slate-900 group-hover:text-[#6B8F3A] transition-colors leading-tight min-h-[3rem] mt-2">
                     {{ props.court.name }}
                 </h3>
             </div>
 
-            <div class="flex items-end justify-between border-t border-slate-50 pt-4 mb-6">
+            <div class="flex items-end justify-between border-t border-slate-200 pt-4 mb-6">
                 <div class="flex flex-col">
                     <span v-if="props.court.price.appliedDiscountPercent > 0" 
-                          class="text-xs font-bold text-gray-400 line-through decoration-red-400">
+                          class="text-xs font-bold text-slate-400 line-through decoration-red-400">
                         {{ props.court.price.basePrice.toFixed(2) }}€
                     </span>
                     
