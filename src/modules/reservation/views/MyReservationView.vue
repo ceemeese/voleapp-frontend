@@ -1,14 +1,7 @@
 <script setup lang="ts">
-import { ref, computed, watch, onMounted } from 'vue';
-import { useReservation } from '@/composables/useReservation';
-import BookingCard from '@/components/BookingCard.vue';
-import { BaseButton, BaseCard, BaseDateSelector } from 'ui';
 import type { ReservationComplete, ReservationDataDialog } from '../interfaces';
 import { ReservationStatus } from '../interfaces';
-import ReservationSummary from '@/components/ReservationSummary.vue';
-import { useToast } from 'primevue/usetoast';
-import { calculateDuration } from '@/helpers/dateHelpers';
-import { useAuthStore } from '@/stores/authStore';
+
 
 const { userReservations, isLoading, cancelReservation, getUserReservations } = useReservation();
 const authStore = useAuthStore();

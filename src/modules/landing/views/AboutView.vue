@@ -1,11 +1,4 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-import { Tag } from 'primevue';
-import { BaseButton } from 'ui';
-import { useRouter } from 'vue-router';
-import Timeline from 'primevue/timeline';
-
-
 const router = useRouter();
 const contentSectionRef = ref<HTMLElement | null>(null);
     
@@ -40,9 +33,7 @@ const phases = ref([
     
     <section class="w-full bg-white pt-32 sm:pt-40 pb-12 px-6 border-b border-slate-100">
         <div class="max-w-3xl mx-auto text-center flex flex-col items-center gap-4">
-            <Tag class="text-xs font-black tracking-widest !text-[#3A7FA6] uppercase !bg-[#EEF7FC] px-3 py-1.5 !rounded-full border !border-[#94C8E7]/40">
-                Nosotros
-            </Tag>
+            <BasePill text="Nosotros" size="normal" type="info" />
             <h1 class="text-3xl sm:text-5xl font-black text-slate-950 tracking-tight max-w-2xl">
                 Pasión por el deporte, obsesión por la eficiencia
             </h1>

@@ -2,15 +2,7 @@
 import { useMember } from '@/composables/useMember';
 import type { MemberComplete } from '../interfaces';
 import type { ColumnConfig,  BaseInputProps, } from 'ui';
-import { useConfirm } from "primevue/useconfirm";
-import { useToast } from 'primevue/usetoast';
-import { BaseDialog, BaseButton, BaseCard} from 'ui';
-import { zodResolver } from '@primevue/forms/resolvers/zod';
 import { updateMemberSchema } from '../schemas/updateMember.schema';
-import { useClub } from '@/composables/useClub'
-import { watch, ref, onMounted, nextTick } from 'vue';
-import AutoComplete from 'primevue/autocomplete';
-import { useUser } from '@/composables/useUser'
 import type { User } from '@/modules/user/interfaces';
 import type { AutoCompleteCompleteEvent } from 'primevue/autocomplete';
 import { animate, stagger } from 'animejs';
@@ -43,7 +35,6 @@ const toast = useToast();
 const { getMembers, deactivateMember, putMember, activateMember, addMember } = useMember();
 
 const members = ref<MemberComplete[]>([]);
-const errorMessage = ref<string>('');
 const selectedMember = ref<SelectedMemberType | undefined>(undefined);
 const memberDialogRef = ref();
 
@@ -124,11 +115,10 @@ const loadMembers = async () => {
         animateTableRows();
     } catch (error: unknown) {
         const message = error instanceof Error ? error.message : 'Error inesperado';
-        errorMessage.value = message;
         toast.add({
             severity: 'error',
             summary: 'Error',
-            detail: errorMessage.value,
+            detail: message,
             life: 5000
         })
     }
@@ -158,11 +148,10 @@ const onSaveModifiedMember = async (updatedData: MemberUpdateForm) => {
         
     } catch (error: unknown) {
         const message = error instanceof Error ? error.message : 'Error inesperado';
-        errorMessage.value = message;
         toast.add({ 
             severity: 'error', 
             summary: 'Error de acceso', 
-            detail: errorMessage.value, 
+            detail: message, 
             life: 5000 
         });
     }
@@ -201,11 +190,10 @@ const onAddMemberToClub = async () => {
         
     } catch (error: unknown) {
         const message = error instanceof Error ? error.message : 'Error inesperado';
-        errorMessage.value = message;
         toast.add({ 
             severity: 'error', 
             summary: 'Error de acceso', 
-            detail: errorMessage.value, 
+            detail: message, 
             life: 5000 
         });
     }
@@ -251,11 +239,10 @@ const handleToggleStatus = (member: MemberComplete, event: PointerEvent) => {
 
             } catch (error: unknown) {
                 const message = error instanceof Error ? error.message : 'Error inesperado';
-                errorMessage.value = message;
                 toast.add({ 
                     severity: 'error', 
                     summary: 'Error de acceso', 
-                    detail: errorMessage.value, 
+                    detail: message,
                     life: 5000 
                 });
             }
@@ -332,18 +319,18 @@ const animateTableRows = async () => {
                 <template #isActive="{ data }">
                     <div class="flex items-center w-32">
                         <div v-if="data.isActive && data.isMember" 
-                            class="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-blue-50 text-blue-700 border border-blue-100">
+                            class="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-blue-50 text-blue-700 border border-blue-100">
                             <i class="pi pi-verified text-[10px]"></i>
                             <span class="text-[10px] uppercase font-black tracking-wider">Socio</span>
                         </div>
 
                         <div v-else-if="data.isActive && !data.isMember" 
-                            class="px-2.5 py-1 rounded-md bg-green-50 text-green-700 border border-green-100">
+                            class="px-2.5 py-1 rounded-full bg-green-50 text-green-700 border border-green-100">
                             <span class="text-[10px] uppercase font-black tracking-wider">Jugador</span>
                         </div>
 
                         <div v-else 
-                            class="px-2.5 py-1 rounded-md bg-slate-100 text-slate-500 border border-slate-200">
+                            class="px-2.5 py-1 rounded-full bg-slate-100 text-slate-500 border border-slate-200">
                             <span class="text-[10px] uppercase font-black tracking-wider">Baja / Inactivo</span>
                         </div>
                     </div>

@@ -1,20 +1,10 @@
 <script setup lang="ts">
-import { BaseCard, EventCalendar, BaseButton, type BaseInputProps } from 'ui';
-import { useClub } from '@/composables/useClub';
-import { useEvent } from '@/composables/useEvent';
-import { computed, onMounted, ref } from 'vue';
+import { EventCalendar } from 'ui';
 import type { Court, Event } from '../interfaces';
-import { useToast } from 'primevue/usetoast';
-import { useCourt } from '@/composables/useCourt';
-import type { CalendarEvent, CalendarResource } from 'node_modules/ui/dist/components/organisms/eventCalendar/EventCalendar.vue';
-import { zodResolver } from '@primevue/forms/resolvers/zod';
+import type { CalendarEvent, CalendarResource, BaseInputProps } from 'ui';
 import { addEventSchema } from '../schemas/event.schema';
-import { BaseDatePicker } from 'ui';
-import { useSchedule } from '@/composables/useSchedule';
 import { ReservationStatus, type Reservation, type ReservationComplete, type ReservationDataDialog } from '@/modules/reservation/interfaces';
-import { useReservation } from '@/composables/useReservation';
-import { parseTimeOnlyToDate, calculateDuration } from '@/helpers/dateHelpers';
-import ReservationSummary from '@/components/ReservationSummary.vue';
+
 
 type CalendarData = Event | ReservationComplete;
 const isReservation = (data: CalendarData): data is ReservationComplete => {

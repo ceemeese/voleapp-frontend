@@ -33,6 +33,13 @@ function deactivateUser(id: string) : AxiosRequestConfig {
     }
 }
 
+function activateUser(id: string) : AxiosRequestConfig {
+    return {
+        method: 'PATCH',
+        url: `${baseURL}/${id}/activate`,
+    }
+}
+
 function putUser(id: string, data: PutUser) : AxiosRequestConfig<PutUser> {
     return {
         method: 'PUT',
@@ -46,6 +53,7 @@ export default {
     getUserById,
     getUserByEmail,
     deactivateUser,
+    activateUser,
     putUser,
 }
 

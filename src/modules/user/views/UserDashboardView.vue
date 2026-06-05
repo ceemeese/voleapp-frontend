@@ -1,13 +1,4 @@
 <script setup lang="ts">
-import { onMounted, ref, computed } from 'vue';
-import { useUserStore } from '@/stores/userStore';
-import { BaseCard } from 'ui';
-import BookingCard from '@/components/BookingCard.vue';
-import { useReservation } from '@/composables/useReservation';
-import { useAuthStore } from '@/stores/authStore';
-import { useToast } from 'primevue';
-import Chart from 'primevue/chart';
-
 const userStore = useUserStore();
 const { getUserReservations, userReservations } = useReservation();
 const authStore = useAuthStore();

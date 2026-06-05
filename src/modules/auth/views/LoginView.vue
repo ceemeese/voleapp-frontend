@@ -1,9 +1,5 @@
 <script setup lang="ts">
-import { useRouter } from 'vue-router';
-import { useAuth } from '@/composables/useAuth';
-import { useToast } from 'primevue/usetoast';
 import type { LoginValues } from 'ui';
-import { useAuthStore } from '@/stores/authStore';
 
 const toast = useToast();
 const router = useRouter();
@@ -22,7 +18,7 @@ const onLoginSubmit = async (formData: LoginValues) => {
         await new Promise(resolve => setTimeout(resolve, 2000))
 
         if (userStore.isAdmin || userStore.isSuperadmin) {
-            router.push({ name: 'admin' });
+            router.push({ name: 'admin-root' });
         } else {
             router.push({ name: 'user-home' });
         }  

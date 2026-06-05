@@ -1,18 +1,8 @@
 <script setup lang="ts">
-import { useToast } from 'primevue/usetoast';
-import { computed, onMounted, ref } from 'vue';
-import { BaseCard, BaseInfoField, UserCardProfile, ScheduleManager } from 'ui';
-import type { InfoFieldProps, BaseInputProps, ActionColumn } from 'ui';
-import { useClub } from '@/composables/useClub';
-import { COUNTRY_FLAGS_DATA, getCountryFlag, getCountryName } from '@/utils/country-utils';
-import { zodResolver } from '@primevue/forms/resolvers/zod';
-import { updateClubSchema } from '../schemas/updateClub.schema';
-import type { Club, Schedule } from '../interfaces';
-import { useClubStore } from '@/stores/clubStore';
-import { useSchedule } from '@/composables/useSchedule';
-import { DAYS_EN, DAYS_TRANSLATION } from '@/utils/day-utils';
-import { useConfirm } from "primevue/useconfirm";
-
+import type { InfoFieldProps, ActionColumn } from 'ui';
+import { clubInputsDialog, clubSchema, type ClubUpdateFormData } from '../schemas/club.schema';
+import type { Schedule } from '../interfaces';
+import { scheduleInputsEditDialog, scheduleSchema, type ScheduleUpdateFormData } from '../schemas/schedule.schema';
 
 const confirmPopup = useConfirm();
 const clubStore = useClubStore();
@@ -20,29 +10,13 @@ const { schedules } = useSchedule();
 const toast = useToast();
 const clubDialogRef = ref();
 const sheduleDialogRef = ref();
-const resolver = zodResolver(updateClubSchema);
+const resolverClub = zodResolver(clubSchema);
+const resolverSchedule = zodResolver(scheduleSchema);
+const selectedSchedule = ref<Schedule | undefined>();
+const selectedDayId = ref<number | undefined>();
+
 const { activeClubId, currentClubInfo, getAdminContext, updateClub } = useClub();
 const { getSchedule, updateSchedule, registerSchedule, toggleSchedule } = useSchedule();
-
-
-const inputsEditScheduleDialog : BaseInputProps[] = [
-    { field: 'openingTime', label: 'Apertura', type: 'time', icon: 'pi pi-clock' },
-    { field: 'closingTime', label: 'Cierre', type: 'time', icon: 'pi pi-clock' },
-]
-
-const inputsClubDialog : BaseInputProps[] = [
-    { field: 'name', label: 'Nombre', icon: 'pi pi-user' },
-    { field: 'cif', label: 'CIF', icon: 'pi pi-id-card' },
-    { field: 'street', label: 'Calle', icon: 'pi-address-book' },
-    { field: 'city', label: 'Ciudad', icon: 'pi-address-book' },
-    { field: 'zipCode', label: 'Código postal', icon: 'pi pi-address-book' },
-    { field: 'country', label: 'País', type: 'select', options: Object.entries(COUNTRY_FLAGS_DATA).map(([code, data]) => ({
-        code,
-        label: `${data.flag} ${data.name}`
-    })), optionLabel: 'label' , optionValue: 'code'},
-    { field: 'phoneNumber', label: 'Teléfono', icon: 'pi pi-phone' },
-    { field: 'email', label: 'Email', icon: 'pi pi-envelope', type: 'email' }
-]
 
 const profileClubField = computed<InfoFieldProps[]>(() => [
     { label: 'Nombre', value: currentClubInfo.value?.name, icon: 'pi pi-id-card'},
@@ -109,51 +83,70 @@ const locationSubtext = computed(() => {
 
 const formattedDate = computed(() => {
     const dateRaw = currentClubInfo.value?.createdAt; 
-    
-    return new Date(dateRaw!).toLocaleDateString('es-ES', {
-        month: 'long',
-        year: 'numeric'
-    });
-   
+    if (!dateRaw) return 'Cargando fecha...';
+
+    return formatFullDate(dateRaw);
 });
 
 //aplanar objeto para poder mostrar dirección
 const handleClubEditDialog = () => {
-    const clubDataForm = {
-        ...currentClubInfo.value,
+    if (!currentClubInfo.value) return;
+    const clubDataForm : ClubUpdateFormData = {
+        name: currentClubInfo.value?.name, 
+        cif: currentClubInfo.value?.cif,
         street: currentClubInfo.value?.address.street,
         city: currentClubInfo.value?.address.city,
         zipCode: currentClubInfo.value?.address.zipCode,
         country: currentClubInfo.value?.address.country,
+        phoneNumber: currentClubInfo.value?.phoneNumber,
+        email: currentClubInfo.value?.email,
     }
     clubDialogRef.value.open(clubDataForm);
 }
 
 const handleScheduleEditDialog = (schedule : Schedule) => {
-    sheduleDialogRef.value.open(schedule);
+    selectedSchedule.value = schedule;
+
+    const scheduleFormData : ScheduleUpdateFormData = {
+        openingTime: schedule.openingTime,
+        closingTime: schedule.closingTime
+    }
+    sheduleDialogRef.value.open(scheduleFormData);
 }
 
-const onSaveModifiedClub = async (updatedData: Club) => {
+const onSaveModifiedClub = async (data: ClubUpdateFormData) => {
     try {
-        await updateClub(updatedData.id, {
-            name: updatedData.name,
-            cif: updatedData.cif,
-            street: updatedData.address.street,
-            city: updatedData.address.city,
-            zipCode: updatedData.address.zipCode,
-            country: updatedData.address.country,
-            email: updatedData.email,
-            phoneNumber: updatedData.phoneNumber
-        });
+        if (currentClubInfo.value?.id) {
+            await updateClub(currentClubInfo.value?.id, {
+                name: data.name, 
+                cif: data.cif,
+                street: data.street,
+                city: data.city,
+                zipCode: data.zipCode,
+                country: data.country,
+                phoneNumber: data.phoneNumber,
+                email: data.email,
+            });
 
-        clubStore.currentClubData = {... clubStore.currentClubData, ...updatedData}
+            clubStore.currentClubData = {
+                id: currentClubInfo.value.id,
+                name: data.name,
+                cif: data.cif,
+                email: data.email,
+                phoneNumber: data.phoneNumber,
+                isActive: currentClubInfo.value.isActive,
+                createdAt: currentClubInfo.value.createdAt,
+                address: {
+                    street: data.street,
+                    city: data.city,
+                    zipCode: data.zipCode,
+                    country: data.country
+                }
+            };
 
-        toast.add({ 
-            severity: 'success', 
-            summary: 'Confirmado', 
-            detail: 'Club modificado', 
-            life: 3000
-        });
+            toast.add({ severity: 'success', summary: 'Confirmado', detail: 'Club modificado', life: 3000});
+        }
+        
     } catch (error: unknown) {
         const message = error instanceof Error ? error.message : 'Error inesperado';
         toast.add({ severity: 'error', summary: 'Error de acceso', detail: message, life: 5000 });
@@ -161,29 +154,27 @@ const onSaveModifiedClub = async (updatedData: Club) => {
 }
 
 
-const onSaveModifiedSchedule = async (updatedData: Schedule) => {
-    const isEditing = !!updatedData.id;
+const onSaveModifiedSchedule = async (data: ScheduleUpdateFormData) => {
+    const isEditing = !!selectedSchedule.value?.id;
 
     try {
-        if (isEditing) {
-            await updateSchedule(activeClubId.value!, updatedData!.id, {
-                openingTime: updatedData.openingTime,
-                closingTime: updatedData.closingTime
+        if (isEditing && selectedSchedule.value) {
+            await updateSchedule(activeClubId.value!, selectedSchedule.value.id, {
+                openingTime: data.openingTime,
+                closingTime: data.closingTime
             })
 
         } else {
+            const dayName = selectedDayId.value !== undefined ? DAYS_EN[selectedDayId.value] : undefined;
+            if (!dayName) return;
+
             await registerSchedule(activeClubId.value!, {
-                dayOfWeek: updatedData.dayOfWeek.name,
-                openingTime: updatedData.openingTime,
-                closingTime: updatedData.closingTime
+                dayOfWeek: dayName,
+                openingTime: data.openingTime,
+                closingTime: data.closingTime
             });
 
-            toast.add({ 
-                severity: 'success', 
-                summary: 'Confirmado', 
-                detail: `Horario ${isEditing ? 'modificado': 'añadido'}`, 
-                life: 3000
-            });
+            toast.add({ severity: 'success', summary: 'Confirmado', detail: `Horario ${isEditing ? 'modificado': 'añadido'}`, life: 3000});
         }
         
     } catch (error: unknown) {
@@ -194,11 +185,10 @@ const onSaveModifiedSchedule = async (updatedData: Schedule) => {
 
 
 const handleScheduleCreateDialog = (dayId : number) => {
-    const newScheduleData = {
-        dayOfWeek: {
-            id: dayId,
-            name: DAYS_EN[dayId]
-        },
+    selectedSchedule.value = undefined;
+    selectedDayId.value = dayId;
+
+    const newScheduleData : ScheduleUpdateFormData = {
         openingTime: "09:00",
         closingTime: "14:00",
     }
@@ -231,7 +221,7 @@ const handleToggleSchedule = (schedule: Schedule, event: PointerEvent) => {
                 await toggleSchedule(activeClubId.value!, schedule.id);
 
                 toast.add({ 
-                    severity: 'info', 
+                    severity: 'success', 
                     summary: 'Confirmado', 
                     detail: `Horario ${isOpening ? 'abierto' : 'cerrado'} con éxito`, 
                     life: 3000});
@@ -279,7 +269,7 @@ const handleToggleSchedule = (schedule: Schedule, event: PointerEvent) => {
 
                 <BaseInfoField
                     :label="'Miembro de la comunidad'"
-                    :value="'Usuario desde ' + formattedDate"
+                    :value="'Desde ' + formattedDate"
                     :icon="'pi pi-calendar'"
                 />
 
@@ -302,8 +292,8 @@ const handleToggleSchedule = (schedule: Schedule, event: PointerEvent) => {
             ref="clubDialogRef"
             header="Editar club"
             subtitle="Actualiza la información de tu club"
-            :resolver="resolver"
-            :inputs-dialog="inputsClubDialog"
+            :resolver="resolverClub"
+            :inputs-dialog="clubInputsDialog"
             @save="onSaveModifiedClub"
             />
 
@@ -312,7 +302,8 @@ const handleToggleSchedule = (schedule: Schedule, event: PointerEvent) => {
             ref="sheduleDialogRef"
             header="Configurar Horarios"
             subtitle="Gestiona los turnos de apertura y cierre de cada día"
-            :inputs-dialog="inputsEditScheduleDialog"
+            :resolver="resolverSchedule"
+            :inputs-dialog="scheduleInputsEditDialog"
             @save="onSaveModifiedSchedule"
         >
 

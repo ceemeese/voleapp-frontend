@@ -1,4 +1,5 @@
 import { getUserByEmailAction, getUserByIdAction, getUsersAction, deactivateUserAction, updateUserAction } from "@/modules/user/actions";
+import { activateUserAction } from "@/modules/user/actions/activate-user.action";
 import type { PutUser, User } from "@/modules/user/interfaces";
 import { ref } from "vue";
 
@@ -50,6 +51,16 @@ export const useUser = () => {
         }
     }
 
+    const activateUser = async (id: string): Promise<void> => {
+        isLoading.value = true;
+
+        try {
+            await activateUserAction(id);
+        } finally {
+            isLoading.value = false;
+        }
+    }
+
 
     const updateUser = async (id: string, dataForm: PutUser): Promise<User> => {
         isLoading.value = true;
@@ -68,6 +79,7 @@ export const useUser = () => {
         getUserById,
         getUserByEmail,
         deactivateUser,
+        activateUser,
         updateUser,
     }
 }

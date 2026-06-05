@@ -1,12 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted} from 'vue';
-import PriceConfigForm from '@/components/PriceConfigForm.vue';
-import PriceSimulator from '@/components/PriceSimulator.vue';
-import { useToast } from 'primevue/usetoast';
-import { useClub } from '@/composables/useClub';
-import { useCourt } from '@/composables/useCourt';
 import type { PricingConfig } from '../interfaces';
-import { usePricingConfig } from '@/composables/usePricingConfig';
 
 const toast = useToast();
 const { activeClubId } = useClub();

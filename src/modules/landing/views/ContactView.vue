@@ -1,9 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-import { BaseButton } from 'ui';
 import type { ContactForm } from '../interfaces';
-import { useContact } from '@/composables/useContact';
-import { useToast } from 'primevue/usetoast';
 
 const { sendContactForm } = useContact();
 const toast = useToast();

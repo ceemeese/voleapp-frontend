@@ -1,10 +1,5 @@
 <script setup lang="ts">
 import { animate, createTimeline, stagger } from 'animejs';
-import { BaseButton } from 'ui';
-import { ref, onMounted } from 'vue';
-import { Tag } from 'primevue';
-import { useRouter } from 'vue-router';
-
 
 const router = useRouter();
 const ballRef = ref(null);
@@ -81,9 +76,7 @@ const goToAuth = () => {
         <div class="max-w-7xl mx-auto w-full flex flex-col gap-12">
             
             <div class="text-center">
-                <Tag class="text-xs font-black tracking-widest !text-[#6B8F3A] uppercase !bg-[#F3FAEA] px-3 py-1.5 !rounded-full border-2 !border-[#C8E794]/70">
-                    Paso a paso
-                </Tag>
+                <BasePill text="Paso a paso" type="success" size="normal"/>
                 <h2 class="text-3xl sm:text-4xl font-black text-slate-800 mt-4 tracking-tight">
                     Dominar la pista nunca fue tan fácil
                 </h2>

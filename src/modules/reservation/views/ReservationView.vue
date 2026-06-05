@@ -1,16 +1,6 @@
 <script setup lang="ts">
-import { ref, watch, computed } from 'vue';
-import { GroupedList, BaseDateSelector } from 'ui';
-import AppItemCard from '@/components/AppItemCard.vue';
-import { useToast } from 'primevue/usetoast';
-import FilterSelectorReservation from '@/components/FilterSelectorReservation.vue';
-import ReservationSummary from '@/components/ReservationSummary.vue';
-import { useReservation } from '@/composables/useReservation';
 import type { AddReservation, ReservationDataDialog } from '../interfaces';
-import type { CourtGroupedResponse } from '@/modules/club/interfaces';
-import { useCourt } from '@/composables/useCourt';
-import { useUserStore } from '@/stores/userStore';
-import type { CourtAvailabilityDetail } from '@/modules/club/interfaces/courts/court-availability-detail.response';
+import type { CourtGroupedResponse, CourtAvailabilityDetail } from '@/modules/club/interfaces';
 
 const toast = useToast();
 const { profile } = useUserStore();

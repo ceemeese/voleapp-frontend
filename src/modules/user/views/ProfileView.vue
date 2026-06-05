@@ -1,21 +1,13 @@
 <script setup lang="ts">
-import { useUserStore } from '@/stores/userStore';
-import { useToast } from 'primevue/usetoast';
-import { UserCardProfile } from 'ui';
-import { computed, onMounted } from 'vue';
-import { ref } from 'vue';
-import { zodResolver } from '@primevue/forms/resolvers/zod';
-import { updateUserSchema } from '../schemas/updateUser.schema';
-import { BaseDialog } from 'ui';
+import { userSchema } from '../schemas/user.schema';
 import type { User } from '../interfaces';
-import { useUser } from '@/composables/useUser';
-import type { BaseCard, BaseInfoField, BaseInputProps, InfoFieldProps } from 'ui';
+import type { BaseInputProps, InfoFieldProps } from 'ui';
 import { storeToRefs } from 'pinia';
 
 const userStore = useUserStore();
 const toast = useToast();
 const errorMessage = ref<string>('');
-const resolver = zodResolver(updateUserSchema);
+const resolver = zodResolver(userSchema);
 const userDialogRef = ref();
 const { updateUser } = useUser();
 const { profile } = storeToRefs(userStore);

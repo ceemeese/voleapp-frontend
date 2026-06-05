@@ -11,13 +11,33 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
+    AppItemCard: typeof import('./src/components/AppItemCard.vue')['default']
+    AutoComplete: typeof import('primevue/autocomplete')['default']
+    BaseButton: typeof import('ui')['BaseButton']
+    BaseCard: typeof import('ui')['BaseCard']
+    BaseDataTable: typeof import('ui')['BaseDataTable']
+    BaseDatePicker: typeof import('ui')['BaseDatePicker']
+    BaseDialog: typeof import('ui')['BaseDialog']
+    BaseInfoField: typeof import('ui')['BaseInfoField']
+    BaseInput: typeof import('ui')['BaseInput']
+    BasePill: typeof import('ui')['BasePill']
+    BookingCard: typeof import('./src/components/BookingCard.vue')['default']
     Button: typeof import('primevue/button')['default']
+    Chart: typeof import('primevue/chart')['default']
+    CourtAdminCard: typeof import('./src/components/CourtAdminCard.vue')['default']
+    FilterSelectorReservation: typeof import('./src/components/FilterSelectorReservation.vue')['default']
     IconField: typeof import('primevue/iconfield')['default']
     IftaLabel: typeof import('primevue/iftalabel')['default']
     InputIcon: typeof import('primevue/inputicon')['default']
     InputText: typeof import('primevue/inputtext')['default']
+    LoginForm: typeof import('ui')['LoginForm']
     Message: typeof import('primevue/message')['default']
+    PriceConfigForm: typeof import('./src/components/PriceConfigForm.vue')['default']
+    PriceSimulator: typeof import('./src/components/PriceSimulator.vue')['default']
+    ReservationSummary: typeof import('./src/components/ReservationSummary.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    ScheduleManager: typeof import('ui')['ScheduleManager']
+    UserCardProfile: typeof import('ui')['UserCardProfile']
   }
 }
