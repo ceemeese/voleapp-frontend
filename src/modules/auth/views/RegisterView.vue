@@ -1,8 +1,4 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-import { useRouter } from 'vue-router';
-import { useAuth } from '@/composables/useAuth';
-import { useToast } from 'primevue/usetoast';
 import type { RegisterValues } from 'ui';
 
 const toast = useToast();

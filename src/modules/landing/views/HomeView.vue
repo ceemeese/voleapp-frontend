@@ -1,9 +1,5 @@
 <script setup lang="ts">
 import { animate, createTimeline, stagger } from 'animejs';
-import { BaseButton, BasePill } from 'ui';
-import { ref, onMounted } from 'vue';
-import { useRouter } from 'vue-router';
-
 
 const router = useRouter();
 const ballRef = ref(null);

@@ -1,9 +1,5 @@
 <script setup lang="ts">
-import { useRouter } from 'vue-router';
-import { useAuth } from '@/composables/useAuth';
-import { useToast } from 'primevue/usetoast';
 import type { LoginValues } from 'ui';
-import { useAuthStore } from '@/stores/authStore';
 
 const toast = useToast();
 const router = useRouter();

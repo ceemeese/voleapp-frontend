@@ -1,19 +1,8 @@
 <script setup lang="ts">
-import { useToast } from 'primevue/usetoast';
-import { computed, onMounted, ref } from 'vue';
-import { BaseCard, BaseInfoField, UserCardProfile, ScheduleManager } from 'ui';
 import type { InfoFieldProps, ActionColumn } from 'ui';
-import { useClub } from '@/composables/useClub';
-import { getCountryFlag, getCountryName } from '@/utils/country-utils';
-import { zodResolver } from '@primevue/forms/resolvers/zod';
 import { clubInputsDialog, clubSchema, type ClubUpdateFormData } from '../schemas/club.schema';
 import type { Schedule } from '../interfaces';
-import { useClubStore } from '@/stores/clubStore';
-import { useSchedule } from '@/composables/useSchedule';
-import { DAYS_EN, DAYS_TRANSLATION } from '@/utils/day-utils';
-import { useConfirm } from "primevue/useconfirm";
 import { scheduleInputsEditDialog, scheduleSchema, type ScheduleUpdateFormData } from '../schemas/schedule.schema';
-import { formatFullDate } from '@/helpers/dateHelpers';
 
 const confirmPopup = useConfirm();
 const clubStore = useClubStore();

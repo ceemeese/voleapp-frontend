@@ -1,9 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
 import type { DashboardResponse } from '../interfaces';
-import { useAnalytics } from '@/composables/useAnalytics';
-import { useToast } from 'primevue/usetoast';
-import { BaseCard } from 'ui';
 
 const toast = useToast();
 const metrics = ref<DashboardResponse>();

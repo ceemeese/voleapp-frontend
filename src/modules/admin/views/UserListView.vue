@@ -4,29 +4,22 @@ import { onMounted } from 'vue';
 import { ref } from 'vue';
 import type { User } from '../../user/interfaces';
 import { useAuthStore } from '@/stores/authStore';
-import { BaseDataTable } from 'ui';
-import type { BaseCard, BaseInputProps, ColumnConfig } from 'ui';
+import { BaseDataTable, BasePill } from 'ui';
+import type { BaseCard, ColumnConfig } from 'ui';
 import { useConfirm } from "primevue/useconfirm";
 import { useToast } from 'primevue/usetoast';
 import { BaseDialog } from 'ui';
 import { zodResolver } from '@primevue/forms/resolvers/zod';
-import { updateUserSchema } from '../../user/schemas/updateUser.schema';
+import { userInputsEditDialog, userSchema } from '@/modules/user/schemas/user.schema';
 
-
-const { getUsers, deactivateUser, updateUser } = useUser();
+const { getUsers, deactivateUser, updateUser, activateUser } = useUser();
 const authStore = useAuthStore()
 const users = ref<User[]>([]);
 const confirmPopup = useConfirm();
 const toast = useToast();
 const userDialogRef = ref();
 const selectedUser = ref<User>();
-const resolver = zodResolver(updateUserSchema);
-
-const inputsDialog : BaseInputProps[] = [
-    { field: 'username', label: 'Apodo', icon: 'pi pi-user' },
-    { field: 'email', label: 'Email', icon: 'pi pi-envelope', type: 'email' },
-    { field: 'phoneNumber', label: 'Teléfono', icon: 'pi pi-phone' },
-]
+const resolver = zodResolver(userSchema);
 
 const headerColumns : ColumnConfig<User>[] = [
     { field: 'fullName', header: 'Usuario', sortable: true },
@@ -40,22 +33,23 @@ const headerColumns : ColumnConfig<User>[] = [
             {
                 isVisible: (user) => user.username !== 'superadmin',
                 icon: 'pi pi-pencil',
-                //to: (user) => ({name: 'user-edit', params: { id: user.id}}),
                 class: '!text-blue-600',
-                action: (user) => {
-                    selectedUser.value = {...user};
-                    userDialogRef.value.open(selectedUser.value);
-                }
+                action: (user) => handleUserEditDialog(user)
             },
             {
-                isVisible: (user) => user.username !== 'superadmin' && user.isActive,
-                icon: 'pi pi-trash',
-                class: '!text-red-600',
-                action: (user, event) => handleDeactivate(user, event)
+                isVisible: (user) => user.username !== 'superadmin',
+                icon: (user) => user.isActive ? 'pi pi-trash' : 'pi pi-refresh',
+                class: (user) => user.isActive ? '!text-red-600' : '!text-green-600',
+                action: (user, event) => handleToggleUserStatus(user, event)
             }
         ]
     }
 ]
+
+const handleUserEditDialog = (user: User) => {
+    selectedUser.value = {...user};
+    userDialogRef.value.open(selectedUser.value);
+}
 
 
 onMounted(async () => {
@@ -70,12 +64,7 @@ const loadUsers = async () => {
         users.value = await getUsers();
     } catch (error: unknown) {
         const message = error instanceof Error ? error.message : 'Error inesperado';
-        toast.add({ 
-            severity: 'error', 
-            summary: 'Error de acceso', 
-            detail: message, 
-            life: 5000 
-        });
+        toast.add({ severity: 'error', summary: 'Error de acceso', detail: message, life: 5000 });
     }
 };
 
@@ -92,28 +81,24 @@ const onSaveModifiedUser = async (updatedData: User) => {
             users.value[index] = {...updatedData}
         }
 
-        toast.add({ 
-            severity: 'success', 
-            summary: 'Confirmado', 
-            detail: 'Usuario modificado', 
-            life: 3000});
+        toast.add({ severity: 'success', summary: 'Confirmado', detail: 'Usuario modificado', life: 3000});
     } catch (error: unknown) {
         const message = error instanceof Error ? error.message : 'Error inesperado';
-        toast.add({ 
-            severity: 'error', 
-            summary: 'Error de acceso', 
-            detail: message, 
-            life: 5000 
-        });
+        toast.add({ severity: 'error', summary: 'Error de acceso', detail: message, life: 5000 });
     }
     
 }
 
-const handleDeactivate = (user: User, event: PointerEvent) => {
+const handleToggleUserStatus = (user: User, event: PointerEvent) => {
+    
+    const isActivating = !user.isActive;
+    const actionText = isActivating ? 'activar' : 'desactivar';
+    const severity = isActivating ? 'success' : 'danger'
+
     const target = event.currentTarget as HTMLElement;
     confirmPopup.require({
         target: target,
-        message: `Estás seguro de que quieres desactivar a @ ${user.username}?`,
+        message: `Estás seguro de que quieres ${actionText} a @${user.username}?`,
         icon: 'pi pi-exclamation-triangle',
         rejectProps: {
             label: 'Cancelar',
@@ -121,28 +106,24 @@ const handleDeactivate = (user: User, event: PointerEvent) => {
             outlined: true
         } ,
         acceptProps: {
-            label: 'Aceptar'
+            label: isActivating ? 'Activar' : 'Desactivar',
+            severity: severity,
         },
         accept: async () => {
             try {
-                await deactivateUser(user.id)
+                if (isActivating){
+                    await activateUser(user.id)
+                    user.isActive = true;
+                } else {
+                    await deactivateUser(user.id)
+                    user.isActive = false;
+                }
 
-                user.isActive = false;
-
-                toast.add({ 
-                    severity: 'success', 
-                    summary: 'Confirmado', 
-                    detail: 'Usuario desactivado', 
-                    life: 3000});
+                toast.add({ severity: 'success', summary: 'Confirmado', detail: `Usuario ${isActivating ? 'reactivado' : 'desactivado'}`, life: 3000});
 
             } catch (error: unknown) {
                 const message = error instanceof Error ? error.message : 'Error inesperado';
-                toast.add({ 
-                    severity: 'error', 
-                    summary: 'Error de acceso', 
-                    detail: message, 
-                    life: 5000 
-                });
+                toast.add({ severity: 'error', summary: 'Error de acceso', detail: message, life: 5000 });
             }
         },
     });
@@ -176,12 +157,10 @@ const handleDeactivate = (user: User, event: PointerEvent) => {
                 </template>
 
                 <template #isActive="{ data }">
-                    <span :class="['px-3 py-1 rounded-full text-xs font-bold', data.isActive 
-                            ? 'bg-green-100 text-green-700' 
-                            : 'bg-red-100 text-red-700']"
-                    >
-                        {{ data.isActive ? 'Activo' : 'Inactivo' }}
-                    </span>
+                    <BasePill 
+                        :text="data.isActive ? 'Activo' : 'Inactivo'"
+                        :type="data.isActive ? 'success' : 'inactive'"
+                    />
                 </template>
             </BaseDataTable>
 
@@ -190,7 +169,7 @@ const handleDeactivate = (user: User, event: PointerEvent) => {
                 header="Editar usuario"
                 subtitle="Actualiza la información del usuario seleccionado"
                 :resolver="resolver"
-                :inputs-dialog="inputsDialog"
+                :inputs-dialog="userInputsEditDialog"
                 :model-value="selectedUser"
                 @save="onSaveModifiedUser"
                 />

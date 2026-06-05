@@ -1,10 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, watch, computed } from 'vue';
 import type { OccupancyResponse } from '../interfaces';
-import { useAnalytics } from '@/composables/useAnalytics';
-import { useToast } from 'primevue/usetoast';
-import { BaseCard } from 'ui';
-import Chart from 'primevue/chart';
 
 const toast = useToast();
 const occupancyData = ref<OccupancyResponse>();

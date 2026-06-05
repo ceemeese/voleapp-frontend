@@ -1,8 +1,4 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-import { BaseButton, BasePill } from 'ui';
-import { useRouter } from 'vue-router';
-
 const router = useRouter();
 const stepsSectionRef = ref<HTMLElement | null>(null);
     

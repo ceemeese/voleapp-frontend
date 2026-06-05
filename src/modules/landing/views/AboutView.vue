@@ -1,10 +1,4 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-import { BaseButton, BasePill } from 'ui';
-import { useRouter } from 'vue-router';
-import Timeline from 'primevue/timeline';
-
-
 const router = useRouter();
 const contentSectionRef = ref<HTMLElement | null>(null);
     

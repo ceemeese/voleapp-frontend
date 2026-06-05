@@ -2,15 +2,7 @@
 import { useMember } from '@/composables/useMember';
 import type { MemberComplete } from '../interfaces';
 import type { ColumnConfig,  BaseInputProps, } from 'ui';
-import { useConfirm } from "primevue/useconfirm";
-import { useToast } from 'primevue/usetoast';
-import { BaseDialog, BaseButton, BaseCard} from 'ui';
-import { zodResolver } from '@primevue/forms/resolvers/zod';
 import { updateMemberSchema } from '../schemas/updateMember.schema';
-import { useClub } from '@/composables/useClub'
-import { watch, ref, onMounted, nextTick } from 'vue';
-import AutoComplete from 'primevue/autocomplete';
-import { useUser } from '@/composables/useUser'
 import type { User } from '@/modules/user/interfaces';
 import type { AutoCompleteCompleteEvent } from 'primevue/autocomplete';
 import { animate, stagger } from 'animejs';

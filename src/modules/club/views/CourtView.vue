@@ -62,7 +62,7 @@ const courtActions : ActionColumn<Court>[] = [
     {
         isVisible: true,
         icon: (court) => court.isActive ? 'pi pi-trash' : 'pi pi-refresh',
-        class: (court) => court.isActive ? '!text-red-600' : 'text-green-600',
+        class: (court) => court.isActive ? '!text-red-600' : '!text-green-600',
         action: (court, event) => handleToggleStatus(court, event)
     }
 ]
@@ -121,20 +121,11 @@ const handleToggleStatus = (court: Court, event: PointerEvent) => {
                     await deactivateCourt(court.id)
                 }
 
-                toast.add({ 
-                    severity: 'success', 
-                    summary: 'Confirmado', 
-                    detail: `Pista ${isActivating ? 'reactivada' : 'desactivada'} con éxito`, 
-                    life: 3000});
+                toast.add({ severity: 'success', summary: 'Confirmado', detail: `Pista ${isActivating ? 'reactivada' : 'desactivada'} con éxito`, life: 3000});
 
             } catch (error: unknown) {
                 const message = error instanceof Error ? error.message : 'Error inesperado';
-                toast.add({ 
-                    severity: 'error', 
-                    summary: 'Error de acceso', 
-                    detail: message,
-                    life: 5000 
-                });
+                toast.add({ severity: 'error', summary: 'Error de acceso', detail: message,life: 5000 });
             }
         },
     });
