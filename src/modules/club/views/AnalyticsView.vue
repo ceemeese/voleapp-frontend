@@ -26,26 +26,6 @@ const loadAnalytics = async () => {
     }
 }
 
-const yearsOptions = [
-  { value: currentYear, label: String(currentYear) },
-  { value: currentYear - 1, label: String(currentYear - 1) },
-  { value: currentYear - 2, label: String(currentYear - 2) }
-];
-
-const monthsOptions = [
-  { value: 1, label: 'Enero' },
-  { value: 2, label: 'Febrero' },
-  { value: 3, label: 'Marzo' },
-  { value: 4, label: 'Abril' },
-  { value: 5, label: 'Mayo' },
-  { value: 6, label: 'Junio' },
-  { value: 7, label: 'Julio' },
-  { value: 8, label: 'Agosto' },
-  { value: 9, label: 'Septiembre' },
-  { value: 10, label: 'Octubre' },
-  { value: 11, label: 'Noviembre' },
-  { value: 12, label: 'Diciembre' }
-];
 
 const chartData = computed(() => {
     if (!analyticsData.value?.evolutionDate) {
@@ -152,7 +132,7 @@ watch([selectedYear, selectedMonth], async () => {
 <template>
     <div class="flex flex-col p-4 space-y-6 w-full h-full overflow-y-auto">
         
-        <div class="flex flex-col md:flex-row md:justify-between md:items-end gap-4 mb-6">
+        <div class="flex flex-col md:flex-row md:justify-between md:items-end gap-4 mb-6 border-b border-slate-200 pb-5">
 
             <div>
                 <h2 class="text-xl font-black text-slate-800 uppercase italic">Analíticas</h2>
@@ -165,7 +145,7 @@ watch([selectedYear, selectedMonth], async () => {
                         v-model="selectedMonth"
                         type="select"
                         label="Mes"
-                        :options="monthsOptions"
+                        :options="MONTHS_OPTIONS"
                         option-label="label"
                         option-value="value"
                     />
@@ -174,7 +154,7 @@ watch([selectedYear, selectedMonth], async () => {
                         v-model="selectedYear"
                         type="select"
                         label="Año"
-                        :options="yearsOptions"
+                        :options="YEARS_OPTIONS"
                         option-label="label"
                         option-value="value"
                     />
@@ -213,15 +193,17 @@ watch([selectedYear, selectedMonth], async () => {
             </BaseCard>
         </section>
 
-        <section>
-            <BaseCard>
-                <h3 class="font-semibold mb-4 flex items-center gap-2">
-                    <i class="pi pi-chart-line"></i>
-                    Actividad Anual
-                </h3>
-                
-                <div class="h-64">
-                    <Chart type="bar" :data="chartData" :options="chartOptions" class="h-full w-full" />
+        <section v-if="analyticsData">
+            <BaseCard padding="p-5">
+                <div class="flex flex-col justify-between h-[380px]">
+                    <h3 class="font-semibold mb-4 flex items-center gap-2">
+                        <i class="pi pi-chart-line"></i>
+                        Actividad Anual
+                    </h3>
+                    
+                    <div class="h-80 w-full">
+                        <Chart type="bar" :data="chartData" :options="chartOptions" class="h-full w-full" />
+                    </div>
                 </div>
             </BaseCard>
         </section>

@@ -27,28 +27,6 @@ const loadOccupancy = async () => {
 }
 
 
-const yearsOptions = [
-  { value: currentYear, label: String(currentYear) },
-  { value: currentYear - 1, label: String(currentYear - 1) },
-  { value: currentYear - 2, label: String(currentYear - 2) }
-];
-
-const monthsOptions = [
-  { value: 1, label: 'Enero' },
-  { value: 2, label: 'Febrero' },
-  { value: 3, label: 'Marzo' },
-  { value: 4, label: 'Abril' },
-  { value: 5, label: 'Mayo' },
-  { value: 6, label: 'Junio' },
-  { value: 7, label: 'Julio' },
-  { value: 8, label: 'Agosto' },
-  { value: 9, label: 'Septiembre' },
-  { value: 10, label: 'Octubre' },
-  { value: 11, label: 'Noviembre' },
-  { value: 12, label: 'Diciembre' }
-];
-
-
 const courtChartData = computed(() => {
     if (!occupancyData.value?.occupancyByCourt) return { labels: [], datasets: [] };
     
@@ -179,7 +157,7 @@ watch([selectedYear, selectedMonth], async () => {
                         v-model="selectedMonth"
                         type="select"
                         label="Mes"
-                        :options="monthsOptions"
+                        :options="MONTHS_OPTIONS"
                         option-label="label"
                         option-value="value"
                     />
@@ -188,7 +166,7 @@ watch([selectedYear, selectedMonth], async () => {
                         v-model="selectedYear"
                         type="select"
                         label="Año"
-                        :options="yearsOptions"
+                        :options="YEARS_OPTIONS"
                         option-label="label"
                         option-value="value"
                     />

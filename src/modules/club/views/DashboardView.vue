@@ -3,7 +3,7 @@ import type { DashboardResponse } from '../interfaces';
 
 const toast = useToast();
 const metrics = ref<DashboardResponse>();
-const { getDashboardStats } = useAnalytics();
+const { getDashboardStats, isLoading } = useAnalytics();
 
 
 const loadMetrics = async () => {
@@ -29,11 +29,23 @@ onMounted(async () => {
 </script>
 
 <template>
-    <div class="flex flex-col p-4 space-y-6 w-full h-full overflow-y-auto">
+    <div class="flex flex-col p-6 space-y-8 w-full h-full overflow-y-auto">
         
-        <div>
-            <h2 class="text-xl font-black text-slate-800 uppercase italic">Resumen Diario</h2>
-            <p class="text-sm text-slate-500">Estado del club (hoy)</p>
+        <div class="flex justify-between items-center">
+            <div>
+                <h2 class="text-xl font-black text-slate-800 uppercase italic">Resumen Diario</h2>
+                <p class="text-sm text-slate-500">Estado del club (hoy)</p>
+            </div>
+
+            <BaseButton 
+                    icon="pi pi-refresh"
+                    label="Actualizar"
+                    class="!bg-black !border-none"
+                    size="small"
+                    :disabled="isLoading"
+                    rounded
+                    @click="loadMetrics"
+                />
         </div>
 
         <div v-if="metrics" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">

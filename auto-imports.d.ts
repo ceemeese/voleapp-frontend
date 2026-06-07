@@ -10,8 +10,10 @@ declare global {
   const DAYS_EN: typeof import('./src/utils/day-utils').DAYS_EN
   const DAYS_TRANSLATION: typeof import('./src/utils/day-utils').DAYS_TRANSLATION
   const EffectScope: typeof import('vue').EffectScope
+  const MONTHS_OPTIONS: typeof import('./src/helpers/dateHelpers').MONTHS_OPTIONS
   const STATUS_EN: typeof import('./src/utils/status-utils').STATUS_EN
   const STATUS_TRANSLATION: typeof import('./src/utils/status-utils').STATUS_TRANSLATION
+  const YEARS_OPTIONS: typeof import('./src/helpers/dateHelpers').YEARS_OPTIONS
   const acceptHMRUpdate: typeof import('pinia').acceptHMRUpdate
   const axios: typeof import('axios').default
   const calculateDuration: typeof import('./src/helpers/dateHelpers').calculateDuration
@@ -138,8 +140,10 @@ declare module 'vue' {
     readonly DAYS_EN: UnwrapRef<typeof import('./src/utils/day-utils')['DAYS_EN']>
     readonly DAYS_TRANSLATION: UnwrapRef<typeof import('./src/utils/day-utils')['DAYS_TRANSLATION']>
     readonly EffectScope: UnwrapRef<typeof import('vue')['EffectScope']>
+    readonly MONTHS_OPTIONS: UnwrapRef<typeof import('./src/helpers/dateHelpers')['MONTHS_OPTIONS']>
     readonly STATUS_EN: UnwrapRef<typeof import('./src/utils/status-utils')['STATUS_EN']>
     readonly STATUS_TRANSLATION: UnwrapRef<typeof import('./src/utils/status-utils')['STATUS_TRANSLATION']>
+    readonly YEARS_OPTIONS: UnwrapRef<typeof import('./src/helpers/dateHelpers')['YEARS_OPTIONS']>
     readonly acceptHMRUpdate: UnwrapRef<typeof import('pinia')['acceptHMRUpdate']>
     readonly axios: UnwrapRef<typeof import('axios')['default']>
     readonly calculateDuration: UnwrapRef<typeof import('./src/helpers/dateHelpers')['calculateDuration']>

@@ -5,7 +5,7 @@ export interface OccupancyResponse {
 }
 
 
-interface DayOccupancyResponse {
+export interface DayOccupancyResponse {
     dayName: string;
     occupancyRate: number;
 }
@@ -16,7 +16,7 @@ interface CourtOccupancyResponse {
     occupancyRate: number;
 }
 
-interface MonthOccupancyResponse {
+export interface MonthOccupancyResponse {
     monthName: string;
     monthNumber: number;
     occupancyRate: number;
