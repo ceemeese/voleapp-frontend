@@ -1,3 +1,7 @@
+import { getGlobalAnalyticsStatsAction } from "@/modules/admin/actions/get-global-analytics.action";
+import { getGlobalDashboardStatsAction } from "@/modules/admin/actions/get-global-dashboard.action";
+import { getGlobalOccupancyStatsAction } from "@/modules/admin/actions/get-global-occupancy.action";
+import type { GlobalAnalyticsResponse, GlobalDashboardResponse, GlobalOccupancyResponse } from "@/modules/admin/interfaces";
 import { getAnalyticsStatsAction } from "@/modules/club/actions/analytics/get-analytics.action";
 import { getDashboardStatsAction } from "@/modules/club/actions/analytics/get-dashboard.action";
 import { getOccupancyStatsAction } from "@/modules/club/actions/analytics/get-occupancy.action";
@@ -49,12 +53,43 @@ export const useAnalytics = () => {
         }
     }
 
+        const getGlobalDashboardStats = async () => {
+        isLoading.value = true;
+        try {
+            const data: GlobalDashboardResponse = await getGlobalDashboardStatsAction();
+            return data;
+        } finally {
+            isLoading.value = false;
+        }
+    }
 
+    const getGlobalAnalyticsStats = async (year: number, month: number) => {
+        isLoading.value = true;
+        try {
+            const data: GlobalAnalyticsResponse = await getGlobalAnalyticsStatsAction(year, month);
+            return data;
+        } finally {
+            isLoading.value = false;
+        }
+    }
+
+    const getGlobalOccupancyStats = async (year: number, month: number) => {
+        isLoading.value = true;
+        try {
+            const data: GlobalOccupancyResponse = await getGlobalOccupancyStatsAction(year, month);
+            return data;
+        } finally {
+            isLoading.value = false;
+        }
+    }
 
     return {
         getDashboardStats,
         getAnalyticsStats,
         getOccupancyStats,
+        getGlobalDashboardStats,
+        getGlobalAnalyticsStats,
+        getGlobalOccupancyStats,
         isLoading,
     }
 }

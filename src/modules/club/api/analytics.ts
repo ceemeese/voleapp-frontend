@@ -1,18 +1,18 @@
 import type { AxiosRequestConfig } from "axios";
 
-const baseURL = "api/analytics"
+const baseURL = "api/clubs"
 
 function getDashboard(clubId: string): AxiosRequestConfig {
     return {
         method: 'GET',
-        url: `${baseURL}/dashboard/${clubId}`
+        url: `${baseURL}/${clubId}/dashboard`,
     }
 }
 
 function getAnalytics(clubId: string, year: number, month: number): AxiosRequestConfig {
     return {
         method: 'GET',
-        url: `${baseURL}/analytics/${clubId}`,
+        url: `${baseURL}/${clubId}/analytics`,
         params: { year, month }
     }
 }
@@ -20,7 +20,7 @@ function getAnalytics(clubId: string, year: number, month: number): AxiosRequest
 function getOccupancy(clubId: string, year: number, month: number): AxiosRequestConfig {
     return {
         method: 'GET',
-        url: `${baseURL}/occupancy/${clubId}`,
+        url: `${baseURL}/${clubId}/occupancy`,
         params: { year, month }
     }
 }

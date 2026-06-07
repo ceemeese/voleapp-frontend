@@ -1,15 +1,7 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted, nextTick, watch } from 'vue';
-import { useReservation } from '@/composables/useReservation';
-import { useClub } from '@/composables/useClub';
-import { useToast } from 'primevue/usetoast';
 import { ReservationStatus, type ReservationComplete, type ReservationDataDialog } from '@/modules/reservation/interfaces';
-import { BaseCard, BaseDataTable, BaseDatePicker, type ColumnConfig } from 'ui';
+import type { ColumnConfig } from 'ui';
 import { animate, stagger } from 'animejs';
-import { calculateDuration, toDateOnlyString } from '@/helpers/dateHelpers';
-import { STATUS_TRANSLATION } from '@/utils/status-utils';
-import { useConfirm } from "primevue/useconfirm";
-import ReservationSummary from '@/components/ReservationSummary.vue';
 
 
 const { getClubReservations, updateStatusReservation } = useReservation();
@@ -287,7 +279,7 @@ onUnmounted(() => {
 
         <BaseDialog ref="reservationDialogRef" header="Resumen de la reserva">
             <template #default="{ data }">
-                <ReservationSummary :reservation="data"/>
+                <ReservationSummary :reservation="(data as ReservationDataDialog)" />
             </template>
             <template #footer>
                 <BaseButton label="Volver" severity="secondary" @click="reservationDialogRef.close"/>
