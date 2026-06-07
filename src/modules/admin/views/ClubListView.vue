@@ -180,7 +180,6 @@ onMounted(async () => {
     if (authStore.isSuperadmin){
         await loadClubs();
     }
-    console.log(clubs.value, 'CLUBSSS')
 })
 
 

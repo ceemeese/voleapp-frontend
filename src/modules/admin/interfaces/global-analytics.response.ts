@@ -12,6 +12,6 @@ export interface GlobalMonthPerformanceDto {
     monthNumber: number;
     totalRevenue: number;
     totalReservations: number;
-    totalNewClubs: number;
-    totalNewPlayers: number;
+    totalClubs: number;
+    totalPlayers: number;
 }

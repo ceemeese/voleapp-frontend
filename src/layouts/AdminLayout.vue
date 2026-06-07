@@ -77,7 +77,9 @@ const SUPER_ADMIN_MENU: AppNavigationGroup[] = [
     {
         label: 'Control Global',
         items: [
-            { label: 'Global Dashboard', to: { name: 'admin-users' }, icon: 'pi pi-globe' },
+            { label: 'Global Dashboard', to: { name: 'management-dashboard' }, icon: 'pi pi-globe' },
+            { label: 'Análisis', to: {name: 'management-analytics'}, icon: 'pi pi-chart-line'},
+            { label: 'Ocupación', to: {name: 'management-occupancy'}, icon: 'pi pi-percentage'},
             { label: 'Clubs', to: { name: 'admin-clubs' }, icon: 'pi pi-shop' },
             { label: 'Usuarios', to: { name: 'admin-users' }, icon: 'pi pi-users' },
         ]

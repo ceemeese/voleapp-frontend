@@ -53,7 +53,7 @@ export const useAnalytics = () => {
         }
     }
 
-        const getGlobalDashboardStats = async () => {
+    const getGlobalDashboardStats = async () => {
         isLoading.value = true;
         try {
             const data: GlobalDashboardResponse = await getGlobalDashboardStatsAction();

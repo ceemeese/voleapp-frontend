@@ -36,7 +36,7 @@ export const clubRoutes: RouteRecordRaw[] = [
         name: 'admin-dashboard',
         component: () => import('@/modules/club/views/DashboardView.vue'),
     },
-        {  
+    {  
         path: 'analytics',
         name: 'admin-analytics',
         component: () => import('@/modules/club/views/AnalyticsView.vue'),

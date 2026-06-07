@@ -2,12 +2,13 @@ import type { DayOccupancyResponse, MonthOccupancyResponse } from "@/modules/clu
 
 export interface GlobalOccupancyResponse {
     occupancyByDayOfWeek: DayOccupancyResponse[],
-    occupancyByCourt: GlobalClubOccupancyResponse[],
+    occupancyByClub: GlobalClubOccupancyResponse[],
     occupancyEvolution: MonthOccupancyResponse[]
 }
 
 interface GlobalClubOccupancyResponse {
+    position?: number;
     clubId: string;
-    courtName: string;
+    clubName: string;
     occupancyRate: number;
 }
