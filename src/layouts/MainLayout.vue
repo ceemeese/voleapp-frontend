@@ -5,6 +5,7 @@ import { computed, onMounted, ref } from 'vue';
 import { Footer, HeaderM, type NavItem } from 'ui';
 import { useToast } from 'primevue/usetoast';
 import { useRouter } from 'vue-router';
+import { RouteNames } from '@/router/routeNames';
 
 const router = useRouter();
 const authStore = useAuthStore();
@@ -36,50 +37,56 @@ onMounted(async () => {
 const headerLinks = computed<NavItem[]>(() => {
     if (isUserLogged.value) {
         return [
-            { title: 'Inicio', to: { name: 'user-home' }, icon: 'pi pi-home' },
-            { title: 'Reservar', to: { name: 'booking' }, icon: 'pi pi-calendar' },
-            { title: 'Perfil', to: { name: 'user-profile' }, icon: 'pi pi-user' },
+            { title: 'Inicio', to: { name: RouteNames.HOME }, icon: 'pi pi-home' },
+            { title: 'Reservar', to: { name: RouteNames.BOOKING }, icon: 'pi pi-calendar' },
+            { title: 'Perfil', to: { name: RouteNames.USER_PROFILE }, icon: 'pi pi-user' },
         ];
     }
     return [
-        { title: 'Inicio', to: { name: 'home' }, icon: 'pi pi-home' },
-        { title: 'Usuarios', to: { name: 'usuarios' }, icon: 'pi pi-users' },
-        { title: 'Clubs', to: { name: 'clubs' }, icon: 'pi pi-shop' },
+        { title: 'Inicio', to: { name: RouteNames.HOME }, icon: 'pi pi-home' },
+        { title: 'Usuarios', to: { name: RouteNames.PUBLIC_USERS }, icon: 'pi pi-users' },
+        { title: 'Clubs', to: { name: RouteNames.PUBLIC_CLUBS }, icon: 'pi pi-shop' },
     ];
 });
 
 const footerLinks = computed<NavItem[]>(() => {
     if (isUserLogged.value) {
         return [
-            { title: 'Inicio', to: { name: 'user-home' } },
-            { title: 'Perfil', to: { name: 'user-profile' } },
-            { title: 'Reservar', to: { name: 'booking' } },
-            { title: 'Contacto', to: { name: 'contact' } },
+            { title: 'Inicio', to: { name: RouteNames.USER_HOME } },
+            { title: 'Perfil', to: { name: RouteNames.USER_PROFILE } },
+            { title: 'Reservar', to: { name: RouteNames.BOOKING } },
+            { title: 'Contacto', to: { name: RouteNames.PUBLIC_CONTACT } },
         ];
     }
     return [
-        { title: 'Sobre Nosotros', to: { name: 'about' } },
-        { title: 'Contacto', to: { name: 'contact' } },
+        { title: 'Sobre Nosotros', to: { name: RouteNames.PUBLIC_ABOUT } },
+        { title: 'Contacto', to: { name: RouteNames.PUBLIC_CONTACT } },
     ];
 });
 
 const goToLogin = () => {
-    router.push({ name: 'login'});
+    router.push({ name: RouteNames.LOGIN });
 }
 const goToProfile = () => {
-    router.push({ name: 'profile'});
+    router.push({ name: RouteNames.USER_PROFILE });
 }
 
 const handleLogout = () => {
     authStore.logout();
-    router.push( {name: 'home'});
+    router.push( {name: RouteNames.HOME });
 }
 
 </script>
 
 <template>
     <div class="min-h-screen flex flex-col">
-        <HeaderM :navigation-items="headerLinks" class="header-shrink" :is-authenticated="isUserLogged" @login="goToLogin" @profile="goToProfile" @logout="handleLogout">
+        <HeaderM 
+            :navigation-items="headerLinks" 
+            class="header-shrink" :is-authenticated="isUserLogged" 
+            @login="goToLogin" 
+            @profile="goToProfile" 
+            @logout="handleLogout"
+            :home-route-name="isUserLogged ? RouteNames.USER_HOME : RouteNames.HOME" >
             <template #logo>
                 <img src="/src/assets/voleappblack.png" alt="VoleApp Logo" class="h-10 sm:h-15 w-auto" />
             </template>

@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { RouteNames } from '@/router/routeNames';
+
 const userStore = useUserStore();
 const { getUserReservations, userReservations } = useReservation();
 const authStore = useAuthStore();
@@ -97,7 +99,7 @@ onMounted(async() => {
                         <i class="pi pi-ticket"></i>
                         Mis próximas reservas
                     </h3>
-                    <router-link :to="{ name: 'my-reservations'}" class="text-xs font-bold text-slate-400 hover:text-black">
+                    <router-link :to="{ name: RouteNames.USER_RESERVATIONS }" class="text-xs font-bold text-slate-400 hover:text-black">
                         VER HISTORIAL
                     </router-link>
                 </div>

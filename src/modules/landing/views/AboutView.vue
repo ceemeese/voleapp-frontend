@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { RouteNames } from '@/router/routeNames';
+
 const router = useRouter();
 const contentSectionRef = ref<HTMLElement | null>(null);
     
@@ -7,7 +9,7 @@ const scrollToContent = () => {
 };
 
 const goToContact = () => {
-    router.push({ name: 'contact' });
+    router.push({ name: RouteNames.PUBLIC_CONTACT });
 };
 
 const phases = ref([

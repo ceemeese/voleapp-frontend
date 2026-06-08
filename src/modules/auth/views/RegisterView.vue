@@ -1,14 +1,12 @@
 <script setup lang="ts">
+import { RouteNames } from '@/router/routeNames';
 import type { RegisterValues } from 'ui';
 
 const toast = useToast();
 const router = useRouter();
 const { register, isLoading} = useAuth();
 
-const errorMessage = ref('');
-
 const onRegisterSubmit = async (formData: RegisterValues) => {
-  errorMessage.value = '';
   try {
     await register(formData);
     toast.add({
@@ -19,15 +17,14 @@ const onRegisterSubmit = async (formData: RegisterValues) => {
     })
 
     await new Promise(resolve => setTimeout(resolve, 2000))
-    router.push({ name: 'login' });
+    router.push({ name: RouteNames.LOGIN });
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : 'Error';
-    errorMessage.value = message
 
     toast.add({ 
       severity: 'error', 
       summary: 'Error de registro', 
-      detail: errorMessage.value, 
+      detail: message, 
       life: 5000 
     });
   }

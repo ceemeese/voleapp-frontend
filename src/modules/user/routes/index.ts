@@ -1,19 +1,24 @@
 import { reservationRoutes } from "@/modules/reservation/routes";
+import { RouteNames } from "@/router/routeNames";
 import{ type RouteRecordRaw, RouterView } from "vue-router";
 
 export const userRoutes: RouteRecordRaw = {
     path: '/user',
     component: RouterView,
-    meta: { requiresAuth: true, requiresAdmin: false},
+    meta: { requiresAuth: true },
     children: [
         {
+            path: '',
+            redirect: { name: RouteNames.USER_HOME }
+        },
+        {
             path: 'home',
-            name: 'user-home',
+            name: RouteNames.USER_HOME,
             component: () => import('@/modules/user/views/UserDashboardView.vue'),
         },
         {
             path: 'profile',
-            name: 'user-profile',
+            name: RouteNames.USER_PROFILE,
             component: () => import('@/modules/user/views/ProfileView.vue'),
         },
         ...reservationRoutes

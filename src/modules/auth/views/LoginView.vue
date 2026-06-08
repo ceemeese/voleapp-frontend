@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { RouteNames } from '@/router/routeNames';
 import type { LoginValues } from 'ui';
 
 const toast = useToast();
@@ -9,23 +10,18 @@ const { login, isLoading} = useAuth();
 const onLoginSubmit = async (formData: LoginValues) => {
     try {
         await login(formData);
-        toast.add({
-        severity: 'success',
-        summary: '¡Bienvenido!', 
-        detail: 'Has iniciado sesión correctamente', 
-        life: 3000
-        })
+        toast.add({ severity: 'success', summary: '¡Bienvenido!', detail: 'Has iniciado sesión correctamente', life: 3000})
         await new Promise(resolve => setTimeout(resolve, 2000))
 
         if (userStore.isAdmin || userStore.isSuperadmin) {
-            router.push({ name: 'admin-root' });
+            router.push({ name: RouteNames.ADMIN_ROOT });
         } else {
-            router.push({ name: 'user-home' });
+            router.push({ name: RouteNames.USER_HOME });
         }  
 
     } catch (error: unknown) {
         const message = error instanceof Error ? error.message : 'Error inesperado';
-        toast.add({ severity: 'error', summary: 'Error de acceso', detail: message, life: 5000 });
+        toast.add({ severity: 'error', summary: 'Error de acceso', detail: message, life: 3000 });
     }
 };
 </script>
