@@ -274,7 +274,7 @@ const loadCourts = async () => {
         }))
     } catch (error: unknown) {
         const message = error instanceof Error ? error.message : 'Error inesperado';
-        toast.add({ severity: 'error', summary: 'Error', detail: message, life: 5000 })
+        toast.add({ severity: 'error', summary: 'Error', detail: message, life: 3000 })
     }
 }
 
@@ -331,7 +331,7 @@ const onSaveModifiedEvent = async (updatedData: EventForm) => {
         
     } catch (error: unknown) {
         const message = error instanceof Error ? error.message : 'Error inesperado';
-        toast.add({  severity: 'error', summary: 'Error de acceso', detail: message, life: 5000 });
+        toast.add({  severity: 'error', summary: 'Error de acceso', detail: message, life: 3000 });
     }
 }
 

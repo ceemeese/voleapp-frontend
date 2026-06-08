@@ -64,7 +64,7 @@ const loadUsers = async () => {
         users.value = await getUsers();
     } catch (error: unknown) {
         const message = error instanceof Error ? error.message : 'Error inesperado';
-        toast.add({ severity: 'error', summary: 'Error de acceso', detail: message, life: 5000 });
+        toast.add({ severity: 'error', summary: 'Error de acceso', detail: message, life: 3000 });
     }
 };
 
@@ -84,7 +84,7 @@ const onSaveModifiedUser = async (updatedData: User) => {
         toast.add({ severity: 'success', summary: 'Confirmado', detail: 'Usuario modificado', life: 3000});
     } catch (error: unknown) {
         const message = error instanceof Error ? error.message : 'Error inesperado';
-        toast.add({ severity: 'error', summary: 'Error de acceso', detail: message, life: 5000 });
+        toast.add({ severity: 'error', summary: 'Error de acceso', detail: message, life: 3000 });
     }
     
 }
@@ -123,7 +123,7 @@ const handleToggleUserStatus = (user: User, event: PointerEvent) => {
 
             } catch (error: unknown) {
                 const message = error instanceof Error ? error.message : 'Error inesperado';
-                toast.add({ severity: 'error', summary: 'Error de acceso', detail: message, life: 5000 });
+                toast.add({ severity: 'error', summary: 'Error de acceso', detail: message, life: 3000 });
             }
         },
     });

@@ -149,7 +149,7 @@ const onSaveModifiedClub = async (data: ClubUpdateFormData) => {
         
     } catch (error: unknown) {
         const message = error instanceof Error ? error.message : 'Error inesperado';
-        toast.add({ severity: 'error', summary: 'Error de acceso', detail: message, life: 5000 });
+        toast.add({ severity: 'error', summary: 'Error de acceso', detail: message, life: 3000 });
     }
 }
 
@@ -179,7 +179,7 @@ const onSaveModifiedSchedule = async (data: ScheduleUpdateFormData) => {
         
     } catch (error: unknown) {
         const message = error instanceof Error ? error.message : 'Error inesperado';
-        toast.add({ severity: 'error', summary: 'Error de acceso', detail: message, life: 5000 });
+        toast.add({ severity: 'error', summary: 'Error de acceso', detail: message, life: 3000 });
     }
 }
 
@@ -228,7 +228,7 @@ const handleToggleSchedule = (schedule: Schedule, event: PointerEvent) => {
 
             } catch (error: unknown) {
                 const message = error instanceof Error ? error.message : 'Error inesperado';
-                toast.add({ severity: 'error', summary: 'Error de acceso', detail: message, life: 5000 });
+                toast.add({ severity: 'error', summary: 'Error de acceso', detail: message, life: 3000 });
             }
         },
     });

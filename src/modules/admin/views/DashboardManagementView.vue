@@ -12,12 +12,7 @@ const loadDashboard = async () => {
         dashboardData.value = await getGlobalDashboardStats();
     } catch (error: unknown) {
         const message = error instanceof Error ? error.message : 'Error inesperado';
-        toast.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: message,
-            life: 5000
-        })
+        toast.add({ severity: 'error',summary: 'Error',detail: message,life: 3000 })
     }
 }
 

@@ -77,6 +77,7 @@ export const useCourt = () => {
                 ? data
                 : court
             );
+            console.log(clubStore.courts, 'COURTSSSS')
 
             return data;
         } finally {

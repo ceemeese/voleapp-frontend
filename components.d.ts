@@ -34,6 +34,8 @@ declare module 'vue' {
     InputText: typeof import('primevue/inputtext')['default']
     LoginForm: typeof import('ui')['LoginForm']
     Message: typeof import('primevue/message')['default']
+    Navbar: typeof import('ui')['Navbar']
+    NavUserCard: typeof import('ui')['NavUserCard']
     PriceConfigForm: typeof import('./src/components/PriceConfigForm.vue')['default']
     PriceSimulator: typeof import('./src/components/PriceSimulator.vue')['default']
     RegisterForm: typeof import('ui')['RegisterForm']

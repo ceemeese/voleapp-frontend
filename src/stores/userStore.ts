@@ -21,7 +21,7 @@ export const useUserStore = defineStore('user', () => {
         } 
         if (!authStore.userId) {
             if(authStore.token) {
-                await new Promise(resolve => setTimeout(resolve, 5000));
+                await new Promise(resolve => setTimeout(resolve, 3000));
             }
             return;
         }

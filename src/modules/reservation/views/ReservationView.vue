@@ -190,7 +190,7 @@ watch([selectedDate, duration, cityFilter], () => {
             @save="handleConfirmReservation"
         >
             <template #default="{ data }">
-                <ReservationSummary :reservation="data"/>
+                <ReservationSummary :reservation="data as ReservationDataDialog"/>
             </template>
         </BaseDialog>
     </div>

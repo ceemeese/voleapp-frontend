@@ -9,11 +9,14 @@ import { useConfirm } from "primevue/useconfirm";
 import { toDateOnlyString} from '@/helpers/dateHelpers';
 import { zodResolver } from '@primevue/forms/resolvers/zod';
 import { clubInputsDialog, clubSchema, type ClubAddFormData, type ClubUpdateFormData } from '@/modules/club/schemas/club.schema';
+import { RouteNames } from '@/router/routeNames';
 
 const confirmPopup = useConfirm();
 const toast = useToast();
-const authStore = useAuthStore()
-const { getClubs, isLoading, toggleStatusClub, createClub, updateClub } = useClub();
+const authStore = useAuthStore();
+const clubStore = useClubStore();
+const router = useRouter();
+const { getClubs, isLoading, toggleStatusClub, createClub, updateClub, getAdminContext } = useClub();
 
 const clubs = ref<Club[]>([]);
 const selectedClub = ref<Club | undefined>();
@@ -29,7 +32,7 @@ const loadClubs = async () => {
             severity: 'error', 
             summary: 'Error de acceso', 
             detail: message, 
-            life: 5000 
+            life: 3000 
         });
     }
 };
@@ -70,11 +73,31 @@ const headerColumns : ColumnConfig<Club>[] = [
                 icon: (club: Club) => club.isActive ? 'pi pi-trash' : 'pi pi-refresh',
                 class: (club: Club) => club.isActive ? '!text-red-600' : 'text-green-600',
                 action: (club, event) => handleToggleStatus(club, event)
+            },
+            {
+                isVisible: true,
+                icon: 'pi pi-sign-in',
+                class: 'text-purple-600',
+                action: (club: Club) => {
+                    handleImpersonate(club);
+                }
             }
         ]
     }
 ]
 
+const handleImpersonate = async (club: Club) => {
+    clubStore.activeClubId = club.id;
+    
+    try {
+        await getAdminContext(club.id); 
+        
+        toast.add({ severity: 'info', summary: 'Simulación iniciada', detail: `Ahora gestionando: ${club.name}`, life: 3000 });
+        router.push({ name: RouteNames.ADMIN_DASHBOARD });
+    } catch {
+        toast.add({ severity: 'error', summary: 'Error', detail: 'No se pudo acceder al club' });
+    }
+}
 
 const handleToggleStatus = (club: Club, event: PointerEvent) => {
 
@@ -106,7 +129,7 @@ const handleToggleStatus = (club: Club, event: PointerEvent) => {
 
             } catch (error: unknown) {
                 const message = error instanceof Error ? error.message : 'Error inesperado';
-                toast.add({ severity: 'error', summary: 'Error de acceso', detail: message, life: 5000 });
+                toast.add({ severity: 'error', summary: 'Error de acceso', detail: message, life: 3000 });
             }
         },
     });
@@ -165,7 +188,7 @@ const onSaveClub = async (data: ClubAddFormData | ClubUpdateFormData) => {
         }
     } catch (error: unknown) {
         const message = error instanceof Error ? error.message : 'Error inesperado';
-        toast.add({ severity: 'error', summary: 'Error de acceso', detail: message, life: 5000 });
+        toast.add({ severity: 'error', summary: 'Error de acceso', detail: message, life: 3000 });
     }
 }
 

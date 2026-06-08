@@ -83,11 +83,7 @@ const loadCourts = async () => {
         await getCourtsByClubId(activeClubId.value!);
     } catch (error: unknown) {
         const message = error instanceof Error ? error.message : 'Error inesperado';
-        toast.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: message,
-            life: 5000
+        toast.add({severity: 'error',summary: 'Error',detail: message,life: 3000
         })
     }
 }
@@ -125,7 +121,7 @@ const handleToggleStatus = (court: Court, event: PointerEvent) => {
 
             } catch (error: unknown) {
                 const message = error instanceof Error ? error.message : 'Error inesperado';
-                toast.add({ severity: 'error', summary: 'Error de acceso', detail: message,life: 5000 });
+                toast.add({ severity: 'error', summary: 'Error de acceso', detail: message,life: 3000 });
             }
         },
     });
@@ -142,12 +138,7 @@ const onSaveAddedCourt = async (data: CourtForm) => {
 
     } catch (error: unknown) {
         const message = error instanceof Error ? error.message : 'Error inesperado';
-        toast.add({ 
-            severity: 'error', 
-            summary: 'Error de acceso', 
-            detail: message, 
-            life: 5000 
-        });
+        toast.add({ severity: 'error', summary: 'Error de acceso', detail: message, life: 3000 });
     }
 }
 
@@ -169,12 +160,7 @@ const onSaveModifiedCourt = async (updatedData: CourtForm) => {
         
     } catch (error: unknown) {
         const message = error instanceof Error ? error.message : 'Error inesperado';
-        toast.add({ 
-            severity: 'error', 
-            summary: 'Error de acceso', 
-            detail: message, 
-            life: 5000 
-        });
+        toast.add({ severity: 'error', summary: 'Error de acceso', detail: message, life: 3000 });
     }
 }
 

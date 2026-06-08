@@ -1,21 +1,13 @@
 <script setup lang="ts">
-import { useAuthStore } from '@/stores/authStore';
-import { useUserStore } from '@/stores/userStore';
 import type { AppNavigationGroup } from '@/types/navigation.interface';
-import { computed, onMounted } from 'vue';
-import { useRouter } from 'vue-router';
-import { useToast } from 'primevue/usetoast';
-import { ref } from 'vue';
-import { useClub } from '@/composables/useClub';
-import { NavUserCard, Navbar } from 'ui';
 import { RouteNames } from '@/router/routeNames';
 
 const { getAdminContext, currentClubInfo } = useClub();
 const authStore = useAuthStore();
 const userStore = useUserStore();
+const clubStore = useClubStore();
 const toast = useToast();
 const router = useRouter();
-const errorMessage = ref<string>('');
 const isInitialLoading = ref(true);
 
 onMounted(async () => {
@@ -28,13 +20,7 @@ onMounted(async () => {
         
     } catch (error: unknown) {
         const message = error instanceof Error ? error.message : 'Error inesperado';
-        errorMessage.value = message;
-        toast.add({ 
-            severity: 'error', 
-            summary: 'Error de acceso', 
-            detail: errorMessage.value,
-            life: 5000 
-        });
+        toast.add({ severity: 'error', summary: 'Error de acceso', detail: message,life: 3000 });
     } finally {
         isInitialLoading.value = false;
     }
@@ -94,10 +80,15 @@ const SUPER_ADMIN_MENU: AppNavigationGroup[] = [
 ];
 
 const currentMenu = computed<AppNavigationGroup[]>(() => {
-    if (authStore.role === 'SuperAdmin'){
-        return SUPER_ADMIN_MENU;
+    if (authStore.role !== 'SuperAdmin'){
+        return CLUB_ADMIN_MENU;
     }
-    return CLUB_ADMIN_MENU;
+
+    if (clubStore.activeClubId) {
+        return CLUB_ADMIN_MENU;
+    }
+
+    return SUPER_ADMIN_MENU;
 })
 
 const headerTitle = computed(() => {
@@ -125,6 +116,12 @@ const getHomeRoute = () => {
     return authStore.isSuperadmin ? RouteNames.MANAGEMENT_DASHBOARD : RouteNames.ADMIN_DASHBOARD;
 };
 
+
+const exitSimulation = async () => {
+    clubStore.clearClub();
+    router.push({ name: RouteNames.MANAGEMENT_DASHBOARD });
+};
+
 </script>
 
 <template>
@@ -145,12 +142,23 @@ const getHomeRoute = () => {
 
         <main class="flex-1 flex flex-col h-full min-w-0 overflow-hidden">
             <header class="flex justify-between items-center p-4">
-                <div class="flex items-center gap-2">
+                <div class="flex items-center gap-5">
                    <slot name="header-actions">
                         <span class="text-sm font-bold text-gray-700 uppercase tracking-widest">
                             {{ headerTitle}}
                         </span>
                     </slot>
+
+                    <div v-if="authStore.isSuperadmin && clubStore.activeClubId" 
+                        class="flex items-center gap-2 bg-[#F3FAEA] px-3 py-1 rounded-full border border-[#C8E794]/70 shadow-sm animate-fade-in">
+                        <i class="pi pi-eye text-[#6B8F3A] text-xs"></i>
+                        <span class="text-[10px] font-bold text-[#6B8F3A] uppercase tracking-wider">
+                            Simulando: {{ clubStore.currentClubData?.name }}
+                        </span>
+                        <button @click="exitSimulation" class="text-[#6B8F3A] transition">
+                            <i class="pi pi-times text-[10px]"></i>
+                        </button>
+                    </div>
                 </div>
 
                 <div class="w-fit min-w-60">
