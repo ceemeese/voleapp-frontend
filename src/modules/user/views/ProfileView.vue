@@ -6,7 +6,6 @@ import { storeToRefs } from 'pinia';
 
 const userStore = useUserStore();
 const toast = useToast();
-const errorMessage = ref<string>('');
 const resolver = zodResolver(userSchema);
 const userDialogRef = ref();
 const { updateUser } = useUser();
@@ -34,13 +33,7 @@ onMounted(async () => {
             await userStore.fetchProfile();
         } catch (error: unknown) {
             const message = error instanceof Error ? error.message : 'Error inesperado';
-            errorMessage.value = message;
-            toast.add({ 
-                severity: 'error', 
-                summary: 'Error de acceso', 
-                detail: errorMessage.value,
-                life: 5000 
-            });
+            toast.add({ severity: 'error', summary: 'Error de acceso', detail: message,life: 3000 });
         }
     }
 })
@@ -70,20 +63,10 @@ const onSaveModifiedUser = async (updatedData: User) => {
 
         userStore.profile = {...profile.value, ...updatedData}
 
-        toast.add({ 
-            severity: 'success', 
-            summary: 'Confirmado', 
-            detail: 'Usuario modificado', 
-            life: 3000});
+        toast.add({ severity: 'success', summary: 'Confirmado', detail: 'Usuario modificado', life: 3000});
     } catch (error: unknown) {
         const message = error instanceof Error ? error.message : 'Error inesperado';
-        errorMessage.value = message;
-        toast.add({ 
-            severity: 'error', 
-            summary: 'Error de acceso', 
-            detail: errorMessage.value, 
-            life: 5000 
-        });
+        toast.add({ severity: 'error', summary: 'Error de acceso', detail: message, life: 3000 });
     }
     
 }

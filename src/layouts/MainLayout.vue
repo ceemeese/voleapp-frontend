@@ -23,12 +23,7 @@ onMounted(async () => {
         await userStore.fetchProfile();
     } catch (error: unknown) {
         const message = error instanceof Error ? error.message : 'Error inesperado';
-        toast.add({ 
-            severity: 'error', 
-            summary: 'Error de acceso', 
-            detail: message,
-            life: 5000 
-        });
+        toast.add({ severity: 'error', summary: 'Error de acceso', detail: message, life: 3000 });
     } finally {
         isInitialLoading.value = false;
     }

@@ -6,7 +6,6 @@ import ToggleSwitch from 'primevue/toggleswitch';
 import Message from 'primevue/message';
 import type { Court, PricingConfig } from '@/modules/club/interfaces';
 import { computed, ref } from 'vue';
-import Tag from 'primevue/tag';
 
 const props = defineProps<{
     courts: Court[];
@@ -34,7 +33,7 @@ const simulation = computed(() => {
     const court = props.courts.find(c => c.id === selectedCourtId.value);
     if (!court) return { total: 0, appliedDiscount: null, hasMultipleDiscounts: false, isHot: false };
 
-    const base = court.basePrice;
+const base = court.basePrice;
     
 const activeDiscounts = [
         { id: 'rain', label: 'Lluvia', val: simRain.value ? props.pricingConfig.rainDiscountPercent : 0 },

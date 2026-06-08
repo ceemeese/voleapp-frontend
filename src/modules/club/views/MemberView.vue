@@ -115,12 +115,7 @@ const loadMembers = async () => {
         animateTableRows();
     } catch (error: unknown) {
         const message = error instanceof Error ? error.message : 'Error inesperado';
-        toast.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: message,
-            life: 5000
-        })
+        toast.add({severity: 'error',summary: 'Error',detail: message,life: 3000})
     }
 } 
 
@@ -140,20 +135,11 @@ const onSaveModifiedMember = async (updatedData: MemberUpdateForm) => {
             members.value[oldMemberIndex] = updatedMember;
         }
 
-        toast.add({ 
-            severity: 'success', 
-            summary: 'Confirmado', 
-            detail: 'Usuario modificado', 
-            life: 3000});
+        toast.add({ severity: 'success', summary: 'Confirmado', detail: 'Usuario modificado', life: 3000});
         
     } catch (error: unknown) {
         const message = error instanceof Error ? error.message : 'Error inesperado';
-        toast.add({ 
-            severity: 'error', 
-            summary: 'Error de acceso', 
-            detail: message, 
-            life: 5000 
-        });
+        toast.add({ severity: 'error', summary: 'Error de acceso', detail: message, life: 3000 });
     }
 }
 
@@ -190,12 +176,7 @@ const onAddMemberToClub = async () => {
         
     } catch (error: unknown) {
         const message = error instanceof Error ? error.message : 'Error inesperado';
-        toast.add({ 
-            severity: 'error', 
-            summary: 'Error de acceso', 
-            detail: message, 
-            life: 5000 
-        });
+        toast.add({ severity: 'error', summary: 'Error de acceso', detail: message, life: 3000 });
     }
 }
 
@@ -231,20 +212,11 @@ const handleToggleStatus = (member: MemberComplete, event: PointerEvent) => {
                 
                 member.isActive = isActivating;
 
-                toast.add({ 
-                    severity: 'success', 
-                    summary: 'Confirmado', 
-                    detail: `Miembro ${isActivating ? 'reactivado' : 'desactivado'} con éxito`, 
-                    life: 3000});
+                toast.add({ severity: 'success', summary: 'Confirmado', detail: `Miembro ${isActivating ? 'reactivado' : 'desactivado'} con éxito`, life: 3000});
 
             } catch (error: unknown) {
                 const message = error instanceof Error ? error.message : 'Error inesperado';
-                toast.add({ 
-                    severity: 'error', 
-                    summary: 'Error de acceso', 
-                    detail: message,
-                    life: 5000 
-                });
+                toast.add({ severity: 'error', summary: 'Error de acceso', detail: message,life: 3000 });
             }
         },
     });

@@ -11,12 +11,12 @@ export const useClub = () => {
     const activeClubId = computed(() => clubStore.activeClubId);
     const currentClubInfo = computed(() => clubStore.currentClubData);
 
-    const getAdminContext = async (): Promise<void> => {
-        if (activeClubId.value && currentClubInfo.value) return;
+    const getAdminContext = async (targetClubId? : string): Promise<void> => {
+        if (activeClubId.value === targetClubId && currentClubInfo.value) return;
         isLoading.value = true;
 
         try {
-            const clubId: string = await getAdminContextAction();
+            const clubId : string = targetClubId || await getAdminContextAction();
             clubStore.activeClubId = clubId;
 
             const clubData: Club = await getClubById(clubId); 
