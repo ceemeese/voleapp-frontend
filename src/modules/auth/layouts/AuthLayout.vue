@@ -1,3 +1,8 @@
+<script setup lang="ts">
+import { RouteNames } from '@/router/routeNames';
+
+</script>
+
 <template>
     <div class="bg-gray-100 flex justify-center items-center h-dvh overflow-hidden">
     <!-- imagen -->
@@ -8,7 +13,7 @@
         <div class="w-full lg:w-1/2 h-full flex flex-col items-center justify-center p-8">
             <div class="mb-8 flex flex-col items-center">
                 <router-link
-                :to="{name: 'home'}"
+                :to="{name: RouteNames.HOME}"
                 class="hover:opacity-80 transition-opacity duration-200 cursor-pointer"
                 >
                 <img 

@@ -8,6 +8,7 @@ import { useToast } from 'primevue/usetoast';
 import { ref } from 'vue';
 import { useClub } from '@/composables/useClub';
 import { NavUserCard, Navbar } from 'ui';
+import { RouteNames } from '@/router/routeNames';
 
 const { getAdminContext, currentClubInfo } = useClub();
 const authStore = useAuthStore();
@@ -44,31 +45,31 @@ const CLUB_ADMIN_MENU : AppNavigationGroup[] = [
     {
         label: 'Análisis y rendimiento',
         items: [
-            { label: 'Dashboard', to: {name: 'admin-dashboard'}, icon: 'pi pi-chart-bar'},
-            { label: 'Análisis', to: {name: 'admin-analytics'}, icon: 'pi pi-chart-line'},
-            { label: 'Ocupación de pistas', to: {name: 'admin-occupancy'}, icon: 'pi pi-percentage'},
+            { label: 'Dashboard', to: { name: RouteNames.ADMIN_DASHBOARD }, icon: 'pi pi-chart-bar'},
+            { label: 'Análisis', to: { name: RouteNames.ADMIN_ANALYTICS }, icon: 'pi pi-chart-line'},
+            { label: 'Ocupación de pistas', to: { name: RouteNames.ADMIN_OCCUPANCY }, icon: 'pi pi-percentage'},
         ]
     },
     {
         label: 'Gestión operativa',
         items: [
-            { label: 'Gestión de pistas', to: {name: 'admin-courts'}, icon: 'pi pi-table'},
-            { label: 'Calendario de eventos', to: {name: 'admin-events'}, icon: 'pi pi-calendar'},
-            { label: 'Reservas', to: {name: 'admin-reservations'}, icon: 'pi pi-ticket'},
-            { label: 'Configurador de precios', to: {name: 'admin-price'}, icon: 'pi pi-money-bill'},
+            { label: 'Gestión de pistas', to: { name: RouteNames.ADMIN_COURTS }, icon: 'pi pi-table'},
+            { label: 'Calendario de eventos', to: { name: RouteNames.ADMIN_EVENTS }, icon: 'pi pi-calendar'},
+            { label: 'Reservas', to: { name: RouteNames.ADMIN_RESERVATIONS }, icon: 'pi pi-ticket'},
+            { label: 'Configurador de precios', to: { name: RouteNames.ADMIN_PRICE }, icon: 'pi pi-money-bill'},
         ]
     },
      {
         label: 'Gestión de accesos',
         items: [
-            { label: 'Miembros del club', to: {name: 'admin-members'}, icon: 'pi pi-users'},
+            { label: 'Miembros del club', to: { name: RouteNames.ADMIN_MEMBERS }, icon: 'pi pi-users'},
         ]
     },
     {
         label: 'Configuración',
         items: [
-            { label: 'Mi club', to: {name: 'admin-club'}, icon: 'pi pi-home'},
-            { label: 'Mi perfil', to: {name: 'admin-profile'}, icon: 'pi pi-user'},
+            { label: 'Mi club', to: { name: RouteNames.ADMIN_CLUB }, icon: 'pi pi-home'},
+            { label: 'Mi perfil', to: { name: RouteNames.ADMIN_PROFILE }, icon: 'pi pi-user'},
         ]
     }
 ];
@@ -77,17 +78,17 @@ const SUPER_ADMIN_MENU: AppNavigationGroup[] = [
     {
         label: 'Control Global',
         items: [
-            { label: 'Global Dashboard', to: { name: 'management-dashboard' }, icon: 'pi pi-globe' },
-            { label: 'Análisis', to: {name: 'management-analytics'}, icon: 'pi pi-chart-line'},
-            { label: 'Ocupación', to: {name: 'management-occupancy'}, icon: 'pi pi-percentage'},
-            { label: 'Clubs', to: { name: 'admin-clubs' }, icon: 'pi pi-shop' },
-            { label: 'Usuarios', to: { name: 'admin-users' }, icon: 'pi pi-users' },
+            { label: 'Global Dashboard', to: { name: RouteNames.MANAGEMENT_DASHBOARD }, icon: 'pi pi-globe' },
+            { label: 'Análisis', to: { name: RouteNames.MANAGEMENT_ANALYTICS }, icon: 'pi pi-chart-line'},
+            { label: 'Ocupación', to: { name: RouteNames.MANAGEMENT_OCCUPANCY }, icon: 'pi pi-percentage'},
+            { label: 'Clubs', to: { name: RouteNames.MANAGEMENT_CLUBS }, icon: 'pi pi-shop' },
+            { label: 'Usuarios', to: { name: RouteNames.MANAGEMENT_USERS }, icon: 'pi pi-users' },
         ]
     },
         {
         label: 'Configuración',
         items: [
-            { label: 'Mi perfil', to: {name: 'admin-profile'}, icon: 'pi pi-user'},
+            { label: 'Mi perfil', to: { name: RouteNames.ADMIN_PROFILE }, icon: 'pi pi-user'},
         ]
     }
 ];
@@ -100,9 +101,8 @@ const currentMenu = computed<AppNavigationGroup[]>(() => {
 })
 
 const headerTitle = computed(() => {
-    if (authStore.role === 'SuperAdmin'){
-        return 'VoleApp Global Admin';
-    }
+    if (authStore.role === 'SuperAdmin') return 'VoleApp Global Admin';
+    if (isInitialLoading.value) return 'Cargando Club...'
     return `${currentClubInfo.value?.name || 'Club'}  Admin`
 })
 
@@ -118,8 +118,12 @@ const handleLogout = async () => {
     await new Promise(resolve => setTimeout(resolve, 2000))
     authStore.logout();
     userStore.clearProfile();
-    router.push( {name: 'login'});
+    router.push( {name: RouteNames.LOGIN});
 }
+
+const getHomeRoute = () => {
+    return authStore.isSuperadmin ? RouteNames.MANAGEMENT_DASHBOARD : RouteNames.ADMIN_DASHBOARD;
+};
 
 </script>
 
@@ -128,6 +132,7 @@ const handleLogout = async () => {
 
         <Navbar
             :navigation-items="currentMenu"
+            :home-route="getHomeRoute()"
         >
             <template #logo>
                 <img 
@@ -152,7 +157,7 @@ const handleLogout = async () => {
                     <NavUserCard
                     :username="userStore.profile?.username ?? 'Cargando..'"
                     :user-role="authStore.role ?? 'Admin'"
-                    nagivate-to="admin-profile"
+                    :nagivate-to="RouteNames.ADMIN_PROFILE"
                     @logout="handleLogout"
                     >
                     </NavUserCard>

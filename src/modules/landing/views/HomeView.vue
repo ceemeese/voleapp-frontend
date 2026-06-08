@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { RouteNames } from '@/router/routeNames';
 import { animate, createTimeline, stagger } from 'animejs';
 
 const router = useRouter();
@@ -30,7 +31,7 @@ onMounted(() => {
 });
 
 const goToAuth = () => {
-    router.push({ name: 'register' });
+    router.push({ name: RouteNames.REGISTER });
 };
 </script>
 

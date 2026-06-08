@@ -4,6 +4,7 @@ import { landingRoutes } from '@/modules/landing/routes'
 import { userRoutes } from '@/modules/user/routes'
 import { useAuthStore } from '@/stores/authStore'
 import { createRouter, createWebHistory } from 'vue-router'
+import { RouteNames } from './routeNames'
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -19,6 +20,12 @@ const router = createRouter({
         },
         ...adminRoutes,
         authRoutes,      
+        {
+            path: '/:pathMatch(.*)*',
+            name: RouteNames.NOT_FOUND,
+            component: () => import('@/views/NotFoundView.vue'),
+            meta: { requiresAuth: false }
+        }
     ],
     scrollBehavior(to, from, savedPosition) {
         if (savedPosition) {
@@ -31,17 +38,24 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
     const userStore = useAuthStore();
+    const isAdminPath = to.path.startsWith('/admin');
 
-    if (to.meta.requiresAuth && !userStore.isAuthenticated) {
-      return next({ name: 'login' });  
-    } 
+    const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
+
+    if (requiresAuth && !userStore.isAuthenticated) {
+        return next({ name: RouteNames.LOGIN });  
+    }
     
-    if (to.meta.requiresSuperadmin && !userStore.isSuperadmin) {
-      return next({ name: 'user-home' });
+    const requiresSuperAdmin = to.matched.some(record => record.meta.requiresSuperAdmin);
+    if (requiresSuperAdmin && !userStore.isSuperadmin) {
+        if (userStore.isAdmin) {
+            return next({ name: RouteNames.ADMIN_ROOT });
+        }
+        return next({ name: RouteNames.USER_HOME });
     }
 
-    if (to.meta.requiresAdmin && !userStore.isAdmin) {
-      return next({ name: 'user-home' });
+    if (isAdminPath && !userStore.isSuperadmin && !userStore.isAdmin) {
+        return next({ name: RouteNames.USER_HOME });
     }
 
     next();

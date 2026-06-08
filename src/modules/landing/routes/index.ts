@@ -1,39 +1,40 @@
+import { RouteNames } from "@/router/routeNames";
 import type { RouteRecordRaw } from "vue-router";
 
 export const landingRoutes: RouteRecordRaw[] = [
     {
         path: '',
-        name: 'home',
+        name: RouteNames.HOME,
         component: () => import('@/modules/landing/views/HomeView.vue'),
     },
     {
         path: 'usuarios',
-        name: 'usuarios',
+        name: RouteNames.PUBLIC_USERS,
         component: () => import('@/modules/landing/views/UserInfoView.vue'),
     },
     {
         path: 'clubs',
-        name: 'clubs',
+        name: RouteNames.PUBLIC_CLUBS,
         component: () => import('@/modules/landing/views/ClubsInfoView.vue'),
     },
     {
         path: 'about-us',
-        name: 'about',
+        name: RouteNames.PUBLIC_ABOUT,
         component: () => import('@/modules/landing/views/AboutView.vue'),
     },
     {
         path: 'contact',
-        name: 'contact',
+        name: RouteNames.PUBLIC_CONTACT,
         component: () => import('@/modules/landing/views/ContactView.vue'),
     },
         {
         path: 'privacy',
-        name: 'privacy',
+        name: RouteNames.PUBLIC_PRIVACY,
         component: () => import('@/modules/landing/views/PrivacyView.vue'),
     },
     {
         path: 'terms',
-        name: 'terms',
+        name: RouteNames.PUBLIC_TERMS,
         component: () => import('@/modules/landing/views/TermsView.vue')
     }
 ]
