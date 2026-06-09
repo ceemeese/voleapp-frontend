@@ -26,6 +26,7 @@ declare module 'vue' {
     Button: typeof import('primevue/button')['default']
     Chart: typeof import('primevue/chart')['default']
     CourtAdminCard: typeof import('./src/components/CourtAdminCard.vue')['default']
+    Drawer: typeof import('primevue/drawer')['default']
     FilterSelectorReservation: typeof import('./src/components/FilterSelectorReservation.vue')['default']
     GroupedList: typeof import('ui')['GroupedList']
     IconField: typeof import('primevue/iconfield')['default']
@@ -43,6 +44,7 @@ declare module 'vue' {
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     ScheduleManager: typeof import('ui')['ScheduleManager']
+    Timeline: typeof import('primevue/timeline')['default']
     UserCardProfile: typeof import('ui')['UserCardProfile']
   }
 }

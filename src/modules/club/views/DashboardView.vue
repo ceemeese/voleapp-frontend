@@ -26,7 +26,7 @@ onMounted(async () => {
 <template>
     <div class="flex flex-col p-6 space-y-8 w-full h-full overflow-y-auto">
         
-        <div class="flex justify-between items-center">
+        <div class="flex justify-between items-center border-b border-slate-200 pb-5">
             <div>
                 <h2 class="text-xl font-black text-slate-800 uppercase italic">Resumen Diario</h2>
                 <p class="text-sm text-slate-500">Estado del club (hoy)</p>
@@ -43,32 +43,32 @@ onMounted(async () => {
                 />
         </div>
 
-        <div v-if="metrics" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+        <div v-if="metrics" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5">
         
             <BaseCard padding="p-5">
-                <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Ocupación Hoy</p>
-                <p class="text-3xl font-extrabold text-blue-600 mt-2">
+                <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Ocupación Hoy</p>
+                <p class="text-xl sm:text-3xl font-extrabold text-blue-600 mt-2">
                 {{ metrics.todayGlobalOccupancyRate }}%
                 </p>
             </BaseCard>
 
             <BaseCard padding="p-5">
-                <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Ingresos Hoy</p>
-                <p class="text-3xl font-extrabold text-emerald-600 mt-2">
+                <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Ingresos Hoy</p>
+                <p class="text-xl sm:text-3xl font-extrabold text-emerald-600 mt-2">
                 {{ metrics.todayRevenue }}€
                 </p>
             </BaseCard>
 
             <BaseCard padding="p-5">
-                <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Ticket Medio Hoy</p>
-                <p class="text-3xl font-extrabold text-slate-900 mt-2">
+                <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Ticket Medio Hoy</p>
+                <p class="text-xl sm:text-3xl font-extrabold text-slate-900 mt-2">
                 {{ metrics.averageTicketToday }}€
                 </p>
             </BaseCard>
 
             <BaseCard padding="p-5">
-                <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Hora Punta</p>
-                <p class="text-3xl font-extrabold text-purple-600 mt-2 truncate">
+                <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Hora Punta</p>
+                <p class="text-xl sm:text-3xl font-extrabold text-purple-600 mt-2 truncate">
                 {{ metrics.peakHourToday || 'N/A' }}
                 </p>
             </BaseCard>

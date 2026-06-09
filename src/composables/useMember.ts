@@ -4,7 +4,7 @@ import type { AddMember, MemberComplete, PutMember } from "@/modules/club/interf
 import { getMemberByIdAction, getMembersAction, registerMemberAction, updateMemberAction, deactivateMemberAction, activateMemberAction, toggleFavouriteAction } from "@/modules/club/actions/"
 
 export const useMember = () => {
-    const isLoading = ref(false);
+    const isLoading = ref<boolean>(false);
 
     const getMembers = async (clubId : string): Promise<MemberComplete[]> => {
         isLoading.value = true;

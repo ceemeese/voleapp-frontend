@@ -5,7 +5,7 @@ import type { PricingConfig, PutPricingConfig } from "@/modules/club/interfaces"
 import { ref } from "vue";
 
 export const usePricingConfig = () => {
-    const isLoading = ref(false);
+    const isLoading = ref<boolean>(false);
 
     const getPricing = async (clubId: string): Promise<PricingConfig> => {
         isLoading.value = true;

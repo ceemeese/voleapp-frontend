@@ -200,13 +200,13 @@ onMounted(async () => {
             placeholder="Fecha inicio - Fecha fin"
         />
         
-        <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <section class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
             <BaseCard v-for="widget in statsWidgets" :key="widget.label" padding="p-5" class="!shadow-md">
                 <div class="flex items-center gap-3 mb-2">
                     <i :class="[widget.icon, 'p-2', widget.color ]"></i>
-                    <span class="text-sm font-medium text-slate-500"> {{ widget.label }}</span>
+                    <span class="text-sm font-bold text-slate-500 uppercase tracking-wider"> {{ widget.label }}</span>
                 </div>
-                <p class="text-2xl font-black text-slate-900">{{ widget.value }}</p>
+                <p class="text-xl sm:text-2xl font-extrabold text-slate-900 truncate">{{ widget.value }}</p>
             </BaseCard>
         </section>
 
@@ -237,7 +237,7 @@ onMounted(async () => {
             header="Resumen de la reserva"
             >
             <template #default="{ data }">
-                <ReservationSummary :reservation="data"/>
+                <ReservationSummary :reservation="data as ReservationDataDialog"/>
             </template>
 
             <template #footer="{ data }">

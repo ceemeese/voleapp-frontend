@@ -7,7 +7,7 @@ import { computed, ref } from "vue";
 
 export const useClub = () => {
     const clubStore = useClubStore();
-    const isLoading = ref(false);
+    const isLoading = ref<boolean>(false);
     const activeClubId = computed(() => clubStore.activeClubId);
     const currentClubInfo = computed(() => clubStore.currentClubData);
 

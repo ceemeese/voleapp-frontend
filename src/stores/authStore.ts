@@ -15,6 +15,9 @@ interface TokenInfo {
 
 export const useAuthStore = defineStore('auth', () => {
     
+    const userStore = useUserStore();
+    const clubStore = useClubStore();
+    
     const token = ref<string | undefined>(undefined);
     const refreshToken = ref<string | undefined>(undefined);
 
@@ -53,6 +56,11 @@ export const useAuthStore = defineStore('auth', () => {
     function logout() {
         token.value = undefined;
         refreshToken.value = undefined;
+
+        userStore.clearProfile();
+        clubStore.clearClub();
+
+        localStorage.clear();
     }
 
 

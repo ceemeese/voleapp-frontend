@@ -4,7 +4,7 @@ import type { PutUser, User } from "@/modules/user/interfaces";
 import { ref } from "vue";
 
 export const useUser = () => {
-    const isLoading = ref(false);
+    const isLoading = ref<boolean>(false);
 
     const getUsers = async (): Promise<User[]> => {
         isLoading.value = true;

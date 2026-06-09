@@ -179,7 +179,7 @@ watch([selectedYear, selectedMonth], async () => {
 </script>
 
 <template>
-    <div class="flex flex-col p-6 space-y-6 w-full h-full overflow-y-auto bg-slate-50">
+    <div class="flex flex-col p-6 space-y-6 w-full h-full overflow-y-auto">
         
         <div class="flex flex-col md:flex-row md:justify-between md:items-center gap-4 border-b border-slate-200 pb-5">
             <div>
@@ -210,11 +210,11 @@ watch([selectedYear, selectedMonth], async () => {
             </div>
         </div>
 
-        <section v-if="analyticsData" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        <section v-if="analyticsData" class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5">
             
             <BaseCard padding="p-6" class="border-l-4 border-l-emerald-500 shadow-sm">
                 <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Ganancias Periodo</p>
-                <p class="text-3xl font-black text-emerald-600 mt-2 truncate">
+                <p class="text-xl sm:text-3xl font-extrabold text-emerald-600 mt-2 truncate">
                     {{ analyticsData.totalRevenuePeriod.toLocaleString('es-ES') }}€
                 </p>
                 <p class="text-xs text-slate-400 mt-2">Facturación total de clubs acumulada</p>
@@ -222,7 +222,7 @@ watch([selectedYear, selectedMonth], async () => {
 
             <BaseCard padding="p-6" class="border-l-4 border-l-slate-800 shadow-sm">
                 <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Reservas Periodo</p>
-                <p class="text-3xl font-black text-slate-900 mt-2 truncate">
+                <p class="text-xl sm:text-3xl font-extrabold text-slate-900 mt-2 truncate">
                     {{ analyticsData.totalReservationsPeriod.toLocaleString('es-ES') }}
                 </p>
                 <p class="text-xs text-slate-400 mt-2">Partidos reservados en el sistema</p>
@@ -230,23 +230,23 @@ watch([selectedYear, selectedMonth], async () => {
 
             <BaseCard padding="p-6" class="border-l-4 border-l-blue-500 shadow-sm">
                 <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Media Reservas / Club</p>
-                <p class="text-3xl font-black text-blue-600 mt-2 truncate">
+                <p class="text-xl sm:text-3xl font-extrabold text-blue-600 mt-2 truncate">
                     {{ analyticsData.averageReservationsPerClub }}
                 </p>
                 <p class="text-xs text-slate-400 mt-2">Ratio de uso por centro deportivo</p>
             </BaseCard>
 
-            <BaseCard padding="p-6" class="border-l-4 border-l-amber-500 shadow-sm lg:col-span-1">
+            <BaseCard padding="p-6" class="border-l-4 border-l-amber-500 shadow-sm xl:col-span-1">
                 <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Nuevos Clubes Afiliados</p>
-                <p class="text-3xl font-black text-amber-600 mt-2 truncate">
+                <p class="text-xl sm:text-3xl font-extrabold text-amber-600 mt-2 truncate">
                     +{{ analyticsData.totalClubsPeriod }}
                 </p>
                 <p class="text-xs text-slate-400 mt-2">Centros dados de alta en este periodo</p>
             </BaseCard>
 
-            <BaseCard padding="p-6" class="border-l-4 border-l-purple-500 shadow-sm lg:col-span-1">
+            <BaseCard padding="p-6" class="border-l-4 border-l-purple-500 shadow-sm xl:col-span-1">
                 <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Nuevos Usuarios Registrados</p>
-                <p class="text-3xl font-black text-purple-600 mt-2 truncate">
+                <p class="text-xl sm:text-3xl font-extrabold text-purple-600 mt-2 truncate">
                     +{{ analyticsData.totalNewPlayersCount.toLocaleString('es-ES') }}
                 </p>
                 <p class="text-xs text-slate-400 mt-2">Nuevas cuentas de jugadores creadas</p>
@@ -254,7 +254,7 @@ watch([selectedYear, selectedMonth], async () => {
 
         </section>
 
-        <section v-if="analyticsData" class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <section v-if="analyticsData" class="grid grid-cols-1 xl:grid-cols-2 gap-6">
             
             <BaseCard padding="p-5">
                 <div class="flex flex-col justify-between h-[380px]">

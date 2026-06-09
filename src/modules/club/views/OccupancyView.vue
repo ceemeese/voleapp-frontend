@@ -137,7 +137,7 @@ watch([selectedYear, selectedMonth], async () => {
 </script>
 
 <template>
-    <div class="flex flex-col p-4 space-y-6 w-full h-full overflow-y-auto">
+    <div class="flex flex-col p-6 space-y-6 w-full h-full overflow-y-auto">
         
         <div class="flex flex-col md:flex-row md:justify-between md:items-end gap-4 mb-6">
 

@@ -13,9 +13,9 @@ const props = defineProps<{
 }>();
 
 const selectedCourtId = ref<string>(props.courts[0]!.id);
-const simTemp = ref(22);
-const simWind = ref(5);
-const simRain = ref(false);
+const simTemp = ref<number>(22);
+const simWind = ref<number>(5);
+const simRain = ref<boolean>(false);
 
 const courtInputSelector = computed((): BaseInputProps => ({
     field: 'courtId',
@@ -61,7 +61,7 @@ const activeDiscounts = [
 
 <template>
     <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-10">
-        <h2 class="text-xl font-black text-slate-800 uppercase italic tracking-tight">Simulador en tiempo real</h2>
+        <h2 class="text-lg font-black text-slate-800 uppercase italic tracking-tight">Simulador en tiempo real</h2>
         <div class="w-full md:w-72">
             <BaseInput 
                 v-model="selectedCourtId" 

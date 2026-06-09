@@ -3,7 +3,7 @@ import { ref } from "vue";
 import type { AddEvent, Event, PutEvent } from "@/modules/club/interfaces"
 
 export const useEvent = () => {
-    const isLoading = ref(false);
+    const isLoading = ref<boolean>(false);
 
     const getEventsRangeByCourt = async (courtId: string, startRange: Date, endRange?: Date) :Promise<Event[]> => {
         isLoading.value = true;

@@ -6,7 +6,7 @@ import type { User } from "@/modules/user/interfaces";
 
 export const  useAuth = () => {
     const userStore = useAuthStore();
-    const isLoading = ref(false);
+    const isLoading = ref<boolean>(false);
 
     
     const login = async (loginData : Login): Promise<void> => {

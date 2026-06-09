@@ -42,7 +42,7 @@ const goToAuth = () => {
         <div class="max-w-7xl mx-auto w-full flex-1 px-6 flex flex-col sm:flex-row items-center justify-center sm:justify-between gap-15 sm:gap-10">
         
             <div ref="textRef" class="z-10">
-                <h1 class="text-[70px] sm:text-[100px] lg:text-[130px] leading-[0.85] font-black text-white uppercase tracking-tighter">
+                <h1 class="text-[70px] sm:text-[100px] xl:text-[130px] leading-[0.85] font-black text-white uppercase tracking-tighter">
                     <span class="block">RETA</span>
                     <span class="block">RESERVA</span>
                     <span class="block">REPITE</span>
@@ -148,7 +148,7 @@ const goToAuth = () => {
                         </p>
                         
                         
-                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-x-6 gap-y-3 pt-2 text-left max-w-md md:max-w-xl mx-auto md:mx-0">
+                        <div class="grid grid-cols-1 xl:grid-cols-2 gap-x-6 gap-y-3 pt-2 text-left max-w-md md:max-w-xl mx-auto md:mx-0">
                             <div class="flex items-center gap-2 text-sm text-slate-700 font-medium whitespace-nowrap">
                                 <i class="pi pi-cloud text-[#3A7FA6] font-bold"></i>
                                 <span>Descuentos por clima adverso</span>

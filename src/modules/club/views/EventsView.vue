@@ -29,7 +29,9 @@ const reservationDialogRef = ref();
 const events = ref<Event[]>([]);
 const reservations = ref<ReservationComplete[]>([]);
 const courts = ref<Court[]>([]);
-const isSubmitting = ref(false);
+const isSubmitting = ref<boolean>(false);
+const isDrawerVisible = ref<boolean>(false);
+
 
 interface EventForm {
     courtId: string;
@@ -369,46 +371,77 @@ const canAdminChangeStatus = (currentId: ReservationStatus | undefined): boolean
 </script>
 
 <template>
-    <div class="h-screen flex flex-col overflow-hidden">
-        <section class="flex items-center gap-2 pl-4 pr-4 mb-2 flex-shrink-0">
-            <BaseButton 
-            icon="pi pi-plus"
-            label="Añadir evento"
-            class="!bg-black !border-none"
-            size="small"
-            rounded
-            @click="onOpenCreateEventDialog"
-            />
+    <div class="flex flex-col overflow-hidden p-6 space-y-6 overflow-y-auto">
 
-            <BaseDatePicker
-                :model-value="selectedDate"
-                @update:model-value="onDateChange"
-                updateModelType="date"
-                class="!w-50"
+        <div class="flex flex-col md:flex-row md:justify-between md:items-end gap-4 mb-6 border-b border-slate-200 pb-5">
+            <div>
+                <h2 class="text-xl font-black text-slate-800 uppercase italic">Calendario de eventos y reservas</h2>
+                <p class="text-sm text-slate-500">Gestiona la ocupación y los eventos programados en las instalaciones</p>
+            </div>
+
+            <div class="flex gap-3">
+                <BaseButton 
+                icon="pi pi-plus"
+                label="Añadir evento"
+                class="!bg-black !border-none"
                 size="small"
-            />
-        
-        </section>
-
-        <BaseCard padding="p-4" class="!shadow-none !overflow-hidden">
-                <EventCalendar
-                    v-if="calendarResources.length > 0 && selectedDaySchedule.length > 0"
-                    :events="calendarEvents"
-                    :resources="calendarResources"
-                    :min-time="minOpeningTime"
-                    :max-time="maxClosingTime"
-                    :closed-ranges="closedRanges"
-                    @event-click="(e) => handleEventClickCalendar(e.data)"
-                    @cell-click="onCellClick"
+                rounded
+                @click="onOpenCreateEventDialog"
                 />
-                <div v-else-if="calendarResources.length > 0 && selectedDaySchedule.length === 0" class="flex justify-center p-10 text-slate-400">
-                    El club no tiene horario para este día
-                </div>
-                <div v-else class="flex justify-center p-10 text-slate-400">
-                    Cargando pistas...
-                </div>
-        </BaseCard>
 
+                <div class="card flex justify-center">
+                    <Drawer v-model:visible="isDrawerVisible" position="full">
+                        <div class="md:hidden p-1 text-center text-xs text-slate-400 bg-slate-50">
+                            <i class="pi pi-mobile"></i> Gira tu dispositivo para una mejor visualización
+                        </div>
+                       <div class="min-w-[800px] h-full overflow-hidden">
+                            <EventCalendar
+                                v-if="calendarResources.length > 0 && selectedDaySchedule.length > 0"
+                                :events="calendarEvents"
+                                :resources="calendarResources"
+                                :min-time="minOpeningTime"
+                                :max-time="maxClosingTime"
+                                :closed-ranges="closedRanges"
+                                @event-click="(e) => handleEventClickCalendar(e.data)"
+                                @cell-click="onCellClick"
+                            />
+                        </div>
+                    </Drawer>
+                    <BaseButton
+                    icon="pi pi-window-maximize" 
+                    @click="isDrawerVisible = true"
+                    size="small"
+                    class="!bg-black !border-none"/>
+                </div>
+
+                <BaseDatePicker
+                    :model-value="selectedDate"
+                    @update:model-value="onDateChange"
+                    updateModelType="date"
+                    class="!w-50"
+                    size="small"
+                />
+            </div>
+        </div>
+
+        <BaseCard padding="p-6" class="!shadow-none !overflow-hidden">
+            <EventCalendar
+                v-if="calendarResources.length > 0 && selectedDaySchedule.length > 0"
+                :events="calendarEvents"
+                :resources="calendarResources"
+                :min-time="minOpeningTime"
+                :max-time="maxClosingTime"
+                :closed-ranges="closedRanges"
+                @event-click="(e) => handleEventClickCalendar(e.data)"
+                @cell-click="onCellClick"
+            />
+            <div v-else-if="calendarResources.length > 0 && selectedDaySchedule.length === 0" class="flex justify-center p-10 text-slate-400">
+                El club no tiene horario para este día
+            </div>
+            <div v-else class="flex justify-center p-10 text-slate-400">
+                Cargando pistas...
+            </div>
+        </BaseCard>
 
         <BaseDialog
             ref="eventDialogRef"

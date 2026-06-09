@@ -5,7 +5,7 @@ import { useUserStore } from "@/stores/userStore";
 import { STATUS_EN } from "@/utils/status-utils";
 
 export const useReservation = () => {
-    const isLoading = ref(false);
+    const isLoading = ref<boolean>(false);
     const userStore = useUserStore();
     const userReservations = computed(() => userStore.reservations);
 
