@@ -13,7 +13,7 @@ import { computed, ref } from "vue";
 
 
 export const useAnalytics = () => {
-    const isLoading = ref(false);
+    const isLoading = ref<boolean>(false);
     const clubStore = useClubStore();
     const activeClubId = computed(() => clubStore.activeClubId);
 

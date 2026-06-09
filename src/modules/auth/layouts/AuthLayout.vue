@@ -6,11 +6,11 @@ import { RouteNames } from '@/router/routeNames';
 <template>
     <div class="bg-gray-100 flex justify-center items-center h-dvh overflow-hidden">
     <!-- imagen -->
-        <div class="w-1/2 h-full hidden lg:block">
+        <div class="w-1/2 h-full hidden xl:block">
             <img src="/src/assets/authimage.jpg" class="w-full h-full object-cover" />
         </div>
     <!-- login -->
-        <div class="w-full lg:w-1/2 h-full flex flex-col items-center justify-center p-8">
+        <div class="w-full xl:w-1/2 h-full flex flex-col items-center justify-center p-8">
             <div class="mb-8 flex flex-col items-center">
                 <router-link
                 :to="{name: RouteNames.HOME}"

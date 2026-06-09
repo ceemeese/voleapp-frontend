@@ -12,6 +12,7 @@ export const getGlobalDashboardStatsAction = async () : Promise<GlobalDashboardR
         return data;
     } catch (error : unknown) {
         const axiosError = error as AxiosError<ProblemDetails>;
+
         if (!axiosError.response) throw new ConnectionError('El servidor no responde');
 
         const status = axiosError.response.status;

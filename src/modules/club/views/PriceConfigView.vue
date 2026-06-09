@@ -80,7 +80,15 @@ onMounted(async () => {
 </script>
 
 <template>
-    <div class="flex flex-col gap-8 p-4 w-full h-full overflow-y-auto bg-slate-50">
+    <div class="flex flex-col overflow-hidden h-full w-full p-6 space-y-6">
+        <div class="flex flex-col md:flex-row md:justify-between md:items-end gap-4 mb-6 border-b border-slate-200 pb-5">
+            <div>
+                <h2 class="text-xl font-black text-slate-800 uppercase italic">Configurador y simulador de precios</h2>
+                <p class="text-sm text-slate-500">Optimiza la rentabilidad de tus pistas mediante precios dinámicos</p>
+            </div>
+        </div>
+
+    <div class="flex flex-col gap-8 w-full h-full overflow-y-auto">
         
         <section class="w-full mx-auto">
             <BaseCard padding="p-8">
@@ -97,5 +105,6 @@ onMounted(async () => {
                 :pricing-config="pricingConfig"/>
             </BaseCard>
         </section>
+    </div>
     </div>
 </template>

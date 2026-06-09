@@ -6,7 +6,7 @@ import { useClubStore } from "@/stores/clubStore";
 
 export const useCourt = () => {
     const clubStore = useClubStore();
-    const isLoading = ref(false);
+    const isLoading = ref<boolean>(false);
     const courts = computed(() => clubStore.courts);
 
     const getAllCourts = async (): Promise<Court[]> => {

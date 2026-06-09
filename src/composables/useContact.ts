@@ -3,7 +3,7 @@ import type { ContactForm } from "@/modules/landing/interfaces";
 import { ref } from "vue";
 
 export const useContact = () => {
-    const isLoading = ref(false);
+    const isLoading = ref<boolean>(false);
 
     const sendContactForm = async(dataForm: ContactForm) : Promise<void> => {
         isLoading.value = true;

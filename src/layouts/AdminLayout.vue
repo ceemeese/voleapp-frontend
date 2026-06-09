@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { AppNavigationGroup } from '@/types/navigation.interface';
 import { RouteNames } from '@/router/routeNames';
+import { NavbarMobile } from 'ui';
 
 const { getAdminContext, currentClubInfo } = useClub();
 const authStore = useAuthStore();
@@ -8,7 +9,9 @@ const userStore = useUserStore();
 const clubStore = useClubStore();
 const toast = useToast();
 const router = useRouter();
-const isInitialLoading = ref(true);
+const route = useRoute();
+const isInitialLoading = ref<boolean>(true);
+const showMobileMenu = ref<boolean>(false);
 
 onMounted(async () => {
     try {
@@ -108,8 +111,7 @@ const handleLogout = async () => {
     
     await new Promise(resolve => setTimeout(resolve, 2000))
     authStore.logout();
-    userStore.clearProfile();
-    router.push( {name: RouteNames.LOGIN});
+    router.push( {name: RouteNames.HOME});
 }
 
 const getHomeRoute = () => {
@@ -119,15 +121,21 @@ const getHomeRoute = () => {
 
 const exitSimulation = async () => {
     clubStore.clearClub();
+    await nextTick();
     router.push({ name: RouteNames.MANAGEMENT_DASHBOARD });
 };
+
+watch(() => route.path, () => {
+    showMobileMenu.value = false;
+})
 
 </script>
 
 <template>
-    <div class="h-screen flex overflow-hidden bg-gray-50 p-6 gap-6">
+    <div class="h-screen flex w-full overflow-hidden xl:p-6 xl:gap-6">
 
         <Navbar
+            class="!hidden xl:!block"
             :navigation-items="currentMenu"
             :home-route="getHomeRoute()"
         >
@@ -140,11 +148,33 @@ const exitSimulation = async () => {
             </template>
         </Navbar>
 
-        <main class="flex-1 flex flex-col h-full min-w-0 overflow-hidden">
-            <header class="flex justify-between items-center p-4">
+        <NavbarMobile :is-open="showMobileMenu" @close="showMobileMenu = false">
+            <div class="h-full w-full overflow-y-auto custom-scrollbar">
+                <Navbar
+                    class="w-full min-h-screen"
+                    :navigation-items="currentMenu"
+                    :home-route="getHomeRoute()"
+                    is-mobile @close="showMobileMenu = false"
+                >
+                    <template #logo>
+                        <img src="/src/assets/voleappblack.png" alt="VoleApp Logo" class="h-10 mb-2" />
+                    </template>
+                </Navbar>
+            </div>
+        </NavbarMobile>
+
+        <main class="flex-1 flex flex-col h-full min-w-0 overflow-hidden overflow-y-auto">
+            <header class="flex justify-between items-center pl-6 pr-6 pt-6 pb-2 md:pb-0">
                 <div class="flex items-center gap-5">
+
                    <slot name="header-actions">
-                        <span class="text-sm font-bold text-gray-700 uppercase tracking-widest">
+                        <button 
+                            @click="showMobileMenu = true" 
+                            class="xl:hidden p-2 bg-black text-white rounded-xl shadow-lg hover:bg-slate-800 transition-all">
+                                <i class="pi pi-bars text-xl text-white"></i>
+                        </button>
+
+                        <span class="hidden md:block text-sm font-bold text-gray-700 uppercase tracking-widest">
                             {{ headerTitle}}
                         </span>
                     </slot>

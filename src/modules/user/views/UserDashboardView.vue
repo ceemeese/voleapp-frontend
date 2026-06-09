@@ -92,15 +92,15 @@ onMounted(async() => {
             <p class="text-gray-500 mt-1">Gestiona tus partidos y reservas</p>
         </div>
 
-        <section class="lg:col-span-2 flex flex-col gap-4">
+        <section class="xl:col-span-2 flex flex-col gap-4">
             <BaseCard class="min-h-60">
-                <div class="flex justify-between items-center px-2">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center px-2 gap-2">
                     <h3 class="font-semibold flex items-center gap-2">
                         <i class="pi pi-ticket"></i>
                         Mis próximas reservas
                     </h3>
-                    <router-link :to="{ name: RouteNames.USER_RESERVATIONS }" class="text-xs font-bold text-slate-400 hover:text-black">
-                        VER HISTORIAL
+                    <router-link :to="{ name: RouteNames.USER_RESERVATIONS }" class="text-xs font-bold text-slate-400 hover:text-black uppercase">
+                        Ver historial
                     </router-link>
                 </div>
 

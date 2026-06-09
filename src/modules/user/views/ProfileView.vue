@@ -87,7 +87,7 @@ const formattedDate = computed(() => {
 
 
 <template>
-    <div class="mx-auto w-full h-full">
+    <div class="mx-auto w-full h-full p-6 xl:p-4">
         <UserCardProfile 
         :main-text="userFullName"
         :subtext="'@' + (profile?.username) || ''"

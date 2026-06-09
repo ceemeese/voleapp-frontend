@@ -5,7 +5,7 @@ import { useClubStore } from "@/stores/clubStore";
 
 export const useSchedule = () => {
     const clubStore = useClubStore();
-    const isLoading = ref(false);
+    const isLoading = ref<boolean>(false);
     const schedules = computed(() => clubStore.schedules);
     const todaySchedule = computed(() => clubStore.todaySchedule);
 

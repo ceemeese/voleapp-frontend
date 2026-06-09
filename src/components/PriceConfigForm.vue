@@ -36,7 +36,7 @@ const onFormSubmit = (e: FormSubmitEvent) => {
     >
         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-10 border-b border-slate-100 pb-6">
             <div>
-                <h2 class="text-xl font-black text-slate-800 uppercase italic tracking-tight">
+                <h2 class="text-lg font-black text-slate-800 uppercase italic tracking-tight">
                     Configuración de Precios Dinámicos
                 </h2>
                 <p class="text-[11px] text-slate-400 font-medium mt-1">

@@ -236,7 +236,14 @@ const animateTableRows = async () => {
 </script>
 
 <template>
-    <div class="p-4">
+    <div class="flex flex-col overflow-hidden h-full w-full p-6 space-y-6 overflow-y-auto">
+        <div class="flex flex-col md:flex-row md:justify-between md:items-end gap-4 mb-6 border-b border-slate-200 pb-5">
+            <div>
+                <h2 class="text-xl font-black text-slate-800 uppercase italic">Comunidad</h2>
+                <p class="text-sm text-slate-500">Administra perfiles, roles y permisos de los jugadores del club</p>
+            </div>
+        </div>
+
         <BaseCard padding="p-4">
             <BaseDataTable
             :value="members"

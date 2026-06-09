@@ -167,21 +167,27 @@ const onSaveModifiedCourt = async (updatedData: CourtForm) => {
 </script>
 
 <template>
-    <div class="flex flex-col overflow-hidden h-full w-full">
-        <section class="flex items-center gap-2 pl-4 pr-4">
+    <div class="flex flex-col overflow-hidden h-full w-full p-6 space-y-6 overflow-y-auto">
+        <div class="flex flex-col md:flex-row md:justify-between md:items-end gap-4 mb-6 border-b border-slate-200 pb-5">
+            <div>
+                <h2 class="text-xl font-black text-slate-800 uppercase italic">Gestión de pistas</h2>
+                <p class="text-sm text-slate-500">Configura la disponibilidad y el estado de las pistas del club</p>
+            </div>
 
-            <BaseButton 
-                icon="pi pi-plus"
-                label="Añadir pista"
-                class="!bg-black !border-none"
-                size="small"
-                rounded
-                @click="onOpenCreateDialog"
-            />
-        </section>
+            <div class="flex">
+                <BaseButton 
+                    icon="pi pi-plus"
+                    label="Añadir pista"
+                    class="!bg-black !border-none"
+                    size="small"
+                    rounded
+                    @click="onOpenCreateDialog"
+                />
+            </div>
+        </div>
 
-        <div class="flex-1 overflow-y-auto p-4">
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <div class="flex-1">
+            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 xl:grid-cols-4 gap-6">
                 
                 <CourtAdminCard 
                     v-for="court in courts" 

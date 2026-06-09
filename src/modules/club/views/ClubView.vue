@@ -239,20 +239,30 @@ const handleToggleSchedule = (schedule: Schedule, event: PointerEvent) => {
 
 
 <template>
-    <div class="mx-auto w-full h-full p-4 overflow-y-auto custom-scrollbar">
-        <UserCardProfile 
-        :main-text="currentClubInfo?.name"
-        :subtext="locationSubtext"
-        :initials="clubInitials"
-        size="xlarge"
-        shape="circle"
-        @edit="handleClubEditDialog"
-        padding="p-2"
-        >
     
-        </UserCardProfile>
+    <div class="flex flex-col overflow-hidden h-full w-full p-4 space-y-6">
+        <div class="flex flex-col md:flex-row md:justify-between md:items-end gap-4 mb-6 border-b border-slate-200 pb-5">
+            <div>
+                <h2 class="text-xl font-black text-slate-800 uppercase italic">Mi club</h2>
+                <p class="text-sm text-slate-500">Gestióna información y horarios de club</p>
+            </div>
+        </div>
 
-        <BaseCard class="p-6 mt-3">
+    
+
+    <div class="mx-auto w-full max-h-full p-1 overflow-y-auto custom-scrollbar">
+        <UserCardProfile 
+            :main-text="currentClubInfo?.name"
+            :subtext="locationSubtext"
+            :initials="clubInitials"
+            size="large"
+            shape="circle"
+            @edit="handleClubEditDialog"
+            padding="p-2"
+            class="!shadow-md"
+        />
+
+        <BaseCard padding="p-6" class="!shadow-md mt-3">
             <div class="flex items-center justify-between mb-8">
                 <h3 class="text-lg font-bold text-slate-800">Información Personal</h3>
             </div>
@@ -276,7 +286,7 @@ const handleToggleSchedule = (schedule: Schedule, event: PointerEvent) => {
             </div>
         </BaseCard>
 
-        <BaseCard class="p-6 mt-3">
+        <BaseCard padding="p-6" class="!shadow-md mt-3">
             <div class="flex items-center justify-between mb-8">
                 <h3 class="text-lg font-bold text-slate-800">Horarios</h3>
             </div>
@@ -308,7 +318,7 @@ const handleToggleSchedule = (schedule: Schedule, event: PointerEvent) => {
         >
 
         </BaseDialog>
-
+        </div>
     </div>
 
 </template>

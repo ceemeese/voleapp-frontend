@@ -11,7 +11,10 @@ const router = useRouter();
 const authStore = useAuthStore();
 const userStore = useUserStore();
 const toast = useToast();
-const isInitialLoading = ref(false);
+const isInitialLoading = ref<boolean>(false);
+const isMobileMenuVisible = ref<boolean>(false);
+const isMobile = ref(window.innerWidth < 768);
+const loginLabel = computed(() => isMobile.value ? '' : 'Log in');
 
 const isUserLogged = computed(() => authStore.isAuthenticated && !authStore.isAdmin);
 
@@ -32,7 +35,7 @@ onMounted(async () => {
 const headerLinks = computed<NavItem[]>(() => {
     if (isUserLogged.value) {
         return [
-            { title: 'Inicio', to: { name: RouteNames.HOME }, icon: 'pi pi-home' },
+            { title: 'Inicio', to: { name: RouteNames.USER_HOME }, icon: 'pi pi-home' },
             { title: 'Reservar', to: { name: RouteNames.BOOKING }, icon: 'pi pi-calendar' },
             { title: 'Perfil', to: { name: RouteNames.USER_PROFILE }, icon: 'pi pi-user' },
         ];
@@ -41,6 +44,8 @@ const headerLinks = computed<NavItem[]>(() => {
         { title: 'Inicio', to: { name: RouteNames.HOME }, icon: 'pi pi-home' },
         { title: 'Usuarios', to: { name: RouteNames.PUBLIC_USERS }, icon: 'pi pi-users' },
         { title: 'Clubs', to: { name: RouteNames.PUBLIC_CLUBS }, icon: 'pi pi-shop' },
+        { title: 'Sobre Nosotros', to: { name: RouteNames.PUBLIC_ABOUT }, icon: 'pi pi-users' },
+        { title: 'Contacto', to: { name: RouteNames.PUBLIC_CONTACT }, icon: 'pi pi-envelope' },
     ];
 });
 
@@ -71,21 +76,43 @@ const handleLogout = () => {
     router.push( {name: RouteNames.HOME });
 }
 
+const handleMobileMenuVisible = (() => {
+    isMobileMenuVisible.value = true;
+})
+
 </script>
 
 <template>
     <div class="min-h-screen flex flex-col">
+
         <HeaderM 
             :navigation-items="headerLinks" 
             class="header-shrink" :is-authenticated="isUserLogged" 
             @login="goToLogin" 
+            :login-label="loginLabel"
             @profile="goToProfile" 
             @logout="handleLogout"
+            @toggle-mobile-menu="handleMobileMenuVisible"
             :home-route-name="isUserLogged ? RouteNames.USER_HOME : RouteNames.HOME" >
             <template #logo>
-                <img src="/src/assets/voleappblack.png" alt="VoleApp Logo" class="h-10 sm:h-15 w-auto" />
+                <img src="/src/assets/voleappblack.png" alt="VoleApp Logo" class="h-8 sm:h-15 w-auto" />
             </template>
         </HeaderM>
+
+        <Drawer v-model:visible="isMobileMenuVisible" header="Menú" position="left" class="w-full md:w-80">
+            <nav class="flex flex-col gap-4 mt-6">
+                <RouterLink 
+                    v-for="link in headerLinks" 
+                    :key="link.title"
+                    :to="link.to" 
+                    @click="isMobileMenuVisible = false"
+                    class="flex items-center gap-3 p-4 border-b hover:bg-slate-50 transition-colors"
+                >
+                    <i :class="link.icon"></i>
+                    <span class="text-lg font-medium">{{ link.title }}</span>
+                </RouterLink>
+            </nav>
+        </Drawer>
 
         <main class="flex-1 w-full h-full mx-auto flex flex-col items-center" :class="isUserLogged ? 'mt-20 sm:mt-35 max-w-7xl' : ''">
             <div v-if="isInitialLoading" class="flex items-center justify-center h-full">
