@@ -1,22 +1,19 @@
 <script setup lang="ts">
-import { userSchema } from '../schemas/user.schema';
+import { userInputsEditDialog, userSchema } from '../schemas/user.schema';
 import type { User } from '../interfaces';
-import type { BaseInputProps, InfoFieldProps } from 'ui';
+import type { InfoFieldProps } from 'ui';
 import { storeToRefs } from 'pinia';
+import { passwordInputs, passwordSchema, type UpdatePasswordData } from '../schemas/password.schema';
 
 const userStore = useUserStore();
 const toast = useToast();
 const resolver = zodResolver(userSchema);
 const userDialogRef = ref();
+const passwordDialogRef = ref();
 const { updateUser } = useUser();
+const { changePassword } = useAuth();
 const { profile } = storeToRefs(userStore);
 
-
-const inputsDialog : BaseInputProps[] = [
-    { field: 'username', label: 'Apodo', icon: 'pi pi-user' },
-    { field: 'email', label: 'Email', icon: 'pi pi-envelope', type: 'email' },
-    { field: 'phoneNumber', label: 'Teléfono', icon: 'pi pi-phone' },
-]
 
 const profileField = computed<InfoFieldProps[]>(() => [
     { label: 'Nombre', value: userStore.profile?.name, icon: 'pi pi-id-card'},
@@ -52,6 +49,10 @@ const handleOpenEdit = () => {
     userDialogRef.value.open(profile.value);
 }
 
+const handleOpenPasswordDialog = () => {
+    passwordDialogRef.value.open();
+}
+
 
 const onSaveModifiedUser = async (updatedData: User) => {
     try {
@@ -69,6 +70,18 @@ const onSaveModifiedUser = async (updatedData: User) => {
         toast.add({ severity: 'error', summary: 'Error de acceso', detail: message, life: 3000 });
     }
     
+}
+
+const onSavePassword = async (data: UpdatePasswordData) => {
+    try {
+
+        await changePassword(data);
+        toast.add({ severity: 'success', summary: 'Éxito', detail: 'Contraseña actualizada', life: 3000 });
+        passwordDialogRef.value.close();
+    } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : 'Error inesperado';
+        toast.add({ severity: 'error', summary: 'Error', detail: message, life: 3000 });
+    }
 }
 
 
@@ -89,14 +102,32 @@ const formattedDate = computed(() => {
 <template>
     <div class="mx-auto w-full h-full p-6 xl:p-4">
         <UserCardProfile 
-        :main-text="userFullName"
-        :subtext="'@' + (profile?.username) || ''"
-        :initials="userInitials"
-        size="xlarge"
-        shape="circle"
-        @edit="handleOpenEdit"
-        padding="p-2"
+            :main-text="userFullName"
+            :subtext="'@' + (profile?.username) || ''"
+            :initials="userInitials"
+            size="xlarge"
+            shape="circle"
+            @edit="handleOpenEdit"
+            padding="p-2"
         >
+            <template #actions>
+                <div class="flex gap-2">
+                    <BaseButton 
+                        icon="pi pi-user-edit" 
+                        @click="handleOpenEdit" 
+                        rounded 
+                        size="small" 
+                        class="!bg-black !border-none"/>
+                    
+                    <BaseButton 
+                        icon="pi pi-key" 
+                        @click="handleOpenPasswordDialog" 
+                        rounded
+                        size="small"
+                        class="!bg-black !border-none"
+                    />
+                </div>
+            </template>
     
         </UserCardProfile>
 
@@ -129,9 +160,18 @@ const formattedDate = computed(() => {
             header="Editar usuario"
             subtitle="Actualiza la información de usuario"
             :resolver="resolver"
-            :inputs-dialog="inputsDialog"
+            :inputs-dialog="userInputsEditDialog"
             @save="onSaveModifiedUser"
-            />
+        />
+
+        <BaseDialog
+            ref="passwordDialogRef"
+            header="Cambiar contraseña"
+            subtitle="Introduce tu contraseña actual y la nueva"
+            :resolver="zodResolver(passwordSchema)"
+            :inputs-dialog="passwordInputs"
+            @save="onSavePassword"
+        />
 
     </div>
 
