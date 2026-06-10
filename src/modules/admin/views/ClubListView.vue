@@ -1,13 +1,6 @@
 <script setup lang="ts">
-import { useClub } from '@/composables/useClub';
 import type { Club } from '@/modules/club/interfaces';
-import { onMounted, ref } from 'vue';
-import { useToast } from 'primevue/usetoast';
-import { useAuthStore } from '@/stores/authStore';
 import { BasePill, type BaseCard, type BaseDataTable,  type ColumnConfig } from 'ui';
-import { useConfirm } from "primevue/useconfirm";
-import { toDateOnlyString} from '@/helpers/dateHelpers';
-import { zodResolver } from '@primevue/forms/resolvers/zod';
 import { clubInputsDialog, clubSchema, type ClubAddFormData, type ClubUpdateFormData } from '@/modules/club/schemas/club.schema';
 import { RouteNames } from '@/router/routeNames';
 

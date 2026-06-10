@@ -63,6 +63,14 @@ export const useAuthStore = defineStore('auth', () => {
         localStorage.clear();
     }
 
+    async function refresh() {
+        const { data } = await axios.post(`${import.meta.env.VITE_API_URL}api/Auths/refresh`, {
+                refreshToken: refreshToken.value });
+        setToken(data.token);
+        setRefreshToken(data.refreshToken);
+        
+        return data.token;
+    }
 
   return { 
         token,
@@ -78,6 +86,7 @@ export const useAuthStore = defineStore('auth', () => {
         username,
         role,
         email,
+        refresh
     }
 
 },
