@@ -1,7 +1,7 @@
 import type { AxiosRequestConfig } from "axios";
 import type { PutUser } from "../interfaces";
 
-const baseURL = "/api/Users";
+const baseURL = "api/Users";
 
 
 function getUsers() : AxiosRequestConfig {

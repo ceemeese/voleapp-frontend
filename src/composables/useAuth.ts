@@ -1,7 +1,7 @@
-import { loginAction, registerAction } from "@/modules/auth/actions"; 
+import { changePasswordAction, loginAction, registerAction, resetPasswordAction } from "@/modules/auth/actions"; 
 import { useAuthStore } from "@/stores/authStore"
 import { ref } from "vue";
-import type { LoginResponse, Login, Register } from "@/modules/auth/interfaces";
+import type { LoginResponse, Login, Register, ChangePassword, ResetPassword } from "@/modules/auth/interfaces";
 import type { User } from "@/modules/user/interfaces";
 
 export const  useAuth = () => {
@@ -34,10 +34,33 @@ export const  useAuth = () => {
     };
 
 
+    const changePassword = async (putData : ChangePassword): Promise<void> => {
+        isLoading.value = true;
+
+        try {
+            await changePasswordAction(putData);
+        } finally {
+            isLoading.value = false;
+        }
+    };
+
+        const resetPassword = async (resetData : ResetPassword): Promise<void> => {
+        isLoading.value = true;
+
+        try {
+            await resetPasswordAction(resetData);
+        } finally {
+            isLoading.value = false;
+        }
+    };
+
+
     return {
         isLoading,
         login,
         register,
+        changePassword,
+        resetPassword,
     };
 
 

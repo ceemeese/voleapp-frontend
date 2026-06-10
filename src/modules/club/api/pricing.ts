@@ -1,7 +1,7 @@
 import type { AxiosRequestConfig } from "axios";
 import type { PutPricingConfig } from "../interfaces";
 
-const baseURL = "/api/clubs";
+const baseURL = "api/clubs";
 
 function getPricingConfig(clubId: string) : AxiosRequestConfig {
     return {
