@@ -1,16 +1,26 @@
-import { useAuthStore } from '@/stores/authStore';
-import axios from 'axios'
+import router from '@/router'
+import { RouteNames } from '@/router/routeNames';
+import type { InternalAxiosRequestConfig } from 'axios';
 
 const clientApi = axios.create({
     baseURL:import.meta.env.VITE_API_URL,
 });
 
+type FailedRequest = {
+    resolve: (value : unknown ) => void;
+    config : InternalAxiosRequestConfig;
+};
+
+let isRefreshing = false;
+let failedQueue : FailedRequest[] = []
+
 //interceptores
 clientApi.interceptors.request.use((config) => {
-    const userStore = useAuthStore();
-    if (userStore.token) {
-        config.headers.Authorization = `Bearer ${userStore.token}`
+    const authStore = useAuthStore();
+    if (authStore.token) {
+        config.headers.Authorization = `Bearer ${authStore.token}`
     }
+
     return config;
 })
 
@@ -18,32 +28,45 @@ clientApi.interceptors.request.use((config) => {
 clientApi.interceptors.response.use(
     (response) => response,
     async (error) => {
-        const userStore = useAuthStore();
+        const authStore = useAuthStore();
         const originalRequest = error.config;
 
-        if (error.response.status === 401 && !originalRequest._retry){
+        if (error.response?.status === 401 && !originalRequest._retry){
             originalRequest._retry = true;
-        
-            try {
-                const { data } = await axios.post(`${import.meta.env.VITE_API_URL}/auth/refresh`, {
-                    token: userStore.token,
-                    refreshToken: userStore.refreshToken
-                });
 
-                userStore.setToken(data.token);
-                userStore.setRefreshToken(data.refreshToken);
+            if (!isRefreshing) {
+                isRefreshing = true;
 
-                originalRequest.headers.Authorization = `Bearer ${data.token}`
-                return clientApi(originalRequest);
+                try {
+                    const newToken = await authStore.refresh();
+
+                    failedQueue.forEach(({ resolve, config }) => {
+                        config.headers.Authorization = `Bearer ${newToken}`
+                        resolve(clientApi(config))
+                    });
+
+                    failedQueue = []
+
+                    originalRequest.headers.Authorization = `Bearer ${ newToken }`
+                    return clientApi(originalRequest);
+                
+                } catch (refreshError){
+                    failedQueue.forEach(({ resolve }) => resolve(Promise.reject(refreshError)));
+                    failedQueue = []
+
+                    authStore.logout();
+                    router.push(RouteNames.LOGIN);
+                    return Promise.reject(refreshError);
+                } finally {
+                    isRefreshing = false;
+                }   
             
-            } catch (refreshError){
-                userStore.logout();
-                window.location.href = '/auth/login';
-                return Promise.reject(refreshError);
+            } else {
+                return new Promise((resolve) => {
+                    failedQueue.push({ resolve, config: originalRequest });
+                });
             }
-
         }
-
         return Promise.reject(error);
     }
 )

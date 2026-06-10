@@ -13,8 +13,10 @@ const onLoginSubmit = async (formData: LoginValues) => {
         toast.add({ severity: 'success', summary: '¡Bienvenido!', detail: 'Has iniciado sesión correctamente', life: 3000})
         await new Promise(resolve => setTimeout(resolve, 2000))
 
-        if (userStore.isAdmin || userStore.isSuperadmin) {
-            router.push({ name: RouteNames.ADMIN_ROOT });
+        if (userStore.isSuperadmin) {
+            router.push({ name: RouteNames.MANAGEMENT_DASHBOARD });
+        } else if (userStore.isAdmin) {
+            router.push({ name: RouteNames.ADMIN_DASHBOARD });
         } else {
             router.push({ name: RouteNames.USER_HOME });
         }  
