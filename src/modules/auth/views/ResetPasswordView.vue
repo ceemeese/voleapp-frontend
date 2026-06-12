@@ -9,7 +9,7 @@ const props = defineProps<{
   email: string;
 }>();
 
-const isProcessing = ref(false);
+const isProcessing = ref<boolean>(false);
 
 const toast = useToast();
 const router = useRouter();

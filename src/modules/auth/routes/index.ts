@@ -12,19 +12,26 @@ export const authRoutes: RouteRecordRaw = {
             path: 'login',
             name: RouteNames.LOGIN,
             component: () => import('@/modules/auth/views/LoginView.vue'),
-            meta: { authImage: '/src/assets/authimage.jpg' }
+            meta: { 
+                authImage: '/src/assets/authimage.jpg',
+                blurImage: '/src/assets/auth-blur.jpg' }
         },
         {
             path: 'register',
             name: RouteNames.REGISTER,
             component: () => import('@/modules/auth/views/RegisterView.vue'),
-            meta: { authImage: '/src/assets/authimage2.jpg' }
+            meta: { 
+                authImage: '/src/assets/authimage2.jpg',
+                blurImage: '/src/assets/auth-blur2.jpg' }
+            
         },
         {
             path: 'forgot',
             name: RouteNames.FORGOT,
             component: () => import('@/modules/auth/views/ForgotPasswordView.vue'),
-            meta: { authImage: '/src/assets/authimage3.jpg' }
+            meta: { 
+                authImage: '/src/assets/authimage3.jpg',
+                blurImage: '/src/assets/auth-blur3.jpg' }
         },
         {
             path: 'reset-password',

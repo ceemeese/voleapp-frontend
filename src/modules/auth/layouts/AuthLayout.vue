@@ -2,18 +2,43 @@
 import { RouteNames } from '@/router/routeNames';
 
 const route = useRoute();
-defineProps<{image?: string}>();
+
+const isLoaded = ref(false);
+
+const onImageLoad = () => {
+  isLoaded.value = true;
+};
+
+const images = import.meta.glob('@/assets/*.{jpg,jpeg}', { query: '?url', eager: true, import: 'default'});
+
+const currentImage = computed(() => getImageUrl(route.meta.authImage as string))
+const blurImage = computed(() => getImageUrl(route.meta.blurImage as string))
+
+const getImageUrl = (url:string) => {
+    const imageModule = images[url] as string;
+    return imageModule ? imageModule : '';
+}
 
 </script>
 
 <template>
     <div class="bg-gray-100 flex justify-center items-center h-dvh overflow-hidden">
+        <div class="w-1/2 h-full hidden xl:block relative overflow-hidden"> 
+            <div 
+                class="absolute inset-0 z-0 bg-cover bg-center blur-lg scale-110"
+                :style="{ backgroundImage: `url(${blurImage})` }"
+                >
+            </div>
 
-        <div class="w-1/2 h-full hidden xl:block">
-            <img :src="route.meta.authImage as string" class="w-full h-full object-cover" />
+            <img 
+            :src="currentImage" 
+            class="absolute inset-0 w-full h-full object-cover transition-opacity duration-1000"
+            :class="isLoaded ? 'opacity-100' : 'opacity-0'"
+            @load="onImageLoad"
+            />
         </div>
 
-        <div class="w-full xl:w-1/2 h-full flex flex-col items-center justify-center p-8">
+        <div class="z-20 w-full xl:w-1/2 h-full flex flex-col items-center justify-center p-8">
             <div class="mb-8 flex flex-col items-center">
                 <router-link
                 :to="{name: RouteNames.HOME}"
