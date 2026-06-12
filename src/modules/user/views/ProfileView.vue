@@ -8,6 +8,7 @@ import { passwordInputs, passwordSchema, type UpdatePasswordData } from '../sche
 const userStore = useUserStore();
 const toast = useToast();
 const resolver = zodResolver(userSchema);
+const passwordResolver = zodResolver(passwordSchema);
 const userDialogRef = ref();
 const passwordDialogRef = ref();
 const { updateUser } = useUser();
@@ -168,7 +169,7 @@ const formattedDate = computed(() => {
             ref="passwordDialogRef"
             header="Cambiar contraseña"
             subtitle="Introduce tu contraseña actual y la nueva"
-            :resolver="zodResolver(passwordSchema)"
+            :resolver="passwordResolver"
             :inputs-dialog="passwordInputs"
             @save="onSavePassword"
         />

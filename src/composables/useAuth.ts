@@ -1,7 +1,7 @@
-import { changePasswordAction, loginAction, registerAction, resetPasswordAction } from "@/modules/auth/actions"; 
+import { changePasswordAction, forgotPasswordAction, loginAction, registerAction, resetPasswordAction } from "@/modules/auth/actions"; 
 import { useAuthStore } from "@/stores/authStore"
 import { ref } from "vue";
-import type { LoginResponse, Login, Register, ChangePassword, ResetPassword } from "@/modules/auth/interfaces";
+import type { LoginResponse, Login, Register, ChangePassword, ResetPassword, ForgotPassword } from "@/modules/auth/interfaces";
 import type { User } from "@/modules/user/interfaces";
 
 export const  useAuth = () => {
@@ -44,7 +44,19 @@ export const  useAuth = () => {
         }
     };
 
-        const resetPassword = async (resetData : ResetPassword): Promise<void> => {
+
+    const forgotPassword = async (forgotData : ForgotPassword): Promise<void> => {
+        isLoading.value = true;
+
+        try {
+            await forgotPasswordAction(forgotData);
+        } finally {
+            isLoading.value = false;
+        }
+    };
+
+
+    const resetPassword = async (resetData : ResetPassword): Promise<void> => {
         isLoading.value = true;
 
         try {
@@ -60,8 +72,8 @@ export const  useAuth = () => {
         login,
         register,
         changePassword,
+        forgotPassword,
         resetPassword,
     };
-
 
 };

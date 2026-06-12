@@ -5,7 +5,7 @@ import type { LoginValues } from 'ui';
 const toast = useToast();
 const router = useRouter();
 const userStore = useAuthStore();
-const { login, isLoading} = useAuth();
+const { login, isLoading } = useAuth();
 
 const onLoginSubmit = async (formData: LoginValues) => {
     try {
@@ -30,9 +30,15 @@ const onLoginSubmit = async (formData: LoginValues) => {
 
 
 <template>
+    <BlockUI :blocked="isLoading" fullScreen />
     <div class="flex items-center">
         <div class="w-full max-w-md">
-            <LoginForm :loading="isLoading" @submit="onLoginSubmit"/>
+            <LoginForm 
+                :loading="isLoading" 
+                @submit="onLoginSubmit"
+                :register-route="RouteNames.REGISTER"
+                :forgot-password-label="'¿Olvidaste tu contraseña?'"
+                :forgot-password-route="RouteNames.FORGOT"/>
         </div>
     </div>
 </template>

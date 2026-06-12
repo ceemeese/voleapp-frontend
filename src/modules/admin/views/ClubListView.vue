@@ -88,7 +88,7 @@ const handleImpersonate = async (club: Club) => {
         toast.add({ severity: 'info', summary: 'Simulación iniciada', detail: `Ahora gestionando: ${club.name}`, life: 3000 });
         router.push({ name: RouteNames.ADMIN_DASHBOARD });
     } catch {
-        toast.add({ severity: 'error', summary: 'Error', detail: 'No se pudo acceder al club' });
+        toast.add({ severity: 'error', summary: 'Error', detail: 'No se pudo acceder al club', life: 3000 });
     }
 }
 

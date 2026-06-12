@@ -1,15 +1,18 @@
 <script setup lang="ts">
 import { RouteNames } from '@/router/routeNames';
 
+const route = useRoute();
+defineProps<{image?: string}>();
+
 </script>
 
 <template>
     <div class="bg-gray-100 flex justify-center items-center h-dvh overflow-hidden">
-    <!-- imagen -->
+
         <div class="w-1/2 h-full hidden xl:block">
-            <img src="/src/assets/authimage.jpg" class="w-full h-full object-cover" />
+            <img :src="route.meta.authImage as string" class="w-full h-full object-cover" />
         </div>
-    <!-- login -->
+
         <div class="w-full xl:w-1/2 h-full flex flex-col items-center justify-center p-8">
             <div class="mb-8 flex flex-col items-center">
                 <router-link
