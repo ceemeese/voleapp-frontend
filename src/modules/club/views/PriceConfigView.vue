@@ -18,7 +18,7 @@ const loadCourts = async () => {
             severity: 'error',
             summary: 'Error',
             detail: message,
-            life: 3000
+            life: 2000
         })
     }
 }
@@ -34,7 +34,7 @@ const loadPricingConfig = async () => {
             severity: 'error',
             summary: 'Error',
             detail: message,
-            life: 3000
+            life: 2000
         })
     }
 }
@@ -58,14 +58,14 @@ const handleSaveConfig = async (configData: PricingConfig) => {
             severity: 'success', 
             summary: 'Confirmado', 
             detail: 'Cambios guardados', 
-            life: 3000});
+            life: 2000});
     } catch (error:unknown) {
         const message = error instanceof Error ? error.message : 'Error inesperado';
         toast.add({
             severity: 'error',
             summary: 'Error',
             detail: message,
-            life: 3000
+            life: 2000
         })
     }
 }

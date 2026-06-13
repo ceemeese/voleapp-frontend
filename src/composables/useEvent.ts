@@ -1,73 +1,30 @@
 import { deleteEventAction, getEventByIdAction, getEventsRangeByClubAction, getEventsRangeByCourtAction, registerEventAction, updateEventAction } from "@/modules/club/actions";
-import { ref } from "vue";
 import type { AddEvent, Event, PutEvent } from "@/modules/club/interfaces"
 
 export const useEvent = () => {
-    const isLoading = ref<boolean>(false);
 
-    const getEventsRangeByCourt = async (courtId: string, startRange: Date, endRange?: Date) :Promise<Event[]> => {
-        isLoading.value = true;
-        
-        try {
-            const data: Event[] = await getEventsRangeByCourtAction(courtId, startRange, endRange);
-            return data;
-        } finally {
-            isLoading.value = false;
-        }
+    const getEventsRangeByCourt = (courtId: string, startRange: Date, endRange?: Date) :Promise<Event[]> => {
+        return getEventsRangeByCourtAction(courtId, startRange, endRange);
     }
     
-    const getEventsRangeByClub = async (clubId: string, startRange: Date, endRange?: Date) :Promise<Event[]> => {
-        isLoading.value = true;
-        
-        try {
-            const data: Event[] = await getEventsRangeByClubAction(clubId, startRange, endRange)
-            return data;
-        } finally {
-            isLoading.value = false;
-        }
+    const getEventsRangeByClub = (clubId: string, startRange: Date, endRange?: Date) :Promise<Event[]> => { 
+        return getEventsRangeByClubAction(clubId, startRange, endRange)
     }
 
-    const getEventById = async (courtId: string, eventId: number) :Promise<Event> => {
-        isLoading.value = true;
-        
-        try {
-            const data: Event = await getEventByIdAction(courtId, eventId);
-            return data;
-        } finally {
-            isLoading.value = false;
-        }
+    const getEventById = (courtId: string, eventId: number) :Promise<Event> => {
+        return getEventByIdAction(courtId, eventId);
     }
 
-    const createEvent = async (courtId: string, dataForm: AddEvent) :Promise<Event> => {
-        isLoading.value = true;
-        
-        try {
-            const data: Event = await registerEventAction(courtId, dataForm);
-            return data;
-        } finally {
-            isLoading.value = false;
-        }
+    const createEvent = (courtId: string, dataForm: AddEvent) :Promise<Event> => {
+        return registerEventAction(courtId, dataForm);
     }
 
-    const updateEvent = async (courtId: string, eventId: number, dataForm: PutEvent) :Promise<Event> => {
-        isLoading.value = true;
-        
-        try {
-            const data: Event = await updateEventAction(courtId, eventId, dataForm);
-            return data;
-        } finally {
-            isLoading.value = false;
-        }
+    const updateEvent = (courtId: string, eventId: number, dataForm: PutEvent) :Promise<Event> => {
+        return updateEventAction(courtId, eventId, dataForm);
     }
 
-    const deleteEvent = async (courtId: string, eventId: number) :Promise<void> => {
-        isLoading.value = true;
-        
-        try {
-            await deleteEventAction(courtId, eventId);
-        } finally {
-            isLoading.value = false;
-        }
+    const deleteEvent = (courtId: string, eventId: number) :Promise<void> => {
+        return deleteEventAction(courtId, eventId);
     }
 
 

@@ -1,7 +1,7 @@
 import type { AxiosRequestConfig } from "axios";
 import type { AddEvent, PutEvent } from '../interfaces'
 
-const baseURL = "/api/courts";
+const baseURL = "api/courts";
 
 function getEventsRangeByCourt(courtId: string, startRange: string|Date, endRange?: string|Date ) : AxiosRequestConfig {
     return {
@@ -17,7 +17,7 @@ function getEventsRangeByCourt(courtId: string, startRange: string|Date, endRang
 function getEventsRangeByClub(clubId: string, startRange: string|Date, endRange?: string|Date ) : AxiosRequestConfig {
     return {
         method: 'GET',
-        url: `/api/clubs/${clubId}/courts/events/search`,
+        url: `api/clubs/${clubId}/courts/events/search`,
         params: {
             startRange : startRange instanceof Date ? startRange.toISOString() : startRange,
             endRange : endRange instanceof Date ? endRange.toISOString() : endRange,

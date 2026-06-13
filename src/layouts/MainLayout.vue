@@ -15,7 +15,10 @@ const isInitialLoading = ref<boolean>(false);
 const isMobileMenuVisible = ref<boolean>(false);
 const isMobile = ref(window.innerWidth < 768);
 const loginLabel = computed(() => isMobile.value ? '' : 'Log in');
+const { isLoading } = useGlobalLoading();
+const isLoadingLayout = ref<boolean>(false);
 
+const isScreenBlocked = computed(() => isLoading.value || isLoadingLayout.value);
 const isUserLogged = computed(() => authStore.isAuthenticated && !authStore.isAdmin);
 
 onMounted(async () => {
@@ -26,7 +29,7 @@ onMounted(async () => {
         await userStore.fetchProfile();
     } catch (error: unknown) {
         const message = error instanceof Error ? error.message : 'Error inesperado';
-        toast.add({ severity: 'error', summary: 'Error de acceso', detail: message, life: 3000 });
+        toast.add({ severity: 'error', summary: 'Error de acceso', detail: message, life: 2000 });
     } finally {
         isInitialLoading.value = false;
     }
@@ -71,9 +74,14 @@ const goToProfile = () => {
     router.push({ name: RouteNames.USER_PROFILE });
 }
 
-const handleLogout = () => {
+const handleLogout = async() => {
+    isLoadingLayout.value = true;
+    toast.add({ severity: 'success', summary: 'Logout', detail: 'Cerrando sesión de usuario',life: 1000 });
+    
+    await new Promise(resolve => setTimeout(resolve, 1000))
+    isLoadingLayout.value = false;
     authStore.logout();
-    router.push( {name: RouteNames.HOME });
+    router.push( {name: RouteNames.HOME});
 }
 
 const handleMobileMenuVisible = (() => {
@@ -83,6 +91,13 @@ const handleMobileMenuVisible = (() => {
 </script>
 
 <template>
+    <BlockUI 
+        v-if="isScreenBlocked" 
+        :fullScreen="true" 
+        :autoZIndex="true" 
+        :baseZIndex="9999"
+    />
+    
     <div class="min-h-screen flex flex-col">
 
         <HeaderM 

@@ -9,7 +9,8 @@ const toast = useToast();
 const authStore = useAuthStore();
 const clubStore = useClubStore();
 const router = useRouter();
-const { getClubs, isLoading, toggleStatusClub, createClub, updateClub, getAdminContext } = useClub();
+const { isLoading } = useGlobalLoading();
+const { getClubs, toggleStatusClub, createClub, updateClub, getAdminContext } = useClub();
 
 const clubs = ref<Club[]>([]);
 const selectedClub = ref<Club | undefined>();
@@ -25,7 +26,7 @@ const loadClubs = async () => {
             severity: 'error', 
             summary: 'Error de acceso', 
             detail: message, 
-            life: 3000 
+            life: 2000 
         });
     }
 };
@@ -85,10 +86,10 @@ const handleImpersonate = async (club: Club) => {
     try {
         await getAdminContext(club.id); 
         
-        toast.add({ severity: 'info', summary: 'Simulación iniciada', detail: `Ahora gestionando: ${club.name}`, life: 3000 });
+        toast.add({ severity: 'info', summary: 'Simulación iniciada', detail: `Ahora gestionando: ${club.name}`, life: 2000 });
         router.push({ name: RouteNames.ADMIN_DASHBOARD });
     } catch {
-        toast.add({ severity: 'error', summary: 'Error', detail: 'No se pudo acceder al club' });
+        toast.add({ severity: 'error', summary: 'Error', detail: 'No se pudo acceder al club', life: 2000 });
     }
 }
 
@@ -118,11 +119,11 @@ const handleToggleStatus = (club: Club, event: PointerEvent) => {
                 
                 club.isActive = isActivating;
 
-                toast.add({ severity: 'success', summary: 'Confirmado', detail: `Club ${isActivating ? 'reactivado' : 'desactivado'} con éxito`, life: 3000});
+                toast.add({ severity: 'success', summary: 'Confirmado', detail: `Club ${isActivating ? 'reactivado' : 'desactivado'} con éxito`, life: 2000});
 
             } catch (error: unknown) {
                 const message = error instanceof Error ? error.message : 'Error inesperado';
-                toast.add({ severity: 'error', summary: 'Error de acceso', detail: message, life: 3000 });
+                toast.add({ severity: 'error', summary: 'Error de acceso', detail: message, life: 2000 });
             }
         },
     });
@@ -162,7 +163,7 @@ const onSaveClub = async (data: ClubAddFormData | ClubUpdateFormData) => {
                 };
             }
             
-            toast.add({ severity: 'success', summary: 'Confirmado', detail: `Club modificado con éxito`, life: 3000});
+            toast.add({ severity: 'success', summary: 'Confirmado', detail: `Club modificado con éxito`, life: 2000});
         } else {
             const newClub: Club = await createClub({ 
                 name: data.name, 
@@ -177,11 +178,11 @@ const onSaveClub = async (data: ClubAddFormData | ClubUpdateFormData) => {
 
             clubs.value.unshift(newClub);
             
-            toast.add({ severity: 'success', summary: 'Confirmado', detail: `Club creado con éxito`, life: 3000});
+            toast.add({ severity: 'success', summary: 'Confirmado', detail: `Club creado con éxito`, life: 2000});
         }
     } catch (error: unknown) {
         const message = error instanceof Error ? error.message : 'Error inesperado';
-        toast.add({ severity: 'error', summary: 'Error de acceso', detail: message, life: 3000 });
+        toast.add({ severity: 'error', summary: 'Error de acceso', detail: message, life: 2000 });
     }
 }
 
@@ -266,6 +267,7 @@ onMounted(async () => {
                 :resolver="resolverClub"
                 :inputs-dialog="clubInputsDialog"
                 @save="onSaveClub"
+                :loading="isLoading"
                 />
         </BaseCard>
     </div>

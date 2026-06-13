@@ -1,6 +1,9 @@
 import router from '@/router'
 import { RouteNames } from '@/router/routeNames';
 import type { InternalAxiosRequestConfig } from 'axios';
+import { useGlobalLoading } from '@/composables/useGlobalLoading';
+
+const { start, stop } = useGlobalLoading();
 
 const clientApi = axios.create({
     baseURL:import.meta.env.VITE_API_URL,
@@ -16,6 +19,11 @@ let failedQueue : FailedRequest[] = []
 
 //interceptores
 clientApi.interceptors.request.use((config) => {
+
+    if (!config.headers['x-no-loading']) {
+        start();
+    }
+
     const authStore = useAuthStore();
     if (authStore.token) {
         config.headers.Authorization = `Bearer ${authStore.token}`
@@ -26,12 +34,16 @@ clientApi.interceptors.request.use((config) => {
 
 
 clientApi.interceptors.response.use(
-    (response) => response,
+    (response) => { 
+        stop();
+        return response;
+    },
     async (error) => {
         const authStore = useAuthStore();
         const originalRequest = error.config;
 
         if (error.response?.status === 401 && !originalRequest._retry){
+            stop();
             originalRequest._retry = true;
 
             if (!isRefreshing) {

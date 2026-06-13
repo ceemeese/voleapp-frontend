@@ -7,6 +7,7 @@ import type { User } from '@/modules/user/interfaces';
 import type { AutoCompleteCompleteEvent } from 'primevue/autocomplete';
 import { animate, stagger } from 'animejs';
 
+const { isLoading } = useGlobalLoading();
 
 interface SelectedMemberType extends Omit<MemberComplete, 'role'> {
     role: string;
@@ -115,7 +116,7 @@ const loadMembers = async () => {
         animateTableRows();
     } catch (error: unknown) {
         const message = error instanceof Error ? error.message : 'Error inesperado';
-        toast.add({severity: 'error',summary: 'Error',detail: message,life: 3000})
+        toast.add({severity: 'error',summary: 'Error',detail: message,life: 2000})
     }
 } 
 
@@ -135,11 +136,11 @@ const onSaveModifiedMember = async (updatedData: MemberUpdateForm) => {
             members.value[oldMemberIndex] = updatedMember;
         }
 
-        toast.add({ severity: 'success', summary: 'Confirmado', detail: 'Usuario modificado', life: 3000});
+        toast.add({ severity: 'success', summary: 'Confirmado', detail: 'Usuario modificado', life: 2000});
         
     } catch (error: unknown) {
         const message = error instanceof Error ? error.message : 'Error inesperado';
-        toast.add({ severity: 'error', summary: 'Error de acceso', detail: message, life: 3000 });
+        toast.add({ severity: 'error', summary: 'Error de acceso', detail: message, life: 2000 });
     }
 }
 
@@ -176,7 +177,7 @@ const onAddMemberToClub = async () => {
         
     } catch (error: unknown) {
         const message = error instanceof Error ? error.message : 'Error inesperado';
-        toast.add({ severity: 'error', summary: 'Error de acceso', detail: message, life: 3000 });
+        toast.add({ severity: 'error', summary: 'Error de acceso', detail: message, life: 2000 });
     }
 }
 
@@ -212,11 +213,11 @@ const handleToggleStatus = (member: MemberComplete, event: PointerEvent) => {
                 
                 member.isActive = isActivating;
 
-                toast.add({ severity: 'success', summary: 'Confirmado', detail: `Miembro ${isActivating ? 'reactivado' : 'desactivado'} con éxito`, life: 3000});
+                toast.add({ severity: 'success', summary: 'Confirmado', detail: `Miembro ${isActivating ? 'reactivado' : 'desactivado'} con éxito`, life: 2000});
 
             } catch (error: unknown) {
                 const message = error instanceof Error ? error.message : 'Error inesperado';
-                toast.add({ severity: 'error', summary: 'Error de acceso', detail: message,life: 3000 });
+                toast.add({ severity: 'error', summary: 'Error de acceso', detail: message,life: 2000 });
             }
         },
     });
@@ -320,6 +321,7 @@ const animateTableRows = async () => {
                 ref="searchDialogRef"
                 header="Añadir nuevo miembro"
                 @save="onAddMemberToClub"
+                :loading="isLoading"
             >
                 <div class="flex flex-col gap-4">
                     <AutoComplete 
@@ -363,6 +365,7 @@ const animateTableRows = async () => {
                 :inputs-dialog="inputsDialog"
                 :model-value="selectedMember"
                 @save="onSaveModifiedMember"
+                :loading="isLoading"
                 />
 
         </BaseCard>

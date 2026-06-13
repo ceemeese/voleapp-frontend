@@ -1,7 +1,7 @@
 import type { AxiosRequestConfig } from "axios";
 import type { AddClub, PutClub } from "../interfaces";
 
-const baseURL = "/api/clubs";
+const baseURL = "api/clubs";
 
 function getAdminClubContext() : AxiosRequestConfig {
     return {

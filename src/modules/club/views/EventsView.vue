@@ -19,17 +19,18 @@ const { activeClubId } = useClub();
 const { getClubReservations, updateStatusReservation } = useReservation();
 const { getCourtsByClubId } = useCourt();
 const { schedules, getSchedule } = useSchedule();
+const { isLoading } = useGlobalLoading();
 const resolver = zodResolver(addEventSchema);
 const selectedEvent = ref<Event >();
 const selectedReservation = ref<ReservationComplete | null>(null);
 const selectedDate = ref(new Date());
     
+
 const eventDialogRef = ref();
 const reservationDialogRef = ref();
 const events = ref<Event[]>([]);
 const reservations = ref<ReservationComplete[]>([]);
 const courts = ref<Court[]>([]);
-const isSubmitting = ref<boolean>(false);
 const isDrawerVisible = ref<boolean>(false);
 
 
@@ -276,7 +277,7 @@ const loadCourts = async () => {
         }))
     } catch (error: unknown) {
         const message = error instanceof Error ? error.message : 'Error inesperado';
-        toast.add({ severity: 'error', summary: 'Error', detail: message, life: 3000 })
+        toast.add({ severity: 'error', summary: 'Error', detail: message, life: 2000 })
     }
 }
 
@@ -302,7 +303,7 @@ const onSaveModifiedEvent = async (updatedData: EventForm) => {
             severity: 'warn',
             summary: 'Pista no disponible',
             detail: 'No se pueden crear eventos en una pista cerrada',
-            life: 3000
+            life: 2000
         });
         return;
     }
@@ -329,11 +330,11 @@ const onSaveModifiedEvent = async (updatedData: EventForm) => {
             events.value.push(createdEvent);
         }
 
-        toast.add({ severity: 'success', summary: 'Confirmado', detail: `Evento ${actionText}`, life: 3000});
+        toast.add({ severity: 'success', summary: 'Confirmado', detail: `Evento ${actionText}`, life: 2000});
         
     } catch (error: unknown) {
         const message = error instanceof Error ? error.message : 'Error inesperado';
-        toast.add({  severity: 'error', summary: 'Error de acceso', detail: message, life: 3000 });
+        toast.add({  severity: 'error', summary: 'Error de acceso', detail: message, life: 2000 });
     }
 }
 
@@ -341,7 +342,6 @@ const onSaveModifiedEvent = async (updatedData: EventForm) => {
 const onUpdateStatus = async (newStatus: number) => {
     if (!selectedReservation.value) return;
     
-    isSubmitting.value = true;
     try {
         
         await updateStatusReservation(selectedReservation.value.id, newStatus);
@@ -349,14 +349,12 @@ const onUpdateStatus = async (newStatus: number) => {
         selectedReservation.value.status.id = newStatus;
         selectedReservation.value.status.status = ReservationStatus[newStatus] ?? 'Unknown';
 
-        toast.add({ severity: 'success', summary: 'Actualizado', detail: 'Estado de la reserva actualizado', life: 3000 });
+        toast.add({ severity: 'success', summary: 'Actualizado', detail: 'Estado de la reserva actualizado', life: 2000 });
 
         confirmMode.value = null;
     } catch (error: unknown) {
         const message = error instanceof Error ? error.message : 'Error inesperado';
-        toast.add({ severity: 'error', summary: 'Error al cambiar estado', detail: message, life: 3000 });
-    } finally {
-        isSubmitting.value = false
+        toast.add({ severity: 'error', summary: 'Error al cambiar estado', detail: message, life: 2000 });
     }
 }
 
@@ -450,6 +448,7 @@ const canAdminChangeStatus = (currentId: ReservationStatus | undefined): boolean
             :inputs-dialog="inputsCreateEventDialog"
             :resolver="resolver"
             @save="onSaveModifiedEvent"
+            :loading="isLoading"
         />
 
         <BaseDialog
@@ -513,13 +512,14 @@ const canAdminChangeStatus = (currentId: ReservationStatus | undefined): boolean
                                     class="flex-1"
                                     text
                                     size="small"
-                                    @click="confirmMode = null" 
+                                    @click="confirmMode = null"
+                                    :loading="isLoading" 
                                 />
                                 <BaseButton 
                                     :label="confirmMode === ReservationStatus.Cancelled ? 'Sí, Anular' : 'Sí, Reembolsar'" 
                                     :severity="confirmMode === ReservationStatus.Cancelled ? 'danger' : 'warning'"
                                     class="flex-1"
-                                    :loading="isSubmitting"
+                                    :loading="isLoading"
                                     size="small"
                                     @click="onUpdateStatus(confirmMode)"
                                 />

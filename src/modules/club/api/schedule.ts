@@ -1,7 +1,7 @@
 import type { AxiosRequestConfig } from "axios";
 import type { AddSchedule, PutSchedule } from "../interfaces";
 
-const baseURL = "/api/clubs";
+const baseURL = "api/clubs";
 
 function getScheduleByClub(clubId: string) : AxiosRequestConfig {
     return {

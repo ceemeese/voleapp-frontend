@@ -8,6 +8,7 @@ const confirmPopup = useConfirm();
 const clubStore = useClubStore();
 const { schedules } = useSchedule();
 const toast = useToast();
+const { isLoading } = useGlobalLoading();
 const clubDialogRef = ref();
 const sheduleDialogRef = ref();
 const resolverClub = zodResolver(clubSchema);
@@ -144,12 +145,12 @@ const onSaveModifiedClub = async (data: ClubUpdateFormData) => {
                 }
             };
 
-            toast.add({ severity: 'success', summary: 'Confirmado', detail: 'Club modificado', life: 3000});
+            toast.add({ severity: 'success', summary: 'Confirmado', detail: 'Club modificado', life: 2000});
         }
         
     } catch (error: unknown) {
         const message = error instanceof Error ? error.message : 'Error inesperado';
-        toast.add({ severity: 'error', summary: 'Error de acceso', detail: message, life: 3000 });
+        toast.add({ severity: 'error', summary: 'Error de acceso', detail: message, life: 2000 });
     }
 }
 
@@ -174,12 +175,12 @@ const onSaveModifiedSchedule = async (data: ScheduleUpdateFormData) => {
                 closingTime: data.closingTime
             });
 
-            toast.add({ severity: 'success', summary: 'Confirmado', detail: `Horario ${isEditing ? 'modificado': 'añadido'}`, life: 3000});
+            toast.add({ severity: 'success', summary: 'Confirmado', detail: `Horario ${isEditing ? 'modificado': 'añadido'}`, life: 2000});
         }
         
     } catch (error: unknown) {
         const message = error instanceof Error ? error.message : 'Error inesperado';
-        toast.add({ severity: 'error', summary: 'Error de acceso', detail: message, life: 3000 });
+        toast.add({ severity: 'error', summary: 'Error de acceso', detail: message, life: 2000 });
     }
 }
 
@@ -224,11 +225,11 @@ const handleToggleSchedule = (schedule: Schedule, event: PointerEvent) => {
                     severity: 'success', 
                     summary: 'Confirmado', 
                     detail: `Horario ${isOpening ? 'abierto' : 'cerrado'} con éxito`, 
-                    life: 3000});
+                    life: 2000});
 
             } catch (error: unknown) {
                 const message = error instanceof Error ? error.message : 'Error inesperado';
-                toast.add({ severity: 'error', summary: 'Error de acceso', detail: message, life: 3000 });
+                toast.add({ severity: 'error', summary: 'Error de acceso', detail: message, life: 2000 });
             }
         },
     });
@@ -239,7 +240,6 @@ const handleToggleSchedule = (schedule: Schedule, event: PointerEvent) => {
 
 
 <template>
-    
     <div class="flex flex-col overflow-hidden h-full w-full p-4 space-y-6">
         <div class="flex flex-col md:flex-row md:justify-between md:items-end gap-4 mb-6 border-b border-slate-200 pb-5">
             <div>
@@ -250,74 +250,75 @@ const handleToggleSchedule = (schedule: Schedule, event: PointerEvent) => {
 
     
 
-    <div class="mx-auto w-full max-h-full p-1 overflow-y-auto custom-scrollbar">
-        <UserCardProfile 
-            :main-text="currentClubInfo?.name"
-            :subtext="locationSubtext"
-            :initials="clubInitials"
-            size="large"
-            shape="circle"
-            @edit="handleClubEditDialog"
-            padding="p-2"
-            class="!shadow-md"
-        />
-
-        <BaseCard padding="p-6" class="!shadow-md mt-3">
-            <div class="flex items-center justify-between mb-8">
-                <h3 class="text-lg font-bold text-slate-800">Información Personal</h3>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-y-8 gap-x-12">
-                
-                <BaseInfoField
-                    v-for="field in profileClubField"
-                    :key="field.label"
-                    :label="field.label"
-                    :value="field.value"
-                    :icon="field.icon"
-                />
-
-                <BaseInfoField
-                    :label="'Miembro de la comunidad'"
-                    :value="'Desde ' + formattedDate"
-                    :icon="'pi pi-calendar'"
-                />
-
-            </div>
-        </BaseCard>
-
-        <BaseCard padding="p-6" class="!shadow-md mt-3">
-            <div class="flex items-center justify-between mb-8">
-                <h3 class="text-lg font-bold text-slate-800">Horarios</h3>
-            </div>
-
-            <ScheduleManager
-                :value="schedules"
-                :day-names="DAYS_TRANSLATION"
-                :actions="scheduleActions">
-            </ScheduleManager>
-        </BaseCard>
-
-        <BaseDialog
-            ref="clubDialogRef"
-            header="Editar club"
-            subtitle="Actualiza la información de tu club"
-            :resolver="resolverClub"
-            :inputs-dialog="clubInputsDialog"
-            @save="onSaveModifiedClub"
+        <div class="mx-auto w-full max-h-full p-1 overflow-y-auto custom-scrollbar">
+            <UserCardProfile 
+                :main-text="currentClubInfo?.name"
+                :subtext="locationSubtext"
+                :initials="clubInitials"
+                size="large"
+                shape="circle"
+                @edit="handleClubEditDialog"
+                padding="p-2"
+                class="!shadow-md"
             />
 
-            
-        <BaseDialog
-            ref="sheduleDialogRef"
-            header="Configurar Horarios"
-            subtitle="Gestiona los turnos de apertura y cierre de cada día"
-            :resolver="resolverSchedule"
-            :inputs-dialog="scheduleInputsEditDialog"
-            @save="onSaveModifiedSchedule"
-        >
+            <BaseCard padding="p-6" class="!shadow-md mt-3">
+                <div class="flex items-center justify-between mb-8">
+                    <h3 class="text-lg font-bold text-slate-800">Información Personal</h3>
+                </div>
 
-        </BaseDialog>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-y-8 gap-x-12">
+                    
+                    <BaseInfoField
+                        v-for="field in profileClubField"
+                        :key="field.label"
+                        :label="field.label"
+                        :value="field.value"
+                        :icon="field.icon"
+                    />
+
+                    <BaseInfoField
+                        :label="'Miembro de la comunidad'"
+                        :value="'Desde ' + formattedDate"
+                        :icon="'pi pi-calendar'"
+                    />
+
+                </div>
+            </BaseCard>
+
+            <BaseCard padding="p-6" class="!shadow-md mt-3">
+                <div class="flex items-center justify-between mb-8">
+                    <h3 class="text-lg font-bold text-slate-800">Horarios</h3>
+                </div>
+
+                <ScheduleManager
+                    :value="schedules"
+                    :day-names="DAYS_TRANSLATION"
+                    :actions="scheduleActions">
+                </ScheduleManager>
+            </BaseCard>
+
+            <BaseDialog
+                ref="clubDialogRef"
+                header="Editar club"
+                subtitle="Actualiza la información de tu club"
+                :resolver="resolverClub"
+                :inputs-dialog="clubInputsDialog"
+                @save="onSaveModifiedClub"
+                :loading="isLoading"
+                />
+
+                
+            <BaseDialog
+                ref="sheduleDialogRef"
+                header="Configurar Horarios"
+                subtitle="Gestiona los turnos de apertura y cierre de cada día"
+                :resolver="resolverSchedule"
+                :inputs-dialog="scheduleInputsEditDialog"
+                @save="onSaveModifiedSchedule"
+                :loading="isLoading"
+            />
+
         </div>
     </div>
 

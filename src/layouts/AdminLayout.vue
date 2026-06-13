@@ -12,6 +12,7 @@ const router = useRouter();
 const route = useRoute();
 const isInitialLoading = ref<boolean>(true);
 const showMobileMenu = ref<boolean>(false);
+const isLoadingLayout = ref<boolean>(false);
 
 onMounted(async () => {
     try {
@@ -23,7 +24,7 @@ onMounted(async () => {
         
     } catch (error: unknown) {
         const message = error instanceof Error ? error.message : 'Error inesperado';
-        toast.add({ severity: 'error', summary: 'Error de acceso', detail: message,life: 3000 });
+        toast.add({ severity: 'error', summary: 'Error de acceso', detail: message,life: 2000 });
     } finally {
         isInitialLoading.value = false;
     }
@@ -102,14 +103,11 @@ const headerTitle = computed(() => {
 
 
 const handleLogout = async () => {
-    toast.add({ 
-            severity: 'success', 
-            summary: 'Logout', 
-            detail: 'Cerrando sesión de usuario',
-            life: 2000 
-        });
+    isLoadingLayout.value = true;
+    toast.add({ severity: 'success', summary: 'Logout', detail: 'Cerrando sesión de usuario',life: 1000 });
     
-    await new Promise(resolve => setTimeout(resolve, 2000))
+    await new Promise(resolve => setTimeout(resolve, 1000))
+    isLoadingLayout.value = false;
     authStore.logout();
     router.push( {name: RouteNames.HOME});
 }
@@ -132,6 +130,10 @@ watch(() => route.path, () => {
 </script>
 
 <template>
+    <BlockUI 
+        :blocked="isLoadingLayout"
+        fullScreen
+    />
     <div class="h-screen flex w-full overflow-hidden xl:p-6 xl:gap-6">
 
         <Navbar

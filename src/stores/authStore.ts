@@ -65,7 +65,9 @@ export const useAuthStore = defineStore('auth', () => {
 
     async function refresh() {
         const { data } = await axios.post(`${import.meta.env.VITE_API_URL}api/Auths/refresh`, {
-                refreshToken: refreshToken.value });
+                refreshToken: refreshToken.value }, {
+                    headers: { 'x-no-loading' : 'true' }
+                });
         setToken(data.token);
         setRefreshToken(data.refreshToken);
         

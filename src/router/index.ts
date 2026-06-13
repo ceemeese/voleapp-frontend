@@ -25,7 +25,7 @@ const router = createRouter({
             name: RouteNames.NOT_FOUND,
             component: () => import('@/views/NotFoundView.vue'),
             meta: { requiresAuth: false }
-        }
+        },
     ],
     scrollBehavior(to, from, savedPosition) {
         if (savedPosition) {
@@ -40,6 +40,13 @@ router.beforeEach((to, from, next) => {
     const userStore = useAuthStore();
     const isAdminPath = to.path.startsWith('/admin');
 
+    const isGuestOnly = to.matched.some(record => record.meta.guestOnly);
+    if (isGuestOnly && userStore.isAuthenticated) {
+        if (userStore.isSuperadmin) return next({ name: RouteNames.MANAGEMENT_DASHBOARD });
+        if (userStore.isAdmin) return next({ name: RouteNames.ADMIN_DASHBOARD });
+        return next({ name: RouteNames.USER_HOME });
+    }
+
     const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
 
     if (requiresAuth && !userStore.isAuthenticated) {
@@ -48,10 +55,9 @@ router.beforeEach((to, from, next) => {
     
     const requiresSuperAdmin = to.matched.some(record => record.meta.requiresSuperAdmin);
     if (requiresSuperAdmin && !userStore.isSuperadmin) {
-        if (userStore.isAdmin) {
-            return next({ name: RouteNames.ADMIN_ROOT });
-        }
-        return next({ name: RouteNames.USER_HOME });
+        return userStore.isAdmin 
+            ? next({ name: RouteNames.ADMIN_ROOT }) 
+            : next({ name: RouteNames.USER_HOME });
     }
 
     if (isAdminPath && !userStore.isSuperadmin && !userStore.isAdmin) {

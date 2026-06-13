@@ -2,6 +2,8 @@ export const RouteNames = {
     AUTH: 'auth',
     LOGIN: 'login',
     REGISTER: 'register',
+    FORGOT: 'forgot-password',
+    RESET: 'reset-password',
 
     ADMIN_ROOT: 'admin-root',
     ADMIN_PROFILE: 'admin-profile',

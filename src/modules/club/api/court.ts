@@ -1,7 +1,7 @@
 import type { AxiosRequestConfig } from "axios";
 import type { AddCourt, PutCourt } from "../interfaces";
 
-const baseURL = "/api/courts";
+const baseURL = "api/courts";
 
 function getAllCourts() : AxiosRequestConfig {
     return {
@@ -13,7 +13,7 @@ function getAllCourts() : AxiosRequestConfig {
 function getCourtsByClubId(clubId: string) : AxiosRequestConfig {
     return {
         method: 'GET',
-        url: `/api/clubs/${clubId}/courts`
+        url: `api/clubs/${clubId}/courts`
     }
 }
 
@@ -27,7 +27,7 @@ function getCourtById(courtId: string) : AxiosRequestConfig {
 function registerCourt(clubId: string, data : AddCourt) : AxiosRequestConfig<AddCourt> {
     return {
         method: 'POST',
-        url: `/api/clubs/${clubId}/courts`,
+        url: `api/clubs/${clubId}/courts`,
         data: data,
     }
 }

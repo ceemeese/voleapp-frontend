@@ -37,7 +37,7 @@ const fetchAvailabilityCourts = async () => {
             severity: 'error', 
             summary: 'Error de acceso', 
             detail: errorMessage.value, 
-            life: 3000 
+            life: 2000 
         });
     }
 }
@@ -54,7 +54,7 @@ const calculateEndTime = (startTime: string, durationMinutes: number) => {
 
 const handleReserve = (court: CourtAvailabilityDetail, club: CourtGroupedResponse) => {
     if (!selectedDate.value || !duration.value) {
-        toast.add({ severity: 'warn', summary: 'Atención', detail: 'Selecciona día, hora y duración', life: 3000 });
+        toast.add({ severity: 'warn', summary: 'Atención', detail: 'Selecciona día, hora y duración', life: 2000 });
         return;
     }
 
@@ -99,7 +99,7 @@ const handleConfirmReservation = async () => {
             severity: 'success', 
             summary: 'Confirmado', 
             detail: 'Reserva registrada', 
-            life: 3000});
+            life: 2000});
         
     } catch (error: unknown) {
         const message = error instanceof Error ? error.message : 'Error inesperado';
@@ -108,7 +108,7 @@ const handleConfirmReservation = async () => {
             severity: 'error', 
             summary: 'Error de acceso', 
             detail: errorMessage.value, 
-            life: 3000 
+            life: 2000 
         });
     }
 }

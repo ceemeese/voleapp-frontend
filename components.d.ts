@@ -22,6 +22,7 @@ declare module 'vue' {
     BaseInfoField: typeof import('ui')['BaseInfoField']
     BaseInput: typeof import('ui')['BaseInput']
     BasePill: typeof import('ui')['BasePill']
+    BlockUI: typeof import('primevue/blockui')['default']
     BookingCard: typeof import('./src/components/BookingCard.vue')['default']
     Button: typeof import('primevue/button')['default']
     Chart: typeof import('primevue/chart')['default']

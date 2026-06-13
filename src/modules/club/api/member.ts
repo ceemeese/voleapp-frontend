@@ -1,7 +1,7 @@
 import type { AxiosRequestConfig } from "axios";
 import type { AddMember, PutMember } from "../interfaces";
 
-const baseURL = "/api/clubs";
+const baseURL = "api/clubs";
 
 function getMembersByClub(clubId: string) : AxiosRequestConfig {
     return {

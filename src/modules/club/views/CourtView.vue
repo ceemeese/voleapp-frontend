@@ -27,10 +27,11 @@ const COURT_TYPE_OTIONS = [
 const toast = useToast();
 const confirmPopup = useConfirm();
 const { activeClubId } = useClub();
+const { isLoading } = useGlobalLoading();
 const resolverAdd = zodResolver(addCourtSchema);
 const resolverUpdate = zodResolver(updateCourtSchema);
 const selectedCourt = ref<Court>();
-const { courts, getCourtsByClubId, activateCourt, deactivateCourt, updateCourt, registerCourt} = useCourt();
+const { courts, getCourtsByClubId, activateCourt, deactivateCourt, updateCourt, registerCourt } = useCourt();
 const courtAddDialogRef = ref();
 const courtEditDialogRef = ref();
 
@@ -83,7 +84,7 @@ const loadCourts = async () => {
         await getCourtsByClubId(activeClubId.value!);
     } catch (error: unknown) {
         const message = error instanceof Error ? error.message : 'Error inesperado';
-        toast.add({severity: 'error',summary: 'Error',detail: message,life: 3000
+        toast.add({severity: 'error',summary: 'Error',detail: message,life: 2000
         })
     }
 }
@@ -117,11 +118,11 @@ const handleToggleStatus = (court: Court, event: PointerEvent) => {
                     await deactivateCourt(court.id)
                 }
 
-                toast.add({ severity: 'success', summary: 'Confirmado', detail: `Pista ${isActivating ? 'reactivada' : 'desactivada'} con éxito`, life: 3000});
+                toast.add({ severity: 'success', summary: 'Confirmado', detail: `Pista ${isActivating ? 'reactivada' : 'desactivada'} con éxito`, life: 2000});
 
             } catch (error: unknown) {
                 const message = error instanceof Error ? error.message : 'Error inesperado';
-                toast.add({ severity: 'error', summary: 'Error de acceso', detail: message,life: 3000 });
+                toast.add({ severity: 'error', summary: 'Error de acceso', detail: message,life: 2000 });
             }
         },
     });
@@ -138,7 +139,7 @@ const onSaveAddedCourt = async (data: CourtForm) => {
 
     } catch (error: unknown) {
         const message = error instanceof Error ? error.message : 'Error inesperado';
-        toast.add({ severity: 'error', summary: 'Error de acceso', detail: message, life: 3000 });
+        toast.add({ severity: 'error', summary: 'Error de acceso', detail: message, life: 2000 });
     }
 }
 
@@ -156,11 +157,11 @@ const onSaveModifiedCourt = async (updatedData: CourtForm) => {
             severity: 'success', 
             summary: 'Confirmado', 
             detail: 'Pista modificada', 
-            life: 3000});
+            life: 2000});
         
     } catch (error: unknown) {
         const message = error instanceof Error ? error.message : 'Error inesperado';
-        toast.add({ severity: 'error', summary: 'Error de acceso', detail: message, life: 3000 });
+        toast.add({ severity: 'error', summary: 'Error de acceso', detail: message, life: 2000 });
     }
 }
 
@@ -205,6 +206,7 @@ const onSaveModifiedCourt = async (updatedData: CourtForm) => {
                     :inputs-dialog="addInputsDialog"
                     :model-value="selectedCourt"
                     @save="onSaveAddedCourt"
+                    :loading="isLoading"
                 />
 
                 <BaseDialog
@@ -215,12 +217,9 @@ const onSaveModifiedCourt = async (updatedData: CourtForm) => {
                     :inputs-dialog="editInputsDialog"
                     :model-value="selectedCourt"
                     @save="onSaveModifiedCourt"
+                    :loading="isLoading"
                 />
             </div>
         </div>
     </div>
 </template>
-
-<style scoped>
-
-</style>
