@@ -10,32 +10,32 @@ export const useSchedule = () => {
     const todaySchedule = computed(() => clubStore.todaySchedule);
 
     const getSchedule = async (clubId: string) :Promise<Schedule[]> => {
-        isLoading.value = true;
+        
         
         try {
             const data: Schedule[] = await getScheduleByIdClubAction(clubId);
             clubStore.schedules = data;
             return data;
         } finally {
-            isLoading.value = false;
+            
         }
     }
 
 
     const registerSchedule = async(clubId: string, dataForm: AddSchedule) : Promise<Schedule> => {
-        isLoading.value = true;
+        
         
         try {
             const data: Schedule = await registerScheduleAction(clubId, dataForm)
             clubStore.schedules = [...clubStore.schedules, data];
             return data;
         } finally {
-            isLoading.value = false;
+            
         }
     }
 
     const updateSchedule = async(clubId: string, scheduleId: number, dataForm: PutSchedule) : Promise<Schedule> => {
-        isLoading.value = true;
+        
         
         try {
             const data: Schedule = await putScheduleAction(clubId, scheduleId, dataForm);
@@ -46,12 +46,12 @@ export const useSchedule = () => {
             );
             return data;
         } finally {
-            isLoading.value = false;
+            
         }
     }
 
     const toggleSchedule = async(clubId: string, scheduleId: number) :Promise<void> => {
-        isLoading.value = true;
+        
 
         try {
             await toggleScheduleStatusAction(clubId, scheduleId);
@@ -61,7 +61,7 @@ export const useSchedule = () => {
                     : schedule
             )
         } finally {
-            isLoading.value = false;
+            
         }
     }
 
@@ -73,5 +73,6 @@ export const useSchedule = () => {
         toggleSchedule,
         schedules,
         todaySchedule,
+        isLoading
     }
 }

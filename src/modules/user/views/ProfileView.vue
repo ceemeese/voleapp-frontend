@@ -14,6 +14,7 @@ const passwordDialogRef = ref();
 const { updateUser } = useUser();
 const { changePassword } = useAuth();
 const { profile } = storeToRefs(userStore);
+const { isLoading } = useGlobalLoading();
 
 
 const profileField = computed<InfoFieldProps[]>(() => [
@@ -31,7 +32,7 @@ onMounted(async () => {
             await userStore.fetchProfile();
         } catch (error: unknown) {
             const message = error instanceof Error ? error.message : 'Error inesperado';
-            toast.add({ severity: 'error', summary: 'Error de acceso', detail: message,life: 3000 });
+            toast.add({ severity: 'error', summary: 'Error de acceso', detail: message,life: 2000 });
         }
     }
 })
@@ -65,10 +66,10 @@ const onSaveModifiedUser = async (updatedData: User) => {
 
         userStore.profile = {...profile.value, ...updatedData}
 
-        toast.add({ severity: 'success', summary: 'Confirmado', detail: 'Usuario modificado', life: 3000});
+        toast.add({ severity: 'success', summary: 'Confirmado', detail: 'Usuario modificado', life: 2000});
     } catch (error: unknown) {
         const message = error instanceof Error ? error.message : 'Error inesperado';
-        toast.add({ severity: 'error', summary: 'Error de acceso', detail: message, life: 3000 });
+        toast.add({ severity: 'error', summary: 'Error de acceso', detail: message, life: 2000 });
     }
     
 }
@@ -77,11 +78,11 @@ const onSavePassword = async (data: UpdatePasswordData) => {
     try {
 
         await changePassword(data);
-        toast.add({ severity: 'success', summary: 'Éxito', detail: 'Contraseña actualizada', life: 3000 });
+        toast.add({ severity: 'success', summary: 'Éxito', detail: 'Contraseña actualizada', life: 2000 });
         passwordDialogRef.value.close();
     } catch (error: unknown) {
         const message = error instanceof Error ? error.message : 'Error inesperado';
-        toast.add({ severity: 'error', summary: 'Error', detail: message, life: 3000 });
+        toast.add({ severity: 'error', summary: 'Error', detail: message, life: 2000 });
     }
 }
 
@@ -163,6 +164,7 @@ const formattedDate = computed(() => {
             :resolver="resolver"
             :inputs-dialog="userInputsEditDialog"
             @save="onSaveModifiedUser"
+            :loading="isLoading"
         />
 
         <BaseDialog
@@ -172,6 +174,7 @@ const formattedDate = computed(() => {
             :resolver="passwordResolver"
             :inputs-dialog="passwordInputs"
             @save="onSavePassword"
+            :loading="isLoading"
         />
 
     </div>

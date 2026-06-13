@@ -76,7 +76,7 @@ const loadReservations = async (startDate?: string, endDate?: string) => {
         animateTableRows();
     } catch (error : unknown) {
         const message = error instanceof Error ? error.message : 'Error inesperado';
-        toast.add({ severity: 'error', summary: 'Error', detail: message, life: 3000 });
+        toast.add({ severity: 'error', summary: 'Error', detail: message, life: 2000 });
     }
 };
 
@@ -109,12 +109,12 @@ const handleUpdateStatus = async (res: ReservationComplete, newStatus: Reservati
                     severity: 'success', 
                     summary: 'Completado', 
                     detail: `Reserva ${actionName === 'anular' ? 'anulada' : 'reembolsada'} correctamente`, 
-                    life: 3000 
+                    life: 2000 
                 });
 
             } catch (error: unknown) {
                 const message = error instanceof Error ? error.message : 'Error inesperado';
-                toast.add({ severity: 'error', summary: 'Error de acceso', detail: message, life: 3000 });
+                toast.add({ severity: 'error', summary: 'Error de acceso', detail: message, life: 2000 });
             }
         },
     });

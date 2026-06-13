@@ -6,67 +6,67 @@ export const useEvent = () => {
     const isLoading = ref<boolean>(false);
 
     const getEventsRangeByCourt = async (courtId: string, startRange: Date, endRange?: Date) :Promise<Event[]> => {
-        isLoading.value = true;
+        
         
         try {
             const data: Event[] = await getEventsRangeByCourtAction(courtId, startRange, endRange);
             return data;
         } finally {
-            isLoading.value = false;
+            
         }
     }
     
     const getEventsRangeByClub = async (clubId: string, startRange: Date, endRange?: Date) :Promise<Event[]> => {
-        isLoading.value = true;
+        
         
         try {
             const data: Event[] = await getEventsRangeByClubAction(clubId, startRange, endRange)
             return data;
         } finally {
-            isLoading.value = false;
+            
         }
     }
 
     const getEventById = async (courtId: string, eventId: number) :Promise<Event> => {
-        isLoading.value = true;
+        
         
         try {
             const data: Event = await getEventByIdAction(courtId, eventId);
             return data;
         } finally {
-            isLoading.value = false;
+            
         }
     }
 
     const createEvent = async (courtId: string, dataForm: AddEvent) :Promise<Event> => {
-        isLoading.value = true;
+        
         
         try {
             const data: Event = await registerEventAction(courtId, dataForm);
             return data;
         } finally {
-            isLoading.value = false;
+            
         }
     }
 
     const updateEvent = async (courtId: string, eventId: number, dataForm: PutEvent) :Promise<Event> => {
-        isLoading.value = true;
+        
         
         try {
             const data: Event = await updateEventAction(courtId, eventId, dataForm);
             return data;
         } finally {
-            isLoading.value = false;
+            
         }
     }
 
     const deleteEvent = async (courtId: string, eventId: number) :Promise<void> => {
-        isLoading.value = true;
+        
         
         try {
             await deleteEventAction(courtId, eventId);
         } finally {
-            isLoading.value = false;
+            
         }
     }
 
@@ -78,5 +78,6 @@ export const useEvent = () => {
         createEvent,
         updateEvent,
         deleteEvent,
+        isLoading
     }
 }

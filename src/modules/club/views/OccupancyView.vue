@@ -17,7 +17,7 @@ const loadOccupancy = async () => {
         occupancyData.value = await getOccupancyStats(selectedYear.value, selectedMonth.value)
     } catch (error: unknown) {
         const message = error instanceof Error ? error.message : 'Error inesperado';
-        toast.add({ severity: 'error',summary: 'Error',detail: message,life: 3000 })
+        toast.add({ severity: 'error',summary: 'Error',detail: message,life: 2000 })
     }
 }
 

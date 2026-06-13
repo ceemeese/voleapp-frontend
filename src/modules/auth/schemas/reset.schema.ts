@@ -1,4 +1,3 @@
-import type { BaseInputProps } from 'ui';
 import { z } from 'zod';
 
 export const resetSchema = z
@@ -15,8 +14,3 @@ export const resetSchema = z
     message: "Las contraseñas no coinciden",
     path: ["confirmPassword"],
 });
-
-export const resetInputDialog : BaseInputProps[] = [
-    { field: 'newPassword', label: 'Nueva contraseña', icon: 'pi pi-lock', type: 'password' },
-    { field: 'confirmPassword', label: 'Confirmar contraseña', icon: 'pi pi-lock', type: 'password' },
-]

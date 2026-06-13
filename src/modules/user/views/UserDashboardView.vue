@@ -34,7 +34,7 @@ const fetchUserReservations = async() => {
                 severity: 'error', 
                 summary: 'Error de acceso', 
                 detail: errorMessage.value, 
-                life: 3000 
+                life: 2000 
             });
         }
     }

@@ -94,6 +94,7 @@ declare global {
   const useCssModule: typeof import('vue').useCssModule
   const useCssVars: typeof import('vue').useCssVars
   const useEvent: typeof import('./src/composables/useEvent').useEvent
+  const useGlobalLoading: typeof import('./src/composables/useGlobalLoading').useGlobalLoading
   const useI18n: typeof import('vue-i18n').useI18n
   const useId: typeof import('vue').useId
   const useLink: typeof import('vue-router').useLink
@@ -224,6 +225,7 @@ declare module 'vue' {
     readonly useCssModule: UnwrapRef<typeof import('vue')['useCssModule']>
     readonly useCssVars: UnwrapRef<typeof import('vue')['useCssVars']>
     readonly useEvent: UnwrapRef<typeof import('./src/composables/useEvent')['useEvent']>
+    readonly useGlobalLoading: UnwrapRef<typeof import('./src/composables/useGlobalLoading')['useGlobalLoading']>
     readonly useI18n: UnwrapRef<typeof import('vue-i18n')['useI18n']>
     readonly useId: UnwrapRef<typeof import('vue')['useId']>
     readonly useLink: UnwrapRef<typeof import('vue-router')['useLink']>

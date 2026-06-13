@@ -13,10 +13,10 @@ const form = ref<ContactForm>({
 const handleSubmit = async () => {
     try {
         await sendContactForm(form.value);
-        toast.add({ severity: 'success', summary: 'Actualizado', detail: 'Mensaje enviado', life: 3000 });
+        toast.add({ severity: 'success', summary: 'Actualizado', detail: 'Mensaje enviado', life: 2000 });
     } catch (error: unknown){
         const message = error instanceof Error ? error.message : 'Error inesperado';
-        toast.add({ severity: 'error', summary: 'Error al cambiar estado', detail: message, life: 3000 });
+        toast.add({ severity: 'error', summary: 'Error al cambiar estado', detail: message, life: 2000 });
     }
 };
 

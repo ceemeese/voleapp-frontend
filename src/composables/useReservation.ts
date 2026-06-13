@@ -11,63 +11,63 @@ export const useReservation = () => {
 
 
     const getReservations = async(filters : ReservationFilters) : Promise<Reservation[]> => {
-        isLoading.value = true;
+        
 
         try {
             const data: Reservation[] = await getReservationsAction(filters);
             return data;
         } finally {
-            isLoading.value = false;
+            
         }
     }
 
     const getReservationById = async(reservationId: number) : Promise<Reservation> => {
-        isLoading.value = true;
+        
 
         try {
             const data: Reservation = await getReservationByIdAction(reservationId);
             return data;
         } finally {
-            isLoading.value = false;
+            
         }
     }
 
     const getClubReservations = async(clubId: string, startDateRange?: string, endDateRange?: string) : Promise<ReservationComplete[]> => {
-        isLoading.value = true;
+        
 
         try {
             const data: ReservationComplete[] = await getClubReservationsAction(clubId, startDateRange, endDateRange);
             return data;
         } finally {
-            isLoading.value = false;
+            
         }
     }
 
     const getUserReservations = async(userId: string, startDateRange?: string, endDateRange?: string) : Promise<ReservationComplete[]> => {
-        isLoading.value = true;
+        
 
         try {
             const data: ReservationComplete[] = await getUserReservationsAction(userId, startDateRange, endDateRange);
             userStore.upsertReservations(data);
             return data;
         } finally {
-            isLoading.value = false;
+            
         }
     }
 
     const registerReservation = async(formData: AddReservation) : Promise<Reservation> => {
-        isLoading.value = true;
+        
 
         try {
             const data: Reservation = await registerReservationAction(formData);
             return data;
         } finally {
-            isLoading.value = false;
+            
         }
     }
 
     const updateStatusReservation = async(reservationId: number, newStatus: number) : Promise<void> => {
-        isLoading.value = true;
+        
 
         try {
             await updateStatusReservationAction(reservationId, newStatus);
@@ -78,12 +78,12 @@ export const useReservation = () => {
             reservation.status.status = STATUS_EN[newStatus] ?? 'Unknown';
         }
         } finally {
-            isLoading.value = false;
+            
         }
     }
 
     const cancelReservation = async(reservationId: number) : Promise<void> => {
-        isLoading.value = true;
+        
 
         try {
             await cancelReservationAction(reservationId);
@@ -94,7 +94,7 @@ export const useReservation = () => {
             reservation.status.status = STATUS_EN[ReservationStatus.Cancelled] ?? 'Cancelled';
         }
         } finally {
-            isLoading.value = false;
+            
         }
     }
 

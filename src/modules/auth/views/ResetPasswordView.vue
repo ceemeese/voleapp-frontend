@@ -9,17 +9,17 @@ const props = defineProps<{
   email: string;
 }>();
 
-const isProcessing = ref<boolean>(false);
+const { isLoading } = useGlobalLoading();
+const isLoadingLayout = ref<boolean>(false);
 
 const toast = useToast();
 const router = useRouter();
-const { resetPassword, isLoading } = useAuth();
+const { resetPassword } = useAuth();
 
 const resolver = zodResolver(resetSchema);
 
 const onResetPasswordSubmit = async (formData : ResetPasswordValues ) => {
-    isProcessing.value = true;
-
+    isLoadingLayout.value = true;
     try {
 
         const requestBody : ResetPassword = {
@@ -30,16 +30,16 @@ const onResetPasswordSubmit = async (formData : ResetPasswordValues ) => {
 
         await resetPassword(requestBody);
         
-        toast.add({ severity: 'success', summary: 'Contraseña actualizada', detail: `TodoOK`, life: 3000 });
+        toast.add({ severity: 'success', summary: 'Contraseña actualizada', detail: `Ya puedes iniciar sesión con tu nueva clave`, life: 2000 });
 
         await new Promise(resolve => setTimeout(resolve, 2000))
+        isLoadingLayout.value = false;
         router.push({ name: RouteNames.LOGIN });
-        isProcessing.value = false;
 
     } catch (error: unknown) {
-        isProcessing.value = false;
+        isLoadingLayout.value = false;
         const message = error instanceof Error ? error.message : 'Error inesperado';
-        toast.add({ severity: 'error', summary: 'Error', detail: message, life: 3000 });
+        toast.add({ severity: 'error', summary: 'Error', detail: message, life: 2000 });
     }
 };
 
@@ -47,10 +47,18 @@ const onResetPasswordSubmit = async (formData : ResetPasswordValues ) => {
 </script>
 
 <template>
-    <BlockUI :blocked="isProcessing" fullScreen />
+    <BlockUI 
+        :blocked="isLoadingLayout"
+        fullScreen
+        :autoZIndex="true" 
+        :baseZIndex="9999"
+    />
+
     <div class="flex items-center">
         <div class="w-full max-w-md">
             <ResetPasswordForm
+                card
+                mode="reset"
                 :loading="isLoading"
                 @submit="onResetPasswordSubmit"
                 :resolver="resolver"

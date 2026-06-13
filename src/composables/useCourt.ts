@@ -10,65 +10,59 @@ export const useCourt = () => {
     const courts = computed(() => clubStore.courts);
 
     const getAllCourts = async (): Promise<Court[]> => {
-        isLoading.value = true;
 
         try {
             const data: Court[] = await getCourtsAction();
             clubStore.courts = data;
             return data;
         } finally {
-            isLoading.value = false;
+
         }
     }
 
     const getCourtsByClubId = async (clubId: string): Promise<Court[]> => {
-        isLoading.value = true;
 
         try {
             const data: Court[] = await getCourtsByClubIdAction(clubId);
             clubStore.courts = data;
             return data;
         } finally {
-            isLoading.value = false;
+            
         }
     }
 
     const getCourtById = async (courtId: string): Promise<Court> => {
-        isLoading.value = true;
 
         try {
             const data: Court = await getCourtByIdAction(courtId);
             return data;
         } finally {
-            isLoading.value = false;
+            
         }
     }
 
     const searchAvailability = async (city: string, dateFilter: Date, durationMinutes: number): Promise<CourtGroupedResponse[]> => {
-        isLoading.value = true;
 
         try {
             const data = await getAvailableCourtsAction(city, dateFilter, durationMinutes);
             return data;
         } finally {
-            isLoading.value = false;
+            
         }
     }
 
     const registerCourt = async (clubId: string, dataForm: AddCourt): Promise<Court> => {
-        isLoading.value = true;
 
         try {
             const data: Court = await registerCourtAction(clubId, dataForm)
             clubStore.courts = [data, ...clubStore.courts]
             return data;
         } finally {
-            isLoading.value = false;
+            
         }
     }
 
     const updateCourt = async (courtId: string, dataForm: PutCourt): Promise<Court> => {
-        isLoading.value = true;
 
         try {
             const data: Court = await updateCourtAction(courtId, dataForm);
@@ -80,12 +74,11 @@ export const useCourt = () => {
 
             return data;
         } finally {
-            isLoading.value = false;
+            
         }
     }
 
     const deactivateCourt = async (courtId: string): Promise<void> => {
-        isLoading.value = true;
 
         try {
             await deactivateCourtAction(courtId);
@@ -95,12 +88,12 @@ export const useCourt = () => {
                 : court
             );
         } finally {
-            isLoading.value = false;
+            
         }
     }
 
     const activateCourt = async (courtId: string): Promise<void> => {
-        isLoading.value = true;
+        
 
         try {
             await activateCourtAction(courtId);
@@ -110,7 +103,7 @@ export const useCourt = () => {
                 : court
             );
         } finally {
-            isLoading.value = false;
+            
         }
     }
 
@@ -124,5 +117,6 @@ export const useCourt = () => {
         deactivateCourt,
         activateCourt,
         courts,
+        isLoading
     }
 }

@@ -4,7 +4,6 @@ import type { GlobalDashboardResponse } from '../interfaces';
 const toast = useToast();
 const { getGlobalDashboardStats, isLoading } = useAnalytics();
 const dashboardData = ref<GlobalDashboardResponse>();
-    const errorMessage = ref<string>('')
 
 
 const loadDashboard = async () => {
@@ -13,8 +12,7 @@ const loadDashboard = async () => {
         dashboardData.value = await getGlobalDashboardStats();
     } catch (error: unknown) {
         const message = error instanceof Error ? error.message : 'Error inesperado';
-        errorMessage.value = message;
-        toast.add({ severity: 'error',summary: 'Error', detail: errorMessage.value,life: 3000 })
+        toast.add({ severity: 'error',summary: 'Error', detail: message, life: 2000 })
     }
 }
 

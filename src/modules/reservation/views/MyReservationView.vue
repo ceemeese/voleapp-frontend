@@ -143,10 +143,10 @@ const favouriteClub = computed(() => {
 const handleCancelReservation = async(reservationId : number) => {
     try {
         await cancelReservation(reservationId);
-        toast.add({ severity: 'success', summary: 'Confirmado', detail: 'Reserva anulada', life: 3000});
+        toast.add({ severity: 'success', summary: 'Confirmado', detail: 'Reserva anulada', life: 2000});
     } catch (error: unknown) {
         const message = error instanceof Error ? error.message : 'Error inesperado';
-        toast.add({ severity: 'error', summary: 'Error de acceso', detail: message, life: 3000 
+        toast.add({ severity: 'error', summary: 'Error de acceso', detail: message, life: 2000 
         });
     }
 }
@@ -216,9 +216,9 @@ onMounted(async () => {
                 <p>Cargando tus reservas...</p>
             </div>
 
-            <template v-else-if="userReservations.length > 0">
+            <template v-else-if="filteredReservations.length > 0">
                 <BookingCard
-                    v-for="res in userReservations" 
+                    v-for="res in filteredReservations" 
                     :key="res.id" 
                     :reservation="res"
                     @click="openReservationDetail(res)"

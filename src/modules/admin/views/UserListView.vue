@@ -20,6 +20,7 @@ const toast = useToast();
 const userDialogRef = ref();
 const selectedUser = ref<User>();
 const resolver = zodResolver(userSchema);
+const { isLoading } = useGlobalLoading();
 
 const headerColumns : ColumnConfig<User>[] = [
     { field: 'fullName', header: 'Usuario', sortable: true },
@@ -64,7 +65,7 @@ const loadUsers = async () => {
         users.value = await getUsers();
     } catch (error: unknown) {
         const message = error instanceof Error ? error.message : 'Error inesperado';
-        toast.add({ severity: 'error', summary: 'Error de acceso', detail: message, life: 3000 });
+        toast.add({ severity: 'error', summary: 'Error de acceso', detail: message, life: 2000 });
     }
 };
 
@@ -81,10 +82,10 @@ const onSaveModifiedUser = async (updatedData: User) => {
             users.value[index] = {...updatedData}
         }
 
-        toast.add({ severity: 'success', summary: 'Confirmado', detail: 'Usuario modificado', life: 3000});
+        toast.add({ severity: 'success', summary: 'Confirmado', detail: 'Usuario modificado', life: 2000});
     } catch (error: unknown) {
         const message = error instanceof Error ? error.message : 'Error inesperado';
-        toast.add({ severity: 'error', summary: 'Error de acceso', detail: message, life: 3000 });
+        toast.add({ severity: 'error', summary: 'Error de acceso', detail: message, life: 2000 });
     }
     
 }
@@ -119,11 +120,11 @@ const handleToggleUserStatus = (user: User, event: PointerEvent) => {
                     user.isActive = false;
                 }
 
-                toast.add({ severity: 'success', summary: 'Confirmado', detail: `Usuario ${isActivating ? 'reactivado' : 'desactivado'}`, life: 3000});
+                toast.add({ severity: 'success', summary: 'Confirmado', detail: `Usuario ${isActivating ? 'reactivado' : 'desactivado'}`, life: 2000});
 
             } catch (error: unknown) {
                 const message = error instanceof Error ? error.message : 'Error inesperado';
-                toast.add({ severity: 'error', summary: 'Error de acceso', detail: message, life: 3000 });
+                toast.add({ severity: 'error', summary: 'Error de acceso', detail: message, life: 2000 });
             }
         },
     });
@@ -172,6 +173,7 @@ const handleToggleUserStatus = (user: User, event: PointerEvent) => {
                 :inputs-dialog="userInputsEditDialog"
                 :model-value="selectedUser"
                 @save="onSaveModifiedUser"
+                :loading="isLoading"
                 />
         </BaseCard>
     </div>
