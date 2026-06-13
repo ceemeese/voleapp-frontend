@@ -6,7 +6,6 @@ export const useGlobalLoading = () => {
     const start = () => activeRequests.value++;
     
     const stop = () => {
-        
         activeRequests.value = Math.max(0, activeRequests.value - 1);
         console.log('Requests activas:', activeRequests.value);
     };

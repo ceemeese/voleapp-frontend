@@ -1,103 +1,53 @@
 import { activateClubAction, deactivateClubAction, getClubByIdAction, getClubBySearchAction, getClubsAction, registerClubAction, updateClubAction } from "@/modules/club/actions";
 import { getAdminContextAction } from "@/modules/club/actions/club/get-admin-context.action";
 import type { AddClub, Club, PutClub, SummarizedClub } from "@/modules/club/interfaces";
-import { useClubStore } from "@/stores/clubStore";
-import { computed, ref } from "vue";
 
 
 export const useClub = () => {
     const clubStore = useClubStore();
-    const isLoading = ref<boolean>(false);
     const activeClubId = computed(() => clubStore.activeClubId);
     const currentClubInfo = computed(() => clubStore.currentClubData);
 
     const getAdminContext = async (targetClubId? : string): Promise<void> => {
         if (activeClubId.value === targetClubId && currentClubInfo.value) return;
-        isLoading.value = true;
 
-        try {
-            const clubId : string = targetClubId || await getAdminContextAction();
-            clubStore.activeClubId = clubId;
+        const clubId : string = targetClubId || await getAdminContextAction();
+        clubStore.activeClubId = clubId;
 
-            const clubData: Club = await getClubById(clubId); 
-            clubStore.currentClubData = clubData;
-
-        } finally {
-            isLoading.value = false;
-        }
+        const clubData: Club = await getClubById(clubId); 
+        clubStore.currentClubData = clubData;
     }
 
 
-    const getClubs = async (): Promise<Club[]> => {
-        isLoading.value = true;
-
-        try {
-            const data:Club[] = await getClubsAction()
-            return data;
-        } finally {
-            isLoading.value = false;
-        }
+    const getClubs = (): Promise<Club[]> => {
+        return getClubsAction()
     }
 
-    const getClubById = async (clubId: string): Promise<Club> => {
-        isLoading.value = true;
-
-        try {
-            const data: Club = await getClubByIdAction(clubId)
-            return data;
-        } finally {
-            isLoading.value = false;
-        }
+    const getClubById = (clubId: string): Promise<Club> => {
+        return getClubByIdAction(clubId);
     }
 
-    const getClubBySearch = async (name: string): Promise<SummarizedClub> => {
-        isLoading.value = true;
-
-        try {
-            const data: SummarizedClub = await getClubBySearchAction(name);
-            return data;
-        } finally {
-            isLoading.value = false;
-        }
+    const getClubBySearch = (name: string): Promise<SummarizedClub> => {
+        return getClubBySearchAction(name);
     }
 
-    const createClub = async (dataForm: AddClub): Promise<Club> => {
-        isLoading.value = true;
-
-        try {
-            const data: Club = await registerClubAction(dataForm);
-            return data;
-        } finally {
-            isLoading.value = false;
-        }
+    const createClub = (dataForm: AddClub): Promise<Club> => {
+        return registerClubAction(dataForm);
     }
 
-    const updateClub = async (clubId: string, dataForm: PutClub): Promise<Club> => {
-        isLoading.value = true;
-
-        try {
-            const data: Club = await updateClubAction(clubId, dataForm);
-            return data;
-        } finally {
-            isLoading.value = false;
-        }
+    const updateClub = (clubId: string, dataForm: PutClub): Promise<Club> => {
+        return updateClubAction(clubId, dataForm);
     }
 
  
     const toggleStatusClub = async (club: Club): Promise<void> => {
-        isLoading.value = true;
-
-        try {
-            if (club.isActive){
-                await deactivateClubAction(club.id);
-            } else {
-                await activateClubAction(club.id);
-            }
-
-            club.isActive = !club.isActive;
-        } finally {
-            isLoading.value = false;
+        if (club.isActive){
+            await deactivateClubAction(club.id);
+        } else {
+            await activateClubAction(club.id);
         }
+
+        club.isActive = !club.isActive;
     }
 
 
@@ -111,6 +61,5 @@ export const useClub = () => {
         createClub,
         updateClub,
         toggleStatusClub,
-        isLoading
     }
 }

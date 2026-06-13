@@ -64,7 +64,7 @@ const onSaveModifiedUser = async (updatedData: User) => {
             phoneNumber: updatedData.phoneNumber
         });
 
-        userStore.profile = {...profile.value, ...updatedData}
+        userStore.profile = { ...userStore.profile, ...updatedData};
 
         toast.add({ severity: 'success', summary: 'Confirmado', detail: 'Usuario modificado', life: 2000});
     } catch (error: unknown) {

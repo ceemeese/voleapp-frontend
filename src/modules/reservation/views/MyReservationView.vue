@@ -3,9 +3,10 @@ import type { ReservationComplete, ReservationDataDialog } from '../interfaces';
 import { ReservationStatus } from '../interfaces';
 
 
-const { userReservations, isLoading, cancelReservation, getUserReservations } = useReservation();
+const { userReservations, cancelReservation, getUserReservations } = useReservation();
 const authStore = useAuthStore();
 const reservationDialogRef = ref();
+const { isLoading } = useGlobalLoading();
 const toast = useToast();
 const selectedReservation = ref<ReservationComplete | null>(null);
 const activeUserId = authStore.userId;
