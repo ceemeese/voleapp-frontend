@@ -3,7 +3,8 @@ import type { DashboardResponse } from '../interfaces';
 
 const toast = useToast();
 const metrics = ref<DashboardResponse>();
-const { getDashboardStats, isLoading } = useAnalytics();
+const { getDashboardStats } = useAnalytics();
+const { isLoading } = useGlobalLoading();
 
 
 const loadMetrics = async () => {
