@@ -2,8 +2,9 @@
 import type { GlobalDashboardResponse } from '../interfaces';
 
 const toast = useToast();
-const { getGlobalDashboardStats, isLoading } = useAnalytics();
+const { getGlobalDashboardStats } = useAnalytics();
 const dashboardData = ref<GlobalDashboardResponse>();
+const { isLoading } = useGlobalLoading();
 
 
 const loadDashboard = async () => {
