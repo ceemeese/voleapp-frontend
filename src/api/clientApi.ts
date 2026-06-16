@@ -86,6 +86,11 @@ clientApi.interceptors.response.use(
             apiErrorBus.emit('Error interno del servidor. Por favor, inténtalo más tarde');
             error.handled = true;
         }
+
+        if (error.response.status === 403) {
+            apiErrorBus.emit('No tienes permisos para realizar esta acción')
+            error.handled = true;
+        }
         return Promise.reject(error);
     }
 )

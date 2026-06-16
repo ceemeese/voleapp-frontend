@@ -1,7 +1,7 @@
 import { clientApi } from "@/api/clientApi";
 import { AxiosError } from "axios";
 import type { ProblemDetails } from "@/types/problemDetails.interface";
-import { ConnectionError, Forbidden, NotAuthorizedError, NotFoundError } from "@/api/errorsApi";
+import { ConnectionError, NotFoundError } from "@/api/errorsApi";
 import schedule from "../../api/schedule";
 
 
@@ -18,8 +18,6 @@ export const toggleScheduleStatusAction = async (clubId: string, scheduleId: num
 
         const {status, data} = axiosError.response;
 
-        if (status === 401) throw new NotAuthorizedError('Sesión expirada');
-        if (status === 403) throw new Forbidden('Usuario sin permisos');
         
         if (status === 404) {
             const isNotFoundClubError = data.title.includes('Club');

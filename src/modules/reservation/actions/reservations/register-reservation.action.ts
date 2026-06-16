@@ -1,7 +1,7 @@
 import { clientApi } from "@/api/clientApi";
 import type { AxiosError } from "axios";
 import type { ProblemDetails } from "@/types/problemDetails.interface";
-import { BusinessError, ConnectionError, Forbidden, NotAuthorizedError, ValidationError, NotFoundError } from "@/api/errorsApi";
+import { BusinessError, ConnectionError, ValidationError, NotFoundError } from "@/api/errorsApi";
 import reservation from "../../api/reservation";
 import type { AddReservation, Reservation, ReservationResponse } from "../../interfaces";
 
@@ -35,20 +35,11 @@ export const registerReservationAction = async (dataForm: AddReservation) : Prom
             throw new BusinessError('Ha habido un error en el registro. Intente de nuevo')
         }
 
-        if (status === 401) {
-            const isUserNotAuthenticated = data.title.includes('Unauthenticated');
-            if (isUserNotAuthenticated){
-                throw new NotAuthorizedError('Usuario sin autenticación')
-            }
-            throw new NotAuthorizedError('Sesión expirada');
-        }
-            
-        if (status === 403) throw new Forbidden('Usuario sin permisos');
 
         if (status === 404) {
             if (data.title.includes('CourtNotActive')) {
                 throw new NotFoundError('La pista seleccionada no está activa');
-            } else if (data.title.includes('CourNotFound')) {
+            } else if (data.title.includes('CourtNotFound')) {
                 throw new NotFoundError('La pista seleccionada no existe');
             } else {
                 throw new NotFoundError('El club al que se está reservando no existe');

@@ -2,7 +2,7 @@ import user from "../api/user"
 import { clientApi } from "@/api/clientApi";
 import type { AxiosError } from "axios";
 import type { ProblemDetails } from "@/types/problemDetails.interface";
-import { ConnectionError, Forbidden, NotAuthorizedError, NotFoundError, ValidationError } from "@/api/errorsApi";
+import { ConnectionError, NotAuthorizedError, NotFoundError, ValidationError } from "@/api/errorsApi";
 import type { PutUser, User, UserResponse } from "../interfaces";
 
 export const updateUserAction = async (id: string, dataForm: PutUser) : Promise<User> => {
@@ -30,8 +30,6 @@ export const updateUserAction = async (id: string, dataForm: PutUser) : Promise<
             throw new NotAuthorizedError('No se puede realizar esta acción');
         }
                        
-        if (status === 401) throw new NotAuthorizedError('Sesión expirada');
-        if (status === 403) throw new Forbidden('Usuario sin permisos');
         if (status === 404) throw new NotFoundError('Usuario no encontrado');
         
         throw error;

@@ -1,7 +1,7 @@
 import { clientApi } from "@/api/clientApi";
 import type { AxiosError } from "axios";
 import type { ProblemDetails } from "@/types/problemDetails.interface";
-import { ConnectionError, NotAuthorizedError, Forbidden } from "@/api/errorsApi";
+import { ConnectionError } from "@/api/errorsApi";
 import type { GlobalDashboardResponse } from "../interfaces";
 import analytics from "../api/global-analytics";
 
@@ -17,8 +17,6 @@ export const getGlobalDashboardStatsAction = async () : Promise<GlobalDashboardR
 
         const status = axiosError.response.status;
 
-        if (status === 401) throw new NotAuthorizedError('Sesión expirada');
-        if (status === 403) throw new Forbidden('Usuario sin permisos');
         
         throw error;
     }

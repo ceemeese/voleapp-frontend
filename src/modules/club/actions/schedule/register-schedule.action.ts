@@ -1,7 +1,7 @@
 import { clientApi } from "@/api/clientApi";
 import { AxiosError } from "axios";
 import type { ProblemDetails } from "@/types/problemDetails.interface";
-import { BusinessError, ConnectionError, Forbidden, NotAuthorizedError, NotFoundError, ValidationError } from "@/api/errorsApi";
+import { BusinessError, ConnectionError, NotFoundError, ValidationError } from "@/api/errorsApi";
 import type { AddSchedule, Schedule, ScheduleResponse } from "../../interfaces";
 import schedule from "../../api/schedule";
 
@@ -30,8 +30,6 @@ export const registerScheduleAction = async (clubId: string, dataForm : AddSched
             throw new BusinessError('Ha habido un error en el registro. Intente de nuevo')
         }
 
-        if (status === 401) throw new NotAuthorizedError('Sesión expirada');
-        if (status === 403) throw new Forbidden('Usuario sin permisos');
         if (status === 404) throw new NotFoundError('El club solicitado no existe o no está disponible')
         if (status === 409) throw new BusinessError('No puede haber solapamiento de horarios en el mismo día');
 

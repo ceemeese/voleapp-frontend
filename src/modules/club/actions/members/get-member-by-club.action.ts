@@ -1,7 +1,7 @@
 import { clientApi } from "@/api/clientApi";
 import type { AxiosError } from "axios";
 import type { ProblemDetails } from "@/types/problemDetails.interface";
-import { BusinessError, ConnectionError, Forbidden, NotAuthorizedError, NotFoundError, ValidationError } from "@/api/errorsApi";
+import { BusinessError, ConnectionError, NotFoundError, ValidationError } from "@/api/errorsApi";
 import member from "../../api/member";
 import type { MemberResponse, MemberComplete } from "../../interfaces";
 
@@ -29,8 +29,6 @@ export const getMemberByIdAction = async (clubId: string, memberId: string) : Pr
             throw new BusinessError('Ha habido un error en la obtención de datos. Intente de nuevo')
         }
 
-        if (status === 401) throw new NotAuthorizedError('Sesión expirada');
-        if (status === 403) throw new Forbidden('Usuario sin permisos');
         
         if (status === 404) {
             const isNotFoundClubError = data.title.includes('Club');

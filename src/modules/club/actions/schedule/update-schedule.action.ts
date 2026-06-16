@@ -1,7 +1,7 @@
 import { clientApi } from "@/api/clientApi";
 import { AxiosError } from "axios";
 import type { ProblemDetails } from "@/types/problemDetails.interface";
-import { BusinessError, ConnectionError, Forbidden, NotAuthorizedError, NotFoundError, ValidationError } from "@/api/errorsApi";
+import { BusinessError, ConnectionError, NotFoundError, ValidationError } from "@/api/errorsApi";
 import type { PutSchedule, Schedule, ScheduleResponse } from "../../interfaces";
 import schedule from "../../api/schedule";
 
@@ -31,8 +31,6 @@ export const putScheduleAction = async (clubId: string, scheduleId: number, data
             throw new BusinessError('Ha habido un error en el registro. Intente de nuevo')
         }
 
-        if (status === 401) throw new NotAuthorizedError('Sesión expirada');
-        if (status === 403) throw new Forbidden('Usuario sin permisos');
 
         if (status === 404) {
             const isNotFoundClubError = data.title.includes('Club');

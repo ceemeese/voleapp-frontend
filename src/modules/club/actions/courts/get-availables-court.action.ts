@@ -3,7 +3,7 @@ import court from "../../api/court";
 import { AxiosError } from "axios";
 import { clientApi } from "@/api/clientApi";
 import type { ProblemDetails } from "@/types/problemDetails.interface";
-import { ConnectionError, Forbidden, NotAuthorizedError, ValidationError } from "@/api/errorsApi";
+import { ConnectionError, ValidationError } from "@/api/errorsApi";
 import type { CourtGroupedResponse } from "../../interfaces";
 import { toDateOnlyString, formatTime } from "@/helpers/dateHelpers";
 
@@ -34,8 +34,6 @@ export const getAvailableCourtsAction = async (city: string, dateFilter: Date, d
             }
         }
 
-        if (status === 401) throw new NotAuthorizedError('Sesión expirada');
-        if (status === 403) throw new Forbidden('Usuario sin permisos');
 
         throw error;
     }
