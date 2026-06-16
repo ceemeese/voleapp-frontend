@@ -13,3 +13,7 @@ export interface MemberComplete {
     isActive: boolean;
     registeredOn: Date;
 }
+
+export interface MemberView extends MemberComplete {
+    fullName: string;
+}

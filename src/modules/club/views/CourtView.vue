@@ -6,6 +6,7 @@ import { useClub } from '@/composables/useClub';
 import { onMounted, ref } from 'vue';
 import type { Court } from '../interfaces';
 import { useToast } from 'primevue/usetoast';
+import { isHandledError, getErrorMessage } from '@/api/errorsApi';
 import { useConfirm } from "primevue/useconfirm";
 import { zodResolver } from '@primevue/forms/resolvers/zod';
 import { addCourtSchema, updateCourtSchema } from '../schemas/addCourt.schema';
@@ -83,7 +84,8 @@ const loadCourts = async () => {
     try {
         await getCourtsByClubId(activeClubId.value!);
     } catch (error: unknown) {
-        const message = error instanceof Error ? error.message : 'Error inesperado';
+        if (isHandledError(error)) return;
+        const message = getErrorMessage(error);
         toast.add({severity: 'error',summary: 'Error',detail: message,life: 2000
         })
     }
@@ -121,7 +123,8 @@ const handleToggleStatus = (court: Court, event: PointerEvent) => {
                 toast.add({ severity: 'success', summary: 'Confirmado', detail: `Pista ${isActivating ? 'reactivada' : 'desactivada'} con éxito`, life: 2000});
 
             } catch (error: unknown) {
-                const message = error instanceof Error ? error.message : 'Error inesperado';
+                if (isHandledError(error)) return;
+                const message = getErrorMessage(error);
                 toast.add({ severity: 'error', summary: 'Error de acceso', detail: message,life: 2000 });
             }
         },
@@ -138,7 +141,8 @@ const onSaveAddedCourt = async (data: CourtForm) => {
         });
 
     } catch (error: unknown) {
-        const message = error instanceof Error ? error.message : 'Error inesperado';
+        if (isHandledError(error)) return;
+        const message = getErrorMessage(error);
         toast.add({ severity: 'error', summary: 'Error de acceso', detail: message, life: 2000 });
     }
 }
@@ -160,7 +164,8 @@ const onSaveModifiedCourt = async (updatedData: CourtForm) => {
             life: 2000});
         
     } catch (error: unknown) {
-        const message = error instanceof Error ? error.message : 'Error inesperado';
+        if (isHandledError(error)) return;
+        const message = getErrorMessage(error);
         toast.add({ severity: 'error', summary: 'Error de acceso', detail: message, life: 2000 });
     }
 }

@@ -1,6 +1,5 @@
 export interface UserResponse {
     id: string;
-    dni: string;
     name: string;
     lastName: string;
     username: string;

@@ -6,7 +6,7 @@ import { ConnectionError, Forbidden, NotAuthorizedError, NotFoundError } from "@
 
 export const activateUserAction = async (id: string) : Promise<void> => {
     try {
-        const config = user.deactivateUser(id);
+        const config = user.activateUser(id);
         await clientApi.request<void>(config);
     } catch (error : unknown) {
         const axiosError = error as AxiosError<ProblemDetails>;

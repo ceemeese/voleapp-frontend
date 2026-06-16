@@ -1,3 +1,7 @@
+interface HandledError extends Error {
+    handled?: boolean;
+}
+
 type ErrorConstructor = new (message? : string) => Error
 
 const createErrorFactory = (name: string) : ErrorConstructor => {
@@ -9,6 +13,15 @@ const createErrorFactory = (name: string) : ErrorConstructor => {
     }
 }
 
+export const getErrorMessage = (error: unknown): string => {
+    if (error instanceof Error) return error.message;
+    return 'Error inesperado';
+};
+
+export const isHandledError = (error: unknown): boolean => {
+    if (!(error instanceof Error)) return false;
+    return (error as HandledError).handled === true;
+};
 
 export const ConnectionError = createErrorFactory('ConnectionError');
 export const NotAuthorizedError = createErrorFactory('NotAuthorizedError')

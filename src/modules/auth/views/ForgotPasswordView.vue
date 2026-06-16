@@ -2,6 +2,7 @@
 import { RouteNames } from '@/router/routeNames';
 import { ForgotPasswordForm, type ForgotValues } from 'ui';
 import { forgotSchema } from '../schemas/forgot.schema';
+import { isHandledError, getErrorMessage } from '@/api/errorsApi';
 
 const toast = useToast();
 const { forgotPassword } = useAuth();
@@ -13,7 +14,8 @@ const onForgotPasswordSubmit = async (formData : ForgotValues) => {
     await forgotPassword(formData);
     toast.add({ severity: 'info', summary: 'Solicitud enviada', detail: 'Si el correo es correcto, recibirás un enlace de recuperación en breve', life: 2000})
   } catch (error: unknown) {
-    const message = error instanceof Error ? error.message : 'Error inesperado';
+    if (isHandledError(error)) return;
+    const message = getErrorMessage(error);
     toast.add({ severity: 'error', summary: 'Error de acceso', detail: message, life: 2000 });
   }
 };

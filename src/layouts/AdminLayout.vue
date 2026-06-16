@@ -2,6 +2,7 @@
 import type { AppNavigationGroup } from '@/types/navigation.interface';
 import { RouteNames } from '@/router/routeNames';
 import { NavbarMobile } from 'ui';
+import { isHandledError, getErrorMessage } from '@/api/errorsApi';
 
 const { getAdminContext, currentClubInfo } = useClub();
 const authStore = useAuthStore();
@@ -23,7 +24,8 @@ onMounted(async () => {
         }
         
     } catch (error: unknown) {
-        const message = error instanceof Error ? error.message : 'Error inesperado';
+        if (isHandledError(error)) return;
+        const message = getErrorMessage(error);
         toast.add({ severity: 'error', summary: 'Error de acceso', detail: message,life: 2000 });
     } finally {
         isInitialLoading.value = false;
@@ -44,7 +46,7 @@ const CLUB_ADMIN_MENU : AppNavigationGroup[] = [
         label: 'Gestión operativa',
         items: [
             { label: 'Gestión de pistas', to: { name: RouteNames.ADMIN_COURTS }, icon: 'pi pi-table'},
-            { label: 'Calendario de eventos', to: { name: RouteNames.ADMIN_EVENTS }, icon: 'pi pi-calendar'},
+            { label: 'Calendario', to: { name: RouteNames.ADMIN_EVENTS }, icon: 'pi pi-calendar'},
             { label: 'Reservas', to: { name: RouteNames.ADMIN_RESERVATIONS }, icon: 'pi pi-ticket'},
             { label: 'Configurador de precios', to: { name: RouteNames.ADMIN_PRICE }, icon: 'pi pi-money-bill'},
         ]
@@ -104,12 +106,17 @@ const headerTitle = computed(() => {
 
 const handleLogout = async () => {
     isLoadingLayout.value = true;
-    toast.add({ severity: 'success', summary: 'Logout', detail: 'Cerrando sesión de usuario',life: 1000 });
+    try {
+        toast.add({ severity: 'success', summary: 'Logout', detail: 'Cerrando sesión de usuario',life: 1000 });
     
-    await new Promise(resolve => setTimeout(resolve, 1000))
-    isLoadingLayout.value = false;
-    authStore.logout();
-    router.push( {name: RouteNames.HOME});
+        await new Promise(resolve => setTimeout(resolve, 1000))
+        
+        authStore.logout();
+        router.push( {name: RouteNames.HOME});
+    } finally {
+        isLoadingLayout.value = false;
+    }
+    
 }
 
 const getHomeRoute = () => {

@@ -24,7 +24,7 @@ export const clubRoutes: RouteRecordRaw[] = [
     {  
         path: 'events',
         name: RouteNames.ADMIN_EVENTS,
-        component: () => import('@/modules/club/views/EventsView.vue'),
+        component: () => import('@/modules/club/views/CalendarView.vue'),
     },
     {  
         path: 'reservations',

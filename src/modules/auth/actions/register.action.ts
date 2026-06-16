@@ -27,8 +27,7 @@ export const registerAction = async (dataForm : Register) : Promise<User> => {
         if (status == 409) {
             let message = 'Ya existe un usuario con estos datos';
 
-            if (data.title.includes('Dni')) message = 'Ya existe un usuario con ese dni';
-            else if (data.title.includes('Name')) message = 'Ya existe un usuario con ese apodo';
+            if (data.title.includes('Name')) message = 'Ya existe un usuario con ese apodo';
             else if (data.title.includes('Email')) message = 'Ya existe un usuario con ese email';
 
             throw new BusinessError(message);

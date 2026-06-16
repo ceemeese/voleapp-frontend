@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { ReservationComplete, ReservationDataDialog } from '../interfaces';
 import { ReservationStatus } from '../interfaces';
+import { isHandledError, getErrorMessage } from '@/api/errorsApi';
 
 
 const { userReservations, cancelReservation, getUserReservations } = useReservation();
@@ -146,8 +147,9 @@ const handleCancelReservation = async(reservationId : number) => {
         await cancelReservation(reservationId);
         toast.add({ severity: 'success', summary: 'Confirmado', detail: 'Reserva anulada', life: 2000});
     } catch (error: unknown) {
-        const message = error instanceof Error ? error.message : 'Error inesperado';
-        toast.add({ severity: 'error', summary: 'Error de acceso', detail: message, life: 2000 
+        if (isHandledError(error)) return;
+        const message = getErrorMessage(error);
+        toast.add({ severity: 'error', summary: 'Error de acceso', detail: message, life: 2000
         });
     }
 }
@@ -242,8 +244,16 @@ onMounted(async () => {
             </template>
 
             <template #footer="{ data }">
-                <BaseButton label="Volver" severity="secondary" @click="reservationDialogRef.close"/>
-                <BaseButton v-if="canCancelReservation" label="Anular reserva" severity="danger" @click="handleCancelReservation(data.id)" />
+                <BaseButton 
+                    label="Volver" 
+                    severity="secondary" 
+                    :loading="isLoading"
+                    @click="reservationDialogRef.close"/>
+                <BaseButton v-if="canCancelReservation" 
+                    label="Anular reserva" 
+                    severity="danger" 
+                    :loading="isLoading"
+                    @click="handleCancelReservation(data.id)" />
             </template>
         </BaseDialog>
     </div>

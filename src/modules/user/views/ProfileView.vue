@@ -3,6 +3,7 @@ import { userInputsEditDialog, userSchema } from '../schemas/user.schema';
 import type { User } from '../interfaces';
 import type { InfoFieldProps } from 'ui';
 import { storeToRefs } from 'pinia';
+import { isHandledError, getErrorMessage } from '@/api/errorsApi';
 import { passwordInputs, passwordSchema, type UpdatePasswordData } from '../schemas/password.schema';
 
 const userStore = useUserStore();
@@ -21,7 +22,6 @@ const profileField = computed<InfoFieldProps[]>(() => [
     { label: 'Nombre', value: userStore.profile?.name, icon: 'pi pi-id-card'},
     { label: 'Apellidos', value: userStore.profile?.lastName, icon: 'pi pi-id-card'},
     { label: 'Apodo', value: userStore.profile?.username, icon: 'pi pi-user'},
-    { label: 'Número de identificación', value: userStore.profile?.dni, icon: 'pi pi-id-card'},
     { label: 'Email', value: userStore.profile?.email, icon: 'pi pi-envelope'},
     { label: 'Teléfono', value: userStore.profile?.phoneNumber, icon: 'pi pi-phone'}
 ])
@@ -31,7 +31,8 @@ onMounted(async () => {
         try {
             await userStore.fetchProfile();
         } catch (error: unknown) {
-            const message = error instanceof Error ? error.message : 'Error inesperado';
+            if (isHandledError(error)) return;
+            const message = getErrorMessage(error);
             toast.add({ severity: 'error', summary: 'Error de acceso', detail: message,life: 2000 });
         }
     }
@@ -68,10 +69,11 @@ const onSaveModifiedUser = async (updatedData: User) => {
 
         toast.add({ severity: 'success', summary: 'Confirmado', detail: 'Usuario modificado', life: 2000});
     } catch (error: unknown) {
-        const message = error instanceof Error ? error.message : 'Error inesperado';
+        if (isHandledError(error)) return;
+        const message = getErrorMessage(error);
         toast.add({ severity: 'error', summary: 'Error de acceso', detail: message, life: 2000 });
     }
-    
+
 }
 
 const onSavePassword = async (data: UpdatePasswordData) => {
@@ -81,7 +83,8 @@ const onSavePassword = async (data: UpdatePasswordData) => {
         toast.add({ severity: 'success', summary: 'Éxito', detail: 'Contraseña actualizada', life: 2000 });
         passwordDialogRef.value.close();
     } catch (error: unknown) {
-        const message = error instanceof Error ? error.message : 'Error inesperado';
+        if (isHandledError(error)) return;
+        const message = getErrorMessage(error);
         toast.add({ severity: 'error', summary: 'Error', detail: message, life: 2000 });
     }
 }

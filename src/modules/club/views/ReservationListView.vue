@@ -2,6 +2,7 @@
 import { ReservationStatus, type ReservationComplete, type ReservationDataDialog } from '@/modules/reservation/interfaces';
 import type { ColumnConfig } from 'ui';
 import { animate, stagger } from 'animejs';
+import { isHandledError, getErrorMessage } from '@/api/errorsApi';
 
 
 const { getClubReservations, updateStatusReservation } = useReservation();
@@ -75,7 +76,8 @@ const loadReservations = async (startDate?: string, endDate?: string) => {
         reservations.value = data;
         animateTableRows();
     } catch (error : unknown) {
-        const message = error instanceof Error ? error.message : 'Error inesperado';
+        if (isHandledError(error)) return;
+        const message = getErrorMessage(error);
         toast.add({ severity: 'error', summary: 'Error', detail: message, life: 2000 });
     }
 };
@@ -113,7 +115,8 @@ const handleUpdateStatus = async (res: ReservationComplete, newStatus: Reservati
                 });
 
             } catch (error: unknown) {
-                const message = error instanceof Error ? error.message : 'Error inesperado';
+                if (isHandledError(error)) return;
+                const message = getErrorMessage(error);
                 toast.add({ severity: 'error', summary: 'Error de acceso', detail: message, life: 2000 });
             }
         },

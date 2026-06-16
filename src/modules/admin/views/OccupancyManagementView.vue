@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { ColumnConfig } from 'ui';
 import type { GlobalOccupancyResponse } from '../interfaces';
+import { isHandledError, getErrorMessage } from '@/api/errorsApi';
 
 const toast = useToast();
 const occupancyData = ref<GlobalOccupancyResponse>();
@@ -16,7 +17,8 @@ const loadOccupancy = async () => {
     try {
         occupancyData.value = await getGlobalOccupancyStats(selectedYear.value, selectedMonth.value);
     } catch (error: unknown) {
-        const message = error instanceof Error ? error.message : 'Error inesperado';
+        if (isHandledError(error)) return;
+        const message = getErrorMessage(error);
         toast.add({ severity: 'error',summary: 'Error',detail: message,life: 2000 });
     }
 };

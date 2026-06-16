@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { RouteNames } from '@/router/routeNames';
 import type { RegisterValues } from 'ui';
+import { isHandledError, getErrorMessage } from '@/api/errorsApi';
 
 const toast = useToast();
 const router = useRouter();
 const { register } = useAuth();
-const { isLoading } = useGlobalLoading();
 const isLoadingLayout = ref<boolean>(false);
 
 const onRegisterSubmit = async (formData: RegisterValues) => {
@@ -15,12 +15,13 @@ const onRegisterSubmit = async (formData: RegisterValues) => {
         toast.add({ severity: 'success',summary: '¡Bienvenido!', detail: 'Registro realizado', life: 2000})
 
         await new Promise(resolve => setTimeout(resolve, 2000))
-        isLoadingLayout.value = false;
         router.push({ name: RouteNames.LOGIN });
     } catch (error: unknown) {
-        isLoadingLayout.value = false;
-        const message = error instanceof Error ? error.message : 'Error';
+        if (isHandledError(error)) return;
+        const message = getErrorMessage(error);
         toast.add({ severity: 'error', summary: 'Error de registro', detail: message, life: 2000 });
+    } finally {
+        isLoadingLayout.value = false;
     }
 };
 </script>
@@ -30,18 +31,14 @@ const onRegisterSubmit = async (formData: RegisterValues) => {
     <BlockUI 
         :blocked="isLoadingLayout"
         fullScreen
-        :autoZIndex="true" 
-        :baseZIndex="9999"
     />
 
     <div class="flex items-center">
             <div class="w-full max-w-md">
-
                 <RegisterForm 
-                    :loading="isLoading"
+                    :loading="isLoadingLayout"
                     @submit="onRegisterSubmit"
                 />
-            
             </div>
     </div>
 

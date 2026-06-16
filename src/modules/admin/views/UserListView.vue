@@ -8,13 +8,14 @@ import { BaseDataTable, BasePill } from 'ui';
 import type { BaseCard, ColumnConfig } from 'ui';
 import { useConfirm } from "primevue/useconfirm";
 import { useToast } from 'primevue/usetoast';
+import { isHandledError, getErrorMessage } from '@/api/errorsApi';
 import { BaseDialog } from 'ui';
 import { zodResolver } from '@primevue/forms/resolvers/zod';
 import { userInputsEditDialog, userSchema } from '@/modules/user/schemas/user.schema';
 
 const { getUsers, deactivateUser, updateUser, activateUser } = useUser();
 const authStore = useAuthStore()
-const users = ref<User[]>([]);
+const users = ref<UserRow[]>([]);
 const confirmPopup = useConfirm();
 const toast = useToast();
 const userDialogRef = ref();
@@ -22,9 +23,10 @@ const selectedUser = ref<User>();
 const resolver = zodResolver(userSchema);
 const { isLoading } = useGlobalLoading();
 
+type UserRow = User & { fullName: string };
 const headerColumns : ColumnConfig<User>[] = [
     { field: 'fullName', header: 'Usuario', sortable: true },
-    { field: 'email', header: 'Correo', sortable: false },
+    { field: 'email', header: 'Correo', sortable: true },
     { field: 'isActive', header: 'Estado', sortable: false },
     { 
         field: 'actions', 
@@ -62,9 +64,13 @@ onMounted(async () => {
 
 const loadUsers = async () => {
     try {
-        users.value = await getUsers();
+        users.value = (await getUsers()).map(u => ({
+            ...u,
+            fullName: `${u.name} ${u.lastName}`
+        }));
     } catch (error: unknown) {
-        const message = error instanceof Error ? error.message : 'Error inesperado';
+        if (isHandledError(error)) return;
+        const message = getErrorMessage(error);
         toast.add({ severity: 'error', summary: 'Error de acceso', detail: message, life: 2000 });
     }
 };
@@ -79,15 +85,19 @@ const onSaveModifiedUser = async (updatedData: User) => {
 
         const index = users.value.findIndex(u => u.id === updatedData.id);
         if (index !== -1) {
-            users.value[index] = {...updatedData}
+            users.value[index] = {
+                ...updatedData,
+                fullName: `${updatedData.name} ${updatedData.lastName}` 
+            }
         }
 
         toast.add({ severity: 'success', summary: 'Confirmado', detail: 'Usuario modificado', life: 2000});
     } catch (error: unknown) {
-        const message = error instanceof Error ? error.message : 'Error inesperado';
+        if (isHandledError(error)) return;
+        const message = getErrorMessage(error);
         toast.add({ severity: 'error', summary: 'Error de acceso', detail: message, life: 2000 });
     }
-    
+
 }
 
 const handleToggleUserStatus = (user: User, event: PointerEvent) => {
@@ -123,7 +133,8 @@ const handleToggleUserStatus = (user: User, event: PointerEvent) => {
                 toast.add({ severity: 'success', summary: 'Confirmado', detail: `Usuario ${isActivating ? 'reactivado' : 'desactivado'}`, life: 2000});
 
             } catch (error: unknown) {
-                const message = error instanceof Error ? error.message : 'Error inesperado';
+                if (isHandledError(error)) return;
+                const message = getErrorMessage(error);
                 toast.add({ severity: 'error', summary: 'Error de acceso', detail: message, life: 2000 });
             }
         },
