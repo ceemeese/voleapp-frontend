@@ -2,6 +2,7 @@ import router from '@/router'
 import { RouteNames } from '@/router/routeNames';
 import type { InternalAxiosRequestConfig } from 'axios';
 import { useGlobalLoading } from '@/composables/useGlobalLoading';
+import { apiErrorBus } from '@/composables/useApiBus';
 
 const { start, stop } = useGlobalLoading();
 
@@ -39,11 +40,11 @@ clientApi.interceptors.response.use(
         return response;
     },
     async (error) => {
+        stop();
         const authStore = useAuthStore();
         const originalRequest = error.config;
 
         if (error.response?.status === 401 && !originalRequest._retry){
-            stop();
             originalRequest._retry = true;
 
             if (!isRefreshing) {
@@ -63,6 +64,7 @@ clientApi.interceptors.response.use(
                     return clientApi(originalRequest);
                 
                 } catch (refreshError){
+                    stop();
                     failedQueue.forEach(({ resolve }) => resolve(Promise.reject(refreshError)));
                     failedQueue = []
 
@@ -78,6 +80,16 @@ clientApi.interceptors.response.use(
                     failedQueue.push({ resolve, config: originalRequest });
                 });
             }
+        }
+
+        if (error.response.status >= 500) {
+            apiErrorBus.emit('Error interno del servidor. Por favor, inténtalo más tarde');
+            error.handled = true;
+        }
+
+        if (error.response.status === 403) {
+            apiErrorBus.emit('No tienes permisos para realizar esta acción')
+            error.handled = true;
         }
         return Promise.reject(error);
     }

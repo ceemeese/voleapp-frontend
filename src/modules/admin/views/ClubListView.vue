@@ -3,6 +3,7 @@ import type { Club } from '@/modules/club/interfaces';
 import { BasePill, type BaseCard, type BaseDataTable,  type ColumnConfig } from 'ui';
 import { clubInputsDialog, clubSchema, type ClubAddFormData, type ClubUpdateFormData } from '@/modules/club/schemas/club.schema';
 import { RouteNames } from '@/router/routeNames';
+import { isHandledError, getErrorMessage } from '@/api/errorsApi';
 
 const confirmPopup = useConfirm();
 const toast = useToast();
@@ -21,12 +22,13 @@ const loadClubs = async () => {
     try {
         clubs.value = await getClubs();
     } catch (error: unknown) {
-        const message = error instanceof Error ? error.message : 'Error inesperado';
-        toast.add({ 
-            severity: 'error', 
-            summary: 'Error de acceso', 
-            detail: message, 
-            life: 2000 
+        if (isHandledError(error)) return;
+        const message = getErrorMessage(error);
+        toast.add({
+            severity: 'error',
+            summary: 'Error de acceso',
+            detail: message,
+            life: 2000
         });
     }
 };
@@ -34,7 +36,6 @@ const loadClubs = async () => {
 
 const headerColumns : ColumnConfig<Club>[] = [
     { field: 'name', header: 'Club', sortable: true },
-    { field: 'cif', header: 'CIF', sortable: false },
     { field: 'city', sortField: 'address.city', header: 'Ciudad', sortable: true },
     { field: 'createdAt', header: 'Alta', sortable: false },
     { field: 'isActive', header: 'Estado', sortable: false },
@@ -51,7 +52,6 @@ const headerColumns : ColumnConfig<Club>[] = [
                     selectedClub.value = club; 
                     const clubDataForm : ClubUpdateFormData = {
                         name: club.name,
-                        cif: club.cif,
                         email: club.email,
                         phoneNumber: club.phoneNumber,
                         street: club.address.street,
@@ -88,7 +88,8 @@ const handleImpersonate = async (club: Club) => {
         
         toast.add({ severity: 'info', summary: 'Simulación iniciada', detail: `Ahora gestionando: ${club.name}`, life: 2000 });
         router.push({ name: RouteNames.ADMIN_DASHBOARD });
-    } catch {
+    } catch (error) {
+        if (isHandledError(error)) return;
         toast.add({ severity: 'error', summary: 'Error', detail: 'No se pudo acceder al club', life: 2000 });
     }
 }
@@ -122,7 +123,8 @@ const handleToggleStatus = (club: Club, event: PointerEvent) => {
                 toast.add({ severity: 'success', summary: 'Confirmado', detail: `Club ${isActivating ? 'reactivado' : 'desactivado'} con éxito`, life: 2000});
 
             } catch (error: unknown) {
-                const message = error instanceof Error ? error.message : 'Error inesperado';
+                if (isHandledError(error)) return;
+                const message = getErrorMessage(error);
                 toast.add({ severity: 'error', summary: 'Error de acceso', detail: message, life: 2000 });
             }
         },
@@ -135,7 +137,6 @@ const onSaveClub = async (data: ClubAddFormData | ClubUpdateFormData) => {
         if (selectedClub.value){
             await updateClub(selectedClub.value.id, {
                 name: data.name, 
-                cif: data.cif,
                 street: data.street,
                 city: data.city,
                 zipCode: data.zipCode,
@@ -149,7 +150,6 @@ const onSaveClub = async (data: ClubAddFormData | ClubUpdateFormData) => {
                 clubs.value[index] = {
                     id: selectedClub.value.id,
                     name: data.name,
-                    cif: data.cif,
                     email: data.email,
                     phoneNumber: data.phoneNumber,
                     isActive: selectedClub.value.isActive,
@@ -167,7 +167,6 @@ const onSaveClub = async (data: ClubAddFormData | ClubUpdateFormData) => {
         } else {
             const newClub: Club = await createClub({ 
                 name: data.name, 
-                cif: data.cif,
                 street: data.street,
                 city: data.city,
                 zipCode: data.zipCode,
@@ -181,7 +180,8 @@ const onSaveClub = async (data: ClubAddFormData | ClubUpdateFormData) => {
             toast.add({ severity: 'success', summary: 'Confirmado', detail: `Club creado con éxito`, life: 2000});
         }
     } catch (error: unknown) {
-        const message = error instanceof Error ? error.message : 'Error inesperado';
+        if (isHandledError(error)) return;
+        const message = getErrorMessage(error);
         toast.add({ severity: 'error', summary: 'Error de acceso', detail: message, life: 2000 });
     }
 }
@@ -217,7 +217,7 @@ onMounted(async () => {
             :columns="headerColumns"
             :loading="isLoading"
             :show-search="true"
-            :globalFilterFields="['name', 'email', 'address.city', 'cif']"
+            :globalFilterFields="['name', 'email', 'address.city']"
             :removable-sort="true"
             :rows="7"
             :paginator="true"

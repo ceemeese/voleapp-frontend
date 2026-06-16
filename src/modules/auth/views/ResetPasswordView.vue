@@ -3,13 +3,13 @@ import { RouteNames } from '@/router/routeNames';
 import { resetSchema } from '@/modules/auth/schemas/reset.schema';
 import { ResetPasswordForm, type ResetPasswordValues } from 'ui';
 import type { ResetPassword } from '@/modules/auth/interfaces';
+import { isHandledError, getErrorMessage } from '@/api/errorsApi';
 
 const props = defineProps<{
   token: string;
   email: string;
 }>();
 
-const { isLoading } = useGlobalLoading();
 const isLoadingLayout = ref<boolean>(false);
 
 const toast = useToast();
@@ -33,13 +33,13 @@ const onResetPasswordSubmit = async (formData : ResetPasswordValues ) => {
         toast.add({ severity: 'success', summary: 'Contraseña actualizada', detail: `Ya puedes iniciar sesión con tu nueva clave`, life: 2000 });
 
         await new Promise(resolve => setTimeout(resolve, 2000))
-        isLoadingLayout.value = false;
         router.push({ name: RouteNames.LOGIN });
-
     } catch (error: unknown) {
-        isLoadingLayout.value = false;
-        const message = error instanceof Error ? error.message : 'Error inesperado';
+        if (isHandledError(error)) return;
+        const message = getErrorMessage(error);
         toast.add({ severity: 'error', summary: 'Error', detail: message, life: 2000 });
+    } finally {
+        isLoadingLayout.value = false;
     }
 };
 
@@ -50,8 +50,6 @@ const onResetPasswordSubmit = async (formData : ResetPasswordValues ) => {
     <BlockUI 
         :blocked="isLoadingLayout"
         fullScreen
-        :autoZIndex="true" 
-        :baseZIndex="9999"
     />
 
     <div class="flex items-center">
@@ -59,7 +57,7 @@ const onResetPasswordSubmit = async (formData : ResetPasswordValues ) => {
             <ResetPasswordForm
                 card
                 mode="reset"
-                :loading="isLoading"
+                :loading="isLoadingLayout"
                 @submit="onResetPasswordSubmit"
                 :resolver="resolver"
             />

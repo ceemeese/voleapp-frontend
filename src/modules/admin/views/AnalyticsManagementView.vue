@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { GlobalAnalyticsResponse } from '../interfaces';
+import { isHandledError, getErrorMessage } from '@/api/errorsApi';
 
 const toast = useToast();
 const { getGlobalAnalyticsStats } = useAnalytics();
@@ -17,7 +18,8 @@ const loadAnalytics = async () => {
     try {
         analyticsData.value = await getGlobalAnalyticsStats(selectedYear.value, selectedMonth.value);
     } catch (error: unknown) {
-        const message = error instanceof Error ? error.message : 'Error inesperado';
+        if (isHandledError(error)) return;
+        const message = getErrorMessage(error);
         toast.add({ severity: 'error',summary: 'Error',detail: message, life: 2000 })
     }
 }

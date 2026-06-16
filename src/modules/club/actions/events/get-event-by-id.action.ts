@@ -1,7 +1,7 @@
 import { clientApi } from "@/api/clientApi";
 import type { AxiosError } from "axios";
 import type { ProblemDetails } from "@/types/problemDetails.interface";
-import { ConnectionError, Forbidden, NotAuthorizedError, NotFoundError } from "@/api/errorsApi";
+import { ConnectionError, NotFoundError } from "@/api/errorsApi";
 import event from "../../api/event";
 import type { EventResponse, Event } from "../../interfaces";
 
@@ -21,8 +21,6 @@ export const getEventByIdAction = async (courtId: string, eventId: number) : Pro
         if (!axiosError.response) throw new ConnectionError('El servidor no responde');
         const { status, data }  = axiosError.response;
 
-        if (status === 401) throw new NotAuthorizedError('Sesión expirada');
-        if (status === 403) throw new Forbidden('Usuario sin permisos');
         if (status === 404) {
             const isNotFoundCourtError = data.title.includes('Court');
 

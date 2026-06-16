@@ -15,6 +15,7 @@ declare global {
   const STATUS_TRANSLATION: typeof import('./src/utils/status-utils').STATUS_TRANSLATION
   const YEARS_OPTIONS: typeof import('./src/helpers/dateHelpers').YEARS_OPTIONS
   const acceptHMRUpdate: typeof import('pinia').acceptHMRUpdate
+  const apiErrorBus: typeof import('./src/composables/useApiBus').apiErrorBus
   const axios: typeof import('axios').default
   const calculateDuration: typeof import('./src/helpers/dateHelpers').calculateDuration
   const computed: typeof import('vue').computed
@@ -146,6 +147,7 @@ declare module 'vue' {
     readonly STATUS_TRANSLATION: UnwrapRef<typeof import('./src/utils/status-utils')['STATUS_TRANSLATION']>
     readonly YEARS_OPTIONS: UnwrapRef<typeof import('./src/helpers/dateHelpers')['YEARS_OPTIONS']>
     readonly acceptHMRUpdate: UnwrapRef<typeof import('pinia')['acceptHMRUpdate']>
+    readonly apiErrorBus: UnwrapRef<typeof import('./src/composables/useApiBus')['apiErrorBus']>
     readonly axios: UnwrapRef<typeof import('axios')['default']>
     readonly calculateDuration: UnwrapRef<typeof import('./src/helpers/dateHelpers')['calculateDuration']>
     readonly computed: UnwrapRef<typeof import('vue')['computed']>

@@ -1,7 +1,7 @@
 import { clientApi } from "@/api/clientApi";
 import { AxiosError } from "axios";
 import type { ProblemDetails } from "@/types/problemDetails.interface";
-import { BusinessError, ConnectionError, Forbidden, NotAuthorizedError, ValidationError } from "@/api/errorsApi";
+import { BusinessError, ConnectionError, ValidationError } from "@/api/errorsApi";
 import type { AddClub, Club, ClubResponse } from "../../interfaces";
 import club from "../../api/club";
 
@@ -33,8 +33,6 @@ export const registerClubAction = async (dataForm : AddClub) : Promise<Club> => 
             throw new BusinessError('Ha habido un error en el registro. Intente de nuevo')
         }
 
-        if (status === 401) throw new NotAuthorizedError('Sesión expirada');
-        if (status === 403) throw new Forbidden('Usuario sin permisos');
 
         throw error;
     }

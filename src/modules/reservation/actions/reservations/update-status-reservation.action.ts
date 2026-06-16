@@ -1,7 +1,7 @@
 import { clientApi } from "@/api/clientApi";
 import { AxiosError } from "axios";
 import type { ProblemDetails } from "@/types/problemDetails.interface";
-import { BusinessError, ConnectionError, Forbidden, NotAuthorizedError, NotFoundError } from "@/api/errorsApi";
+import { BusinessError, ConnectionError, NotFoundError } from "@/api/errorsApi";
 import reservation from "../../api/reservation";
 
 
@@ -19,8 +19,6 @@ export const updateStatusReservationAction = async (reservationId: number, newSt
         const {status, data} = axiosError.response;
         const errorCode = data.title;
 
-        if (status === 401) throw new NotAuthorizedError('Sesión expirada');
-        if (status === 403) throw new Forbidden('Usuario sin permisos');
         if (status === 404) throw new NotFoundError('La reserva solicitada no existe o no está disponible')
 
         if (status === 409) {

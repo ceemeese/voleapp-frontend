@@ -1,7 +1,7 @@
 import { clientApi } from "@/api/clientApi";
 import { AxiosError } from "axios";
 import type { ProblemDetails } from "@/types/problemDetails.interface";
-import { BusinessError, ConnectionError, Forbidden, NotAuthorizedError, NotFoundError, ValidationError } from "@/api/errorsApi";
+import { BusinessError, ConnectionError, NotFoundError, ValidationError } from "@/api/errorsApi";
 import type { MemberComplete, MemberResponse, PutMember } from "../../interfaces";
 import member from "../../api/member";
 
@@ -34,8 +34,6 @@ export const updateMemberAction = async (clubId: string, memberId: string, dataF
             throw new BusinessError('Ha habido un error en el registro. Intente de nuevo');
         }
 
-        if (status === 401) throw new NotAuthorizedError('Sesión expirada');
-        if (status === 403) throw new Forbidden('Usuario sin permisos');
 
         if (status === 404) {
             const isNotFoundClubError = data.title.includes('Club');

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { PricingConfig } from '../interfaces';
+import { isHandledError, getErrorMessage } from '@/api/errorsApi';
 
 const toast = useToast();
 const { activeClubId } = useClub();
@@ -13,7 +14,8 @@ const loadCourts = async () => {
     try {
         await getCourtsByClubId(activeClubId.value!);
     } catch (error: unknown) {
-        const message = error instanceof Error ? error.message : 'Error inesperado';
+        if (isHandledError(error)) return;
+        const message = getErrorMessage(error);
         toast.add({
             severity: 'error',
             summary: 'Error',
@@ -29,7 +31,8 @@ const loadPricingConfig = async () => {
     try {
         pricingConfig.value = await getPricing(activeClubId.value!);
     } catch (error: unknown) {
-        const message = error instanceof Error ? error.message : 'Error inesperado';
+        if (isHandledError(error)) return;
+        const message = getErrorMessage(error);
         toast.add({
             severity: 'error',
             summary: 'Error',
@@ -60,7 +63,8 @@ const handleSaveConfig = async (configData: PricingConfig) => {
             detail: 'Cambios guardados', 
             life: 2000});
     } catch (error:unknown) {
-        const message = error instanceof Error ? error.message : 'Error inesperado';
+        if (isHandledError(error)) return;
+        const message = getErrorMessage(error);
         toast.add({
             severity: 'error',
             summary: 'Error',

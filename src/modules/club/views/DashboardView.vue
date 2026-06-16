@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { DashboardResponse } from '../interfaces';
+import { isHandledError, getErrorMessage } from '@/api/errorsApi';
 
 const toast = useToast();
 const metrics = ref<DashboardResponse>();
@@ -12,7 +13,8 @@ const loadMetrics = async () => {
     try {
         metrics.value = await getDashboardStats();
     } catch (error: unknown) {
-        const message = error instanceof Error ? error.message : 'Error inesperado';
+        if (isHandledError(error)) return;
+        const message = getErrorMessage(error);
         toast.add({ severity: 'error',summary: 'Error',detail: message,life: 2000 })
     }
 }

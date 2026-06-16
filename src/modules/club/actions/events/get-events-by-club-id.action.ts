@@ -1,7 +1,7 @@
 import { clientApi } from "@/api/clientApi";
 import type { AxiosError } from "axios";
 import type { ProblemDetails } from "@/types/problemDetails.interface";
-import { ConnectionError, Forbidden, NotAuthorizedError, NotFoundError } from "@/api/errorsApi";
+import { ConnectionError, NotFoundError } from "@/api/errorsApi";
 import event from "../../api/event";
 import type { EventResponse, Event } from "../../interfaces";
 
@@ -21,8 +21,6 @@ export const getEventsRangeByClubAction = async (clubId: string, startRange: Dat
         
         const status = axiosError.response.status;
 
-        if (status === 401) throw new NotAuthorizedError('Sesión expirada');
-        if (status === 403) throw new Forbidden('Usuario sin permisos');
         if (status === 404) throw new NotFoundError('El club solicitado no existe o no está disponible')
 
         throw error;

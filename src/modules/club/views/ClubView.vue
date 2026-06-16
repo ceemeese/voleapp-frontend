@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { InfoFieldProps, ActionColumn } from 'ui';
 import { clubInputsDialog, clubSchema, type ClubUpdateFormData } from '../schemas/club.schema';
+import { isHandledError, getErrorMessage } from '@/api/errorsApi';
 import type { Schedule } from '../interfaces';
 import { scheduleInputsEditDialog, scheduleSchema, type ScheduleUpdateFormData } from '../schemas/schedule.schema';
 
@@ -24,7 +25,6 @@ const profileClubField = computed<InfoFieldProps[]>(() => [
     { label: 'Dirección', value: currentClubInfo.value?.address
     ? `${currentClubInfo.value.address.street}, ${currentClubInfo.value.address.zipCode} ${currentClubInfo.value.address.city}`
     : '', icon: 'pi pi-home'},
-    { label: 'CIF', value: currentClubInfo.value?.cif, icon: 'pi pi-id-card'},
     { label: 'Email', value: currentClubInfo.value?.email, icon: 'pi pi-envelope'},
     { label: 'Teléfono', value: currentClubInfo.value?.phoneNumber, icon: 'pi pi-phone'}
 ])
@@ -94,7 +94,6 @@ const handleClubEditDialog = () => {
     if (!currentClubInfo.value) return;
     const clubDataForm : ClubUpdateFormData = {
         name: currentClubInfo.value?.name, 
-        cif: currentClubInfo.value?.cif,
         street: currentClubInfo.value?.address.street,
         city: currentClubInfo.value?.address.city,
         zipCode: currentClubInfo.value?.address.zipCode,
@@ -120,7 +119,6 @@ const onSaveModifiedClub = async (data: ClubUpdateFormData) => {
         if (currentClubInfo.value?.id) {
             await updateClub(currentClubInfo.value?.id, {
                 name: data.name, 
-                cif: data.cif,
                 street: data.street,
                 city: data.city,
                 zipCode: data.zipCode,
@@ -132,7 +130,6 @@ const onSaveModifiedClub = async (data: ClubUpdateFormData) => {
             clubStore.currentClubData = {
                 id: currentClubInfo.value.id,
                 name: data.name,
-                cif: data.cif,
                 email: data.email,
                 phoneNumber: data.phoneNumber,
                 isActive: currentClubInfo.value.isActive,
@@ -149,7 +146,8 @@ const onSaveModifiedClub = async (data: ClubUpdateFormData) => {
         }
         
     } catch (error: unknown) {
-        const message = error instanceof Error ? error.message : 'Error inesperado';
+        if (isHandledError(error)) return;
+        const message = getErrorMessage(error);
         toast.add({ severity: 'error', summary: 'Error de acceso', detail: message, life: 2000 });
     }
 }
@@ -179,7 +177,8 @@ const onSaveModifiedSchedule = async (data: ScheduleUpdateFormData) => {
         }
         
     } catch (error: unknown) {
-        const message = error instanceof Error ? error.message : 'Error inesperado';
+        if (isHandledError(error)) return;
+        const message = getErrorMessage(error);
         toast.add({ severity: 'error', summary: 'Error de acceso', detail: message, life: 2000 });
     }
 }
@@ -228,7 +227,8 @@ const handleToggleSchedule = (schedule: Schedule, event: PointerEvent) => {
                     life: 2000});
 
             } catch (error: unknown) {
-                const message = error instanceof Error ? error.message : 'Error inesperado';
+                if (isHandledError(error)) return;
+                const message = getErrorMessage(error);
                 toast.add({ severity: 'error', summary: 'Error de acceso', detail: message, life: 2000 });
             }
         },

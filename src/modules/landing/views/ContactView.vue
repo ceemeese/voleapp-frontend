@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { ContactForm } from '../interfaces';
+import { isHandledError, getErrorMessage } from '@/api/errorsApi';
 
 const { sendContactForm } = useContact();
 const toast = useToast();
@@ -15,7 +16,8 @@ const handleSubmit = async () => {
         await sendContactForm(form.value);
         toast.add({ severity: 'success', summary: 'Actualizado', detail: 'Mensaje enviado', life: 2000 });
     } catch (error: unknown){
-        const message = error instanceof Error ? error.message : 'Error inesperado';
+        if (isHandledError(error)) return;
+        const message = getErrorMessage(error);
         toast.add({ severity: 'error', summary: 'Error al cambiar estado', detail: message, life: 2000 });
     }
 };

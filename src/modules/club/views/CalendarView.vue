@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { EventCalendar } from 'ui';
+import { isHandledError, getErrorMessage } from '@/api/errorsApi';
 import type { Court, Event } from '../interfaces';
 import type { CalendarEvent, CalendarResource, BaseInputProps } from 'ui';
 import { addEventSchema } from '../schemas/event.schema';
@@ -21,8 +22,8 @@ const { getCourtsByClubId } = useCourt();
 const { schedules, getSchedule } = useSchedule();
 const { isLoading } = useGlobalLoading();
 const resolver = zodResolver(addEventSchema);
-const selectedEvent = ref<Event >();
-const selectedReservation = ref<ReservationComplete | null>(null);
+const selectedEvent = ref<Event>();
+const selectedReservation = ref<ReservationComplete>();
 const selectedDate = ref(new Date());
     
 
@@ -201,6 +202,7 @@ const onOpenCreateEventDialog = () => {
     eventDialogRef.value.open(formData.value);
 }
 
+
 //TODO:hacer mapper para no tener ref porque se lo pasamos encapsulado al componente
 const summarizedReservation = computed(() : ReservationDataDialog | null =>  {
     if (!selectedReservation.value) return null;
@@ -276,7 +278,8 @@ const loadCourts = async () => {
             ...court,
         }))
     } catch (error: unknown) {
-        const message = error instanceof Error ? error.message : 'Error inesperado';
+        if (isHandledError(error)) return;
+        const message = getErrorMessage(error);
         toast.add({ severity: 'error', summary: 'Error', detail: message, life: 2000 })
     }
 }
@@ -333,7 +336,8 @@ const onSaveModifiedEvent = async (updatedData: EventForm) => {
         toast.add({ severity: 'success', summary: 'Confirmado', detail: `Evento ${actionText}`, life: 2000});
         
     } catch (error: unknown) {
-        const message = error instanceof Error ? error.message : 'Error inesperado';
+        if (isHandledError(error)) return;
+        const message = getErrorMessage(error);
         toast.add({  severity: 'error', summary: 'Error de acceso', detail: message, life: 2000 });
     }
 }
@@ -353,7 +357,8 @@ const onUpdateStatus = async (newStatus: number) => {
 
         confirmMode.value = null;
     } catch (error: unknown) {
-        const message = error instanceof Error ? error.message : 'Error inesperado';
+        if (isHandledError(error)) return;
+        const message = getErrorMessage(error);
         toast.add({ severity: 'error', summary: 'Error al cambiar estado', detail: message, life: 2000 });
     }
 }
@@ -381,6 +386,15 @@ const canAdminChangeStatus = (currentId: ReservationStatus | undefined): boolean
                 <BaseButton 
                 icon="pi pi-plus"
                 label="Añadir evento"
+                class="!bg-black !border-none"
+                size="small"
+                rounded
+                @click="onOpenCreateEventDialog"
+                />
+
+                <BaseButton 
+                icon="pi pi-plus"
+                label="Añadir reserva"
                 class="!bg-black !border-none"
                 size="small"
                 rounded
@@ -454,6 +468,7 @@ const canAdminChangeStatus = (currentId: ReservationStatus | undefined): boolean
         <BaseDialog
         ref="reservationDialogRef"
         header="Resumen de la reserva"
+        :loading="isLoading"
         >
             <template #default>
                 <div class="flex flex-col gap-6">
@@ -472,6 +487,7 @@ const canAdminChangeStatus = (currentId: ReservationStatus | undefined): boolean
                             severity="danger" 
                             class="flex-1"
                             outlined
+                            :loading="isLoading"
                             @click="confirmMode = ReservationStatus.Cancelled"
                         />
 
@@ -482,6 +498,7 @@ const canAdminChangeStatus = (currentId: ReservationStatus | undefined): boolean
                             severity="warning" 
                             class="flex-1"
                             outlined
+                            :loading="isLoading"
                             @click="confirmMode = ReservationStatus.Refunded"
                         />
                         </div>

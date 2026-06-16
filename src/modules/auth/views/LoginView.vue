@@ -2,7 +2,7 @@
 import { RouteNames } from '@/router/routeNames';
 import type { LoginValues } from 'ui';
 import { loginSchema } from '../schemas/login.schema';
-import BlockUI from 'primevue/blockui';
+import { isHandledError, getErrorMessage } from '@/api/errorsApi';
 
 const toast = useToast();
 const router = useRouter();
@@ -31,8 +31,11 @@ const onLoginSubmit = async (formData: LoginValues) => {
         }  
     } catch (error: unknown) {
         isLoadingLayout.value = false;
-        const message = error instanceof Error ? error.message : 'Error inesperado';
+        if (isHandledError(error)) return;
+        const message = getErrorMessage(error);
         toast.add({ severity: 'error', summary: 'Error de acceso', detail: message, life: 2000 });
+    } finally {
+        isLoadingLayout.value = false;
     }
 };
 </script>
@@ -47,12 +50,12 @@ const onLoginSubmit = async (formData: LoginValues) => {
     <div class="flex items-center">
         <div class="w-full max-w-md">
             <LoginForm 
-                
                 @submit="onLoginSubmit"
                 :register-route="RouteNames.REGISTER"
                 :forgot-password-label="'¿Olvidaste tu contraseña?'"
                 :forgot-password-route="RouteNames.FORGOT"
                 :resolver="resolver"
+                :loading="isLoadingLayout"
                 />
         </div>
     </div>

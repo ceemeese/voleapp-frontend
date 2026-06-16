@@ -4,6 +4,7 @@ import { useUserStore } from '@/stores/userStore';
 import { computed, onMounted, ref } from 'vue';
 import { Footer, HeaderM, type NavItem } from 'ui';
 import { useToast } from 'primevue/usetoast';
+import { isHandledError, getErrorMessage } from '@/api/errorsApi';
 import { useRouter } from 'vue-router';
 import { RouteNames } from '@/router/routeNames';
 
@@ -15,10 +16,8 @@ const isInitialLoading = ref<boolean>(false);
 const isMobileMenuVisible = ref<boolean>(false);
 const isMobile = ref(window.innerWidth < 768);
 const loginLabel = computed(() => isMobile.value ? '' : 'Log in');
-const { isLoading } = useGlobalLoading();
 const isLoadingLayout = ref<boolean>(false);
 
-const isScreenBlocked = computed(() => isLoading.value || isLoadingLayout.value);
 const isUserLogged = computed(() => authStore.isAuthenticated && !authStore.isAdmin);
 
 onMounted(async () => {
@@ -28,7 +27,8 @@ onMounted(async () => {
     try {
         await userStore.fetchProfile();
     } catch (error: unknown) {
-        const message = error instanceof Error ? error.message : 'Error inesperado';
+        if (isHandledError(error)) return;
+        const message = getErrorMessage(error);
         toast.add({ severity: 'error', summary: 'Error de acceso', detail: message, life: 2000 });
     } finally {
         isInitialLoading.value = false;
@@ -76,12 +76,17 @@ const goToProfile = () => {
 
 const handleLogout = async() => {
     isLoadingLayout.value = true;
-    toast.add({ severity: 'success', summary: 'Logout', detail: 'Cerrando sesión de usuario',life: 1000 });
+    try {
+        toast.add({ severity: 'success', summary: 'Logout', detail: 'Cerrando sesión de usuario',life: 1000 });
     
-    await new Promise(resolve => setTimeout(resolve, 1000))
-    isLoadingLayout.value = false;
-    authStore.logout();
-    router.push( {name: RouteNames.HOME});
+        await new Promise(resolve => setTimeout(resolve, 1000))
+        isLoadingLayout.value = false;
+        authStore.logout();
+        router.push( {name: RouteNames.HOME});
+    } finally {
+        isLoadingLayout.value = false;
+    }
+    
 }
 
 const handleMobileMenuVisible = (() => {
@@ -92,10 +97,8 @@ const handleMobileMenuVisible = (() => {
 
 <template>
     <BlockUI 
-        v-if="isScreenBlocked" 
-        :fullScreen="true" 
-        :autoZIndex="true" 
-        :baseZIndex="9999"
+        :blocked="isLoadingLayout"
+        fullScreen
     />
     
     <div class="min-h-screen flex flex-col">

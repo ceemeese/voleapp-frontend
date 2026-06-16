@@ -1,8 +1,11 @@
 <script setup lang="ts">
+import { RouteNames } from '@/router/routeNames';
 import type { AddReservation, ReservationDataDialog } from '../interfaces';
 import type { CourtGroupedResponse, CourtAvailabilityDetail } from '@/modules/club/interfaces';
+import { isHandledError, getErrorMessage } from '@/api/errorsApi';
 
 const toast = useToast();
+const router = useRouter();
 const { profile } = useUserStore();
 const { registerReservation, refreshCurrentUserReservations } = useReservation();
 const { searchAvailability } = useCourt();
@@ -31,13 +34,14 @@ const fetchAvailabilityCourts = async () => {
         availablesCourts.value = await searchAvailability(cityFilter.value, selectedDate.value, duration.value)
         
     } catch (error: unknown) {
-        const message = error instanceof Error ? error.message : 'Error inesperado';
+        if (isHandledError(error)) return;
+        const message = getErrorMessage(error);
         errorMessage.value = message;
-        toast.add({ 
-            severity: 'error', 
-            summary: 'Error de acceso', 
-            detail: errorMessage.value, 
-            life: 2000 
+        toast.add({
+            severity: 'error',
+            summary: 'Error de acceso',
+            detail: errorMessage.value,
+            life: 2000
         });
     }
 }
@@ -100,15 +104,21 @@ const handleConfirmReservation = async () => {
             summary: 'Confirmado', 
             detail: 'Reserva registrada', 
             life: 2000});
+
+
+        await new Promise(resolve => setTimeout(resolve, 2000))
+
+        router.push({ name: RouteNames.USER_HOME });
         
     } catch (error: unknown) {
-        const message = error instanceof Error ? error.message : 'Error inesperado';
+        if (isHandledError(error)) return;
+        const message = getErrorMessage(error);
         errorMessage.value = message;
-        toast.add({ 
-            severity: 'error', 
-            summary: 'Error de acceso', 
-            detail: errorMessage.value, 
-            life: 2000 
+        toast.add({
+            severity: 'error',
+            summary: 'Error de acceso',
+            detail: errorMessage.value,
+            life: 2000
         });
     }
 }

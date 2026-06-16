@@ -3,6 +3,7 @@ import { authRoutes } from '@/modules/auth/routes'
 import { landingRoutes } from '@/modules/landing/routes'
 import { userRoutes } from '@/modules/user/routes'
 import { useAuthStore } from '@/stores/authStore'
+import { useClubStore } from '@/stores/clubStore'
 import { createRouter, createWebHistory } from 'vue-router'
 import { RouteNames } from './routeNames'
 
@@ -62,6 +63,14 @@ router.beforeEach((to, from, next) => {
 
     if (isAdminPath && !userStore.isSuperadmin && !userStore.isAdmin) {
         return next({ name: RouteNames.USER_HOME });
+    }
+
+    const requiresActiveClub = to.matched.some(record => record.meta.requiresActiveClub);
+    if (requiresActiveClub && userStore.isSuperadmin) {
+        const clubStore = useClubStore();
+        if (!clubStore.activeClubId) {
+            return next({ name: RouteNames.MANAGEMENT_DASHBOARD });
+        }
     }
 
     next();

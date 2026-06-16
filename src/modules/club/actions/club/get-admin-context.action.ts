@@ -1,7 +1,7 @@
 import { clientApi } from "@/api/clientApi";
 import { AxiosError } from "axios";
 import type { ProblemDetails } from "@/types/problemDetails.interface";
-import { ConnectionError, Forbidden, NotAuthorizedError, NotFoundError } from "@/api/errorsApi";
+import { ConnectionError, NotFoundError } from "@/api/errorsApi";
 import club from "../../api/club";
 
 
@@ -19,8 +19,6 @@ export const getAdminContextAction = async () : Promise<string> => {
 
         const {status} = axiosError.response;
 
-        if (status === 401) throw new NotAuthorizedError('Sesión expirada');
-        if (status === 403) throw new Forbidden('Usuario sin permisos');
         if (status === 404) throw new NotFoundError('El usuario no tiene un club asignado como administrador')
 
         throw error;

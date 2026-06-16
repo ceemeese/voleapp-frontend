@@ -3,7 +3,7 @@ import user from "../api/user"
 import { clientApi } from "@/api/clientApi";
 import type { AxiosError } from "axios";
 import type { ProblemDetails } from "@/types/problemDetails.interface";
-import { ConnectionError, Forbidden, NotAuthorizedError } from "@/api/errorsApi";
+import { ConnectionError } from "@/api/errorsApi";
 
 export const getUsersAction = async () : Promise<User[]> => {
     try {
@@ -19,8 +19,6 @@ export const getUsersAction = async () : Promise<User[]> => {
 
         const status = axiosError.response.status;
 
-        if (status === 401) throw new NotAuthorizedError('Sesión expirada');
-        if (status === 403) throw new Forbidden('Usuario sin permisos');
         
         throw error;
     }

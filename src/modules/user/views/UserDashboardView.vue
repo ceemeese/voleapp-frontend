@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { RouteNames } from '@/router/routeNames';
+import { isHandledError, getErrorMessage } from '@/api/errorsApi';
 
 const userStore = useUserStore();
 const { getUserReservations, userReservations } = useReservation();
@@ -28,9 +29,10 @@ const fetchUserReservations = async() => {
             const endDate = `${year}-12-31`;
             await getUserReservations(activeUserId!, startDate, endDate);
         } catch (error: unknown) {
-            const message = error instanceof Error ? error.message : 'Error inesperado';
+            if (isHandledError(error)) return;
+            const message = getErrorMessage(error);
             errorMessage.value = message;
-            toast.add({ 
+            toast.add({
                 severity: 'error', 
                 summary: 'Error de acceso', 
                 detail: errorMessage.value, 

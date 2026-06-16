@@ -1,15 +1,16 @@
 <script setup lang="ts">
 import { useMember } from '@/composables/useMember';
-import type { MemberComplete } from '../interfaces';
+import type { MemberComplete, MemberView } from '../interfaces';
 import type { ColumnConfig,  BaseInputProps, } from 'ui';
 import { updateMemberSchema } from '../schemas/updateMember.schema';
 import type { User } from '@/modules/user/interfaces';
 import type { AutoCompleteCompleteEvent } from 'primevue/autocomplete';
 import { animate, stagger } from 'animejs';
+import { isHandledError, getErrorMessage } from '@/api/errorsApi';
 
 const { isLoading } = useGlobalLoading();
 
-interface SelectedMemberType extends Omit<MemberComplete, 'role'> {
+interface SelectedMemberType extends Omit<MemberView, 'role'> {
     role: string;
 }
 
@@ -35,7 +36,7 @@ const toast = useToast();
 
 const { getMembers, deactivateMember, putMember, activateMember, addMember } = useMember();
 
-const members = ref<MemberComplete[]>([]);
+const members = ref<MemberView[]>([]);
 const selectedMember = ref<SelectedMemberType | undefined>(undefined);
 const memberDialogRef = ref();
 
@@ -58,7 +59,7 @@ const inputsDialog : BaseInputProps[] = [
     { field: 'isMember', label: 'Es socio del club?', type: 'boolean' },
 ]
 
-const headerColumns : ColumnConfig<MemberComplete>[] = [
+const headerColumns : ColumnConfig<MemberView>[] = [
     { field: 'fullName', header: 'Miembro', sortable: false },
     { field: 'membershipNumber', header: 'Nº Socio', sortable: false },
     { field: 'role', header: 'Rol Club', sortable: false },
@@ -73,7 +74,7 @@ const headerColumns : ColumnConfig<MemberComplete>[] = [
                 isVisible: true,
                 icon: 'pi pi-pencil',
                 class: '!text-blue-600',
-                action: (member: MemberComplete) => {
+                action: (member: MemberView) => {
                     selectedMember.value = {
                         ...member,
                         role: member.role.name,
@@ -85,8 +86,8 @@ const headerColumns : ColumnConfig<MemberComplete>[] = [
             },
             {
                 isVisible: true,
-                icon: (member: MemberComplete) => member.isActive ? 'pi pi-trash' : 'pi pi-refresh',
-                class: (member: MemberComplete) => member.isActive ? '!text-red-600' : 'text-green-600',
+                icon: (member: MemberView) => member.isActive ? 'pi pi-trash' : 'pi pi-refresh',
+                class: (member: MemberView) => member.isActive ? '!text-red-600' : 'text-green-600',
                 action: (member, event) => handleToggleStatus(member, event)
             }
         ]
@@ -111,11 +112,12 @@ const loadMembers = async () => {
         const rawMembers = await getMembers(activeClubId.value!);
         members.value = rawMembers.map(member => ({
             ...member,
-            fullname: `${member.name} ${member.lastName}`
+            fullName: `${member.name} ${member.lastName}`
         }))
         animateTableRows();
     } catch (error: unknown) {
-        const message = error instanceof Error ? error.message : 'Error inesperado';
+        if (isHandledError(error)) return;
+        const message = getErrorMessage(error);
         toast.add({severity: 'error',summary: 'Error',detail: message,life: 2000})
     }
 } 
@@ -125,21 +127,30 @@ const onSaveModifiedMember = async (updatedData: MemberUpdateForm) => {
     const memberId = selectedMember.value?.userId;
     
     try {
-        const updatedMember = await putMember(activeClubId.value!, memberId!, {
+        await putMember(activeClubId.value!, memberId!, {
             role: updatedData.role,
             membershipNumber: updatedData.membershipNumber,
             isMember: updatedData.isMember
         });
 
         const oldMemberIndex = members.value.findIndex(m => m.userId == memberId);
-        if (oldMemberIndex !== 1){
-            members.value[oldMemberIndex] = updatedMember;
+        if (oldMemberIndex !== -1){
+            members.value[oldMemberIndex] = {
+                ...members.value[oldMemberIndex],
+                role: { 
+                    id: ROLE_OPTIONS.find(r => r.name === updatedData.role)?.id ?? 0,
+                    name: updatedData.role 
+                },
+                membershipNumber: updatedData.membershipNumber,
+                isMember: updatedData.isMember
+            } as MemberView;
         }
 
         toast.add({ severity: 'success', summary: 'Confirmado', detail: 'Usuario modificado', life: 2000});
         
     } catch (error: unknown) {
-        const message = error instanceof Error ? error.message : 'Error inesperado';
+        if (isHandledError(error)) return;
+        const message = getErrorMessage(error);
         toast.add({ severity: 'error', summary: 'Error de acceso', detail: message, life: 2000 });
     }
 }
@@ -173,10 +184,17 @@ const onAddMemberToClub = async () => {
             role:'Player' 
         });
 
-        members.value.unshift(newMember);
+        members.value.unshift({
+            ...newMember,
+            name: selectedUserToAdd.value.name,
+            lastName: selectedUserToAdd.value.lastName,
+            email: selectedUserToAdd.value.email,
+            fullName: `${selectedUserToAdd.value.name} ${selectedUserToAdd.value.lastName}`
+        });
         
     } catch (error: unknown) {
-        const message = error instanceof Error ? error.message : 'Error inesperado';
+        if (isHandledError(error)) return;
+        const message = getErrorMessage(error);
         toast.add({ severity: 'error', summary: 'Error de acceso', detail: message, life: 2000 });
     }
 }
@@ -216,7 +234,8 @@ const handleToggleStatus = (member: MemberComplete, event: PointerEvent) => {
                 toast.add({ severity: 'success', summary: 'Confirmado', detail: `Miembro ${isActivating ? 'reactivado' : 'desactivado'} con éxito`, life: 2000});
 
             } catch (error: unknown) {
-                const message = error instanceof Error ? error.message : 'Error inesperado';
+                if (isHandledError(error)) return;
+                const message = getErrorMessage(error);
                 toast.add({ severity: 'error', summary: 'Error de acceso', detail: message,life: 2000 });
             }
         },
@@ -264,7 +283,7 @@ const animateTableRows = async () => {
                     <div class="flex items-center gap-3">
                         <div class="flex flex-col">
                             <span class="font-bold text-slate-700">
-                                {{ data.fullname }}
+                                {{ data.fullName }}
                             </span>
                             <span class="text-xs text-slate-400">{{ data.email }}</span>
                         </div>
