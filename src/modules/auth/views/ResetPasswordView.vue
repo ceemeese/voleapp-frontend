@@ -11,11 +11,9 @@ const props = defineProps<{
 }>();
 
 const isLoadingLayout = ref<boolean>(false);
-
 const toast = useToast();
 const router = useRouter();
 const { resetPassword } = useAuth();
-
 const resolver = zodResolver(resetSchema);
 
 const onResetPasswordSubmit = async (formData : ResetPasswordValues ) => {

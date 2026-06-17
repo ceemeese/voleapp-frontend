@@ -13,7 +13,14 @@ export const loginAction = async (credentials: Login) : Promise<LoginResponse> =
         return data;
     } catch (error: unknown ) {
         const axiosError = error as AxiosError<ProblemDetails>;
-        if (axiosError.response?.status === 400) throw new BusinessError('Usuario o contraseña incorrectos');
+        if (axiosError.response?.status === 400) {
+            const title = axiosError.response.data?.title;
+            if (title === 'IdentityUser.EmailNotConfirmed') {
+                throw new BusinessError('Debes confirmar tu email antes de iniciar sesión. Revisa tu bandeja de entrada');
+            }
+            throw new BusinessError('Usuario o contraseña incorrectos');
+        }
+
         if (axiosError.response?.status === 404) throw new NotFoundError('Usuario o contraseña incorrectos');
         if (!axiosError.response) throw new ConnectionError('El servidor no responde');
         throw error;

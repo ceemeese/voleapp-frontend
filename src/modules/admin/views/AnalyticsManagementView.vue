@@ -214,44 +214,44 @@ watch([selectedYear, selectedMonth], async () => {
 
         <section v-if="analyticsData" class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5">
             
-            <BaseCard padding="p-6" class="border-l-4 border-l-emerald-500 shadow-sm">
+            <BaseCard padding="p-6">
                 <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Ganancias Periodo</p>
                 <p class="text-xl sm:text-3xl font-extrabold text-emerald-600 mt-2 truncate">
                     {{ analyticsData.totalRevenuePeriod.toLocaleString('es-ES') }}€
                 </p>
-                <p class="text-xs text-slate-400 mt-2">Facturación total de clubs acumulada</p>
+                <p class="text-xs text-slate-400 mt-2 xl:md-auto">Facturación total de clubs acumulada</p>
             </BaseCard>
 
-            <BaseCard padding="p-6" class="border-l-4 border-l-slate-800 shadow-sm">
+            <BaseCard padding="p-6">
                 <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Reservas Periodo</p>
                 <p class="text-xl sm:text-3xl font-extrabold text-slate-900 mt-2 truncate">
                     {{ analyticsData.totalReservationsPeriod.toLocaleString('es-ES') }}
                 </p>
-                <p class="text-xs text-slate-400 mt-2">Partidos reservados en el sistema</p>
+                <p class="text-xs text-slate-400 mt-2 xl:md-auto">Partidos reservados en el sistema</p>
             </BaseCard>
 
-            <BaseCard padding="p-6" class="border-l-4 border-l-blue-500 shadow-sm">
+            <BaseCard padding="p-6">
                 <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Media Reservas / Club</p>
                 <p class="text-xl sm:text-3xl font-extrabold text-blue-600 mt-2 truncate">
                     {{ analyticsData.averageReservationsPerClub }}
                 </p>
-                <p class="text-xs text-slate-400 mt-2">Ratio de uso por centro deportivo</p>
+                <p class="text-xs text-slate-400 mt-2 xl:md-auto">Ratio de uso por centro deportivo</p>
             </BaseCard>
 
-            <BaseCard padding="p-6" class="border-l-4 border-l-amber-500 shadow-sm xl:col-span-1">
+            <BaseCard padding="p-6">
                 <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Nuevos Clubes Afiliados</p>
                 <p class="text-xl sm:text-3xl font-extrabold text-amber-600 mt-2 truncate">
                     +{{ analyticsData.totalClubsPeriod }}
                 </p>
-                <p class="text-xs text-slate-400 mt-2">Centros dados de alta en este periodo</p>
+                <p class="text-xs text-slate-400 mt-2 xl:md-auto">Centros dados de alta en este periodo</p>
             </BaseCard>
 
-            <BaseCard padding="p-6" class="border-l-4 border-l-purple-500 shadow-sm xl:col-span-1">
+            <BaseCard padding="p-6">
                 <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Nuevos Usuarios Registrados</p>
                 <p class="text-xl sm:text-3xl font-extrabold text-purple-600 mt-2 truncate">
                     +{{ analyticsData.totalNewPlayersCount.toLocaleString('es-ES') }}
                 </p>
-                <p class="text-xs text-slate-400 mt-2">Nuevas cuentas de jugadores creadas</p>
+                <p class="text-xs text-slate-400 mt-2 xl:md-auto">Nuevas cuentas de jugadores creadas</p>
             </BaseCard>
 
         </section>

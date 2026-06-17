@@ -43,5 +43,15 @@ export const authRoutes: RouteRecordRaw = {
                 email: route.query.email
             })
         },
+        {
+            path: 'confirm-email',
+            name: RouteNames.CONFIRM_EMAIL,
+            component: () => import('@/modules/auth/views/ConfirmEmailView.vue'),
+            meta: { authImage: '/src/assets/authimage2.jpg' },
+            props: route => ({
+                token: route.query.token,
+                email: route.query.email
+            })
+        },
     ]
 }

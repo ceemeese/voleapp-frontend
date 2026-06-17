@@ -1,6 +1,6 @@
-import { changePasswordAction, forgotPasswordAction, loginAction, registerAction, resetPasswordAction } from "@/modules/auth/actions"; 
+import { changePasswordAction, confirmEmailAction, forgotPasswordAction, loginAction, registerAction, resetPasswordAction, resendConfirmationAction } from "@/modules/auth/actions";
 import { useAuthStore } from "@/stores/authStore"
-import type { LoginResponse, Login, Register, ChangePassword, ResetPassword, ForgotPassword } from "@/modules/auth/interfaces";
+import type { LoginResponse, Login, Register, ChangePassword, ResetPassword, ForgotPassword, ConfirmEmail } from "@/modules/auth/interfaces";
 import type { User } from "@/modules/user/interfaces";
 
 export const  useAuth = () => {
@@ -34,6 +34,13 @@ export const  useAuth = () => {
         return resetPasswordAction(resetData);
     };
 
+    const confirmEmail = (confirmData : ConfirmEmail): Promise<void> => {
+        return confirmEmailAction(confirmData);
+    };
+
+    const resendConfirmation = (email: string): Promise<void> => {
+        return resendConfirmationAction(email);
+    };
 
     return {
         login,
@@ -41,6 +48,8 @@ export const  useAuth = () => {
         changePassword,
         forgotPassword,
         resetPassword,
+        confirmEmail,
+        resendConfirmation
     };
 
 };

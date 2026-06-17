@@ -21,7 +21,7 @@ const router = createRouter({
         },
         ...adminRoutes,
         authRoutes,      
-        {
+{
             path: '/:pathMatch(.*)*',
             name: RouteNames.NOT_FOUND,
             component: () => import('@/views/NotFoundView.vue'),

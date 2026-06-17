@@ -46,22 +46,22 @@ onMounted(async () => {
             />
         </div>
 
-        <div v-if="dashboardData" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5">
+        <div v-if="dashboardData" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
         
-            <BaseCard padding="p-5">
-                <p class="text-xs font-sbold text-slate-400 uppercase tracking-wider">Ocupación Global Hoy</p>
+            <BaseCard padding="p-6">
+                <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Ocupación Global Hoy</p>
                 <p class="text-xl sm:text-3xl font-extrabold text-blue-600 mt-2">
                     {{ dashboardData.todayGlobalOccupancyRate }}%
                 </p>
-                <p class="text-xs text-slate-400 mt-3">Media de horas reservadas en sistema</p>
+                <p class="text-xs text-slate-400 mt-2 xl:md-auto">Media de horas reservadas en sistema</p>
             </BaseCard>
 
-            <BaseCard padding="p-5">
+            <BaseCard padding="p-6">
                 <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Clubs Activos Hoy</p>
                 <p class="text-xl sm:text-3xl font-extrabold text-emerald-600 mt-2">
                     {{ dashboardData.totalActiveClubsToday }}
                 </p>
-                <p class="text-xs text-slate-400 mt-3">Centros con al menos 1 reserva hoy</p>
+                <p class="text-xs text-slate-400 mt-2 md:mt-auto">Centros con al menos 1 reserva hoy</p>
             </BaseCard>
 
             <BaseCard padding="p-5">
@@ -71,7 +71,7 @@ onMounted(async () => {
                     {{ dashboardData.topClubToday || 'Sin actividad' }}
                 </p>
 
-                <p class="text-xs text-slate-400 mt-3">El centro con más reservas</p>
+                <p class="text-xs text-slate-400 mt-2 md:mt-auto">El centro con más reservas</p>
 
             </BaseCard>
 
@@ -79,7 +79,7 @@ onMounted(async () => {
                 <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Total Clubes Afiliados</p>
                 <p class="text-xl sm:text-3xl font-extrabold text-slate-900 mt-2">
                     {{ dashboardData.totalClubsInPlatform }} </p>
-                <p class="text-xs text-slate-400 mt-3">Centros registrados en la plataforma</p>
+                <p class="text-xs text-slate-400 mt-2 md:mt-auto">Centros registrados en la plataforma</p>
             </BaseCard>
 
             <BaseCard padding="p-5">
@@ -87,7 +87,7 @@ onMounted(async () => {
                 <p class="text-xl sm:text-3xl font-extrabold text-purple-600 mt-2">
                     {{ dashboardData.totalPlayersInPlatform || 0 }}
                 </p>
-                <p class="text-xs text-slate-400 mt-3">Usuarios totales con cuenta activa</p>
+                <p class="text-xs text-slate-400 mt-2 md:mt-auto">Usuarios totales con cuenta activa</p>
             </BaseCard>
 
         </div>
