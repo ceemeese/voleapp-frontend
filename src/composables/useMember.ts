@@ -1,5 +1,5 @@
-import type { AddMember, MemberComplete, PutMember } from "@/modules/club/interfaces";
-import { getMemberByIdAction, getMembersAction, registerMemberAction, updateMemberAction, deactivateMemberAction, activateMemberAction, toggleFavouriteAction } from "@/modules/club/actions/"
+import type { AddMember, MemberComplete, PutMember, UserClub } from "@/modules/club/interfaces";
+import { getMemberByIdAction, getMembersAction, registerMemberAction, updateMemberAction, deactivateMemberAction, activateMemberAction, toggleFavouriteAction, getClubsByMemberIdAction } from "@/modules/club/actions/"
 
 export const useMember = () => {
 
@@ -10,6 +10,10 @@ export const useMember = () => {
 
     const getMember = (clubId : string, memberId: string): Promise<MemberComplete> => {
         return getMemberByIdAction(clubId, memberId);
+    }
+
+    const getClubsByMemberId = (userId: string): Promise<UserClub[]> => {
+        return getClubsByMemberIdAction(userId);
     }
 
     const addMember = (clubId : string, dataForm: AddMember) : Promise<MemberComplete> => {
@@ -29,13 +33,14 @@ export const useMember = () => {
     }
 
     const toggleFavourite = async (clubId : string, memberId: string) : Promise<void> => {
-        toggleFavouriteAction(clubId, memberId)
+        toggleFavouriteAction(clubId, memberId);
     }
 
 
     return {
         getMembers,
         getMember,
+        getClubsByMemberId,
         addMember,
         putMember,
         deactivateMember,

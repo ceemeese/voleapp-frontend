@@ -17,6 +17,13 @@ function getMemberDetail(clubId: string, memberId: string) : AxiosRequestConfig 
     }
 }
 
+function getClubsByMemberId(userId: string) : AxiosRequestConfig {
+    return {
+        method: 'GET',
+        url: `api/users/${userId}/clubs`,
+    }
+}
+
 function registerMember(clubId: string, data: AddMember) : AxiosRequestConfig<AddMember> {
     return {
         method: 'POST',
@@ -57,9 +64,11 @@ function toggleFavouriteClub(clubId: string, memberId: string) : AxiosRequestCon
 export default {
     getMembersByClub,
     getMemberDetail,
+    getClubsByMemberId,
     registerMember,
     putMember,
     deactivateMember,
     activateMember,
     toggleFavouriteClub,
+    
 }
