@@ -4,6 +4,7 @@ export const RouteNames = {
     REGISTER: 'register',
     FORGOT: 'forgot-password',
     RESET: 'reset-password',
+    CONFIRM_EMAIL: 'confirm-email',
 
     ADMIN_ROOT: 'admin-root',
     ADMIN_PROFILE: 'admin-profile',

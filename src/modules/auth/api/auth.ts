@@ -1,5 +1,5 @@
 import type { AxiosRequestConfig } from "axios";
-import type { Login, Register, ChangePassword, ResetPassword, ForgotPassword } from "../interfaces";
+import type { Login, Register, ChangePassword, ResetPassword, ForgotPassword, ConfirmEmail } from "../interfaces";
 
 const baseURL = "api/Auths";
 
@@ -44,6 +44,22 @@ function resetPasswordConfig(data: ResetPassword) : AxiosRequestConfig<ResetPass
     };
 }
 
+function confirmEmailConfig(data: ConfirmEmail) : AxiosRequestConfig<ConfirmEmail> {
+    return {
+        method: 'GET',
+        url: `${baseURL}/confirm-email`,
+        params: { token: data.token, email: data.email }
+    };
+}
+
+function resendConfirmationConfig(email: string) : AxiosRequestConfig {
+    return {
+        method: 'POST',
+        url: `${baseURL}/resend-confirmation`,
+        data: { email },
+    };
+}
+
 
 
 export default{
@@ -52,4 +68,6 @@ export default{
     putPasswordConfig,
     forgotPasswordConfig,
     resetPasswordConfig,
+    confirmEmailConfig,
+    resendConfirmationConfig
 }

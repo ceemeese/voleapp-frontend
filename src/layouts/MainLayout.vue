@@ -1,11 +1,7 @@
 <script setup lang="ts">
-import { useAuthStore } from '@/stores/authStore';
-import { useUserStore } from '@/stores/userStore';
-import { computed, onMounted, ref } from 'vue';
-import { Footer, HeaderM, type NavItem } from 'ui';
+import { type NavItem } from 'ui';
 import { useToast } from 'primevue/usetoast';
 import { isHandledError, getErrorMessage } from '@/api/errorsApi';
-import { useRouter } from 'vue-router';
 import { RouteNames } from '@/router/routeNames';
 
 const router = useRouter();
@@ -81,12 +77,12 @@ const handleLogout = async() => {
     
         await new Promise(resolve => setTimeout(resolve, 1000))
         isLoadingLayout.value = false;
+        
         authStore.logout();
         router.push( {name: RouteNames.HOME});
     } finally {
         isLoadingLayout.value = false;
-    }
-    
+    } 
 }
 
 const handleMobileMenuVisible = (() => {

@@ -12,9 +12,11 @@ const onRegisterSubmit = async (formData: RegisterValues) => {
     isLoadingLayout.value = true;
     try {
         await register(formData);
-        toast.add({ severity: 'success',summary: '¡Bienvenido!', detail: 'Registro realizado', life: 2000})
+        toast.add({ severity: 'success', summary: '¡Registro completado!', detail: 'Te hemos enviado un email de confirmación. Revisa tu bandeja de entrada', life: 2000 })
 
         await new Promise(resolve => setTimeout(resolve, 2000))
+        isLoadingLayout.value = false;
+        
         router.push({ name: RouteNames.LOGIN });
     } catch (error: unknown) {
         if (isHandledError(error)) return;
