@@ -35,7 +35,7 @@ const onLoginSubmit = async (formData: LoginValues) => {
         isLoadingLayout.value = false;
         if (isHandledError(error)) return;
         const message = getErrorMessage(error);
-        if (message.includes('confirmar tu email')) {
+        if (message.includes('confirmar tu email') && formData.username.includes('@')) {
             showResendButton.value = true;
             resendEmail.value = formData.username;
         }

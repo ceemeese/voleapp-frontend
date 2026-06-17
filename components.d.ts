@@ -25,6 +25,7 @@ declare module 'vue' {
     BlockUI: typeof import('primevue/blockui')['default']
     BookingCard: typeof import('./src/components/BookingCard.vue')['default']
     Chart: typeof import('primevue/chart')['default']
+    ClubMemberCard: typeof import('./src/components/ClubMemberCard.vue')['default']
     CourtAdminCard: typeof import('./src/components/CourtAdminCard.vue')['default']
     Drawer: typeof import('primevue/drawer')['default']
     FilterSelectorReservation: typeof import('./src/components/FilterSelectorReservation.vue')['default']
@@ -43,5 +44,6 @@ declare module 'vue' {
     ScheduleManager: typeof import('ui')['ScheduleManager']
     Timeline: typeof import('primevue/timeline')['default']
     UserCardProfile: typeof import('ui')['UserCardProfile']
+    UserClubList: typeof import('./src/components/UserClubList.vue')['default']
   }
 }
