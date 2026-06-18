@@ -26,7 +26,7 @@ export const updateMemberAction = async (clubId: string, memberId: string, dataF
 
         if (status == 400) {
             
-            const isValidationError = data.title.includes('ClubMember.NotEmptymembershipNumbe');
+            const isValidationError = data.title.includes('ClubMember.NotEmptymembershipNumber');
            
             if (isValidationError) {
                 throw new ValidationError('Los datos introducidos no son válidos. Por favor, revísalos');
