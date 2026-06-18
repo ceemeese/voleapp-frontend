@@ -96,17 +96,16 @@ const handleConfirmReservation = async () => {
             endTime: reservationData.value.endTime,
         }
         const reservation = await registerReservation(formData);
+        await refreshCurrentUserReservations();
 
         if (reservation.checkoutUrl) {
             window.location.href = reservation.checkoutUrl;
             return;
         }
 
-        await refreshCurrentUserReservations();
         toast.add({ severity: 'success', summary: 'Confirmado', detail: 'Reserva registrada', life: 2000 });
         await new Promise(resolve => setTimeout(resolve, 2000));
         router.push({ name: RouteNames.USER_HOME });
-        
     } catch (error: unknown) {
         if (isHandledError(error)) return;
         const message = getErrorMessage(error);

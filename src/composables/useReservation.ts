@@ -51,8 +51,13 @@ export const useReservation = () => {
         }
     }
 
-    const confirmPayment = (reservationId: number, sessionId: string): Promise<void> => {
-        return confirmPaymentAction(reservationId, sessionId);
+    const confirmPayment = async (reservationId: number, sessionId: string): Promise<void> => {
+        await confirmPaymentAction(reservationId, sessionId);
+        const reservation = userStore.reservations.find(res => res.id === reservationId);
+        if (reservation) {
+            reservation.status.id = ReservationStatus.Confirmed;
+            reservation.status.status = STATUS_EN[ReservationStatus.Confirmed] ?? 'Confirmed';
+        }
     }
 
     const refreshCurrentUserReservations = async (): Promise<void> => {
