@@ -192,7 +192,7 @@ onMounted(async() => {
                 <div v-if="userMemberClubs.length === 0"
                         class="flex flex-col items-center justify-center p-12 bg-slate-50 rounded-2xl border border-dashed mt-3">
                         <i class="pi pi-calendar-times text-4xl text-gray-300 mb-3"></i>
-                        <p class="text-gray-500">No tienes reservas activas para esta semana</p>
+                        <p class="text-gray-500">Todavía no has jugado en ningún club</p>
                     </div>
                 
                 <div v-if="userMemberClubs.length > 0" class="mt-3 flex flex-col gap-3 max-h-90 overflow-y-auto pr-1">

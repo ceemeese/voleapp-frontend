@@ -12,4 +12,9 @@ export const reservationRoutes: RouteRecordRaw[] = [
         name: RouteNames.USER_RESERVATIONS,
         component: () => import('@/modules/reservation/views/MyReservationView.vue'),
     },
+    {
+        path: 'payment-success',
+        name: RouteNames.PAYMENT_SUCCESS,
+        component: () => import('@/modules/reservation/views/PaymentSuccessView.vue'),
+    },
 ]

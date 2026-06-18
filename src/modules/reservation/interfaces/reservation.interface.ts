@@ -10,7 +10,8 @@ export interface Reservation {
     price: PriceBreakdown;
     notes?: string;
     createdAt: Date;
-    updatedAt: Date; 
+    updatedAt: Date;
+    checkoutUrl?: string;
 }
 
 export interface Status {

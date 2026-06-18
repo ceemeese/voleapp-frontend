@@ -1,4 +1,4 @@
-import { getClubReservationsAction, getReservationByIdAction, getReservationsAction, getUserReservationsAction, registerReservationAction, updateStatusReservationAction, cancelReservationAction } from "@/modules/reservation/actions";
+import { getClubReservationsAction, getReservationByIdAction, getReservationsAction, getUserReservationsAction, registerReservationAction, updateStatusReservationAction, cancelReservationAction, confirmPaymentAction } from "@/modules/reservation/actions";
 import { ReservationStatus, type AddReservation, type Reservation, type ReservationComplete, type ReservationFilters } from "@/modules/reservation/interfaces"
 import { STATUS_EN } from "@/utils/status-utils";
 
@@ -51,6 +51,10 @@ export const useReservation = () => {
         }
     }
 
+    const confirmPayment = (reservationId: number, sessionId: string): Promise<void> => {
+        return confirmPaymentAction(reservationId, sessionId);
+    }
+
     const refreshCurrentUserReservations = async (): Promise<void> => {
         const userId = userStore.profile?.id;
         if (!userId) return;
@@ -71,6 +75,7 @@ export const useReservation = () => {
         registerReservation,
         updateStatusReservation,
         cancelReservation,
+        confirmPayment,
         userReservations,
         refreshCurrentUserReservations
     }

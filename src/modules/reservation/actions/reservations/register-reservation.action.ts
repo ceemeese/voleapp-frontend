@@ -16,6 +16,7 @@ export const registerReservationAction = async (dataForm: AddReservation) : Prom
             endTime: data.endTime.slice(0,5),
             createdAt: new Date(data.createdAt),
             updatedAt: new Date(data.updatedAt),
+            checkoutUrl: data.checkoutUrl,
         }
     } catch (error : unknown) {
         const axiosError = error as AxiosError<ProblemDetails>;
