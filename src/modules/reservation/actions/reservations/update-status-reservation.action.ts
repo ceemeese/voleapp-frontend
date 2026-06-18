@@ -22,10 +22,10 @@ export const updateStatusReservationAction = async (reservationId: number, newSt
         if (status === 404) throw new NotFoundError('La reserva solicitada no existe o no está disponible')
 
         if (status === 409) {
-            if (errorCode === 'AlreadyFinalized') {
+            if (errorCode === 'Reservation.AlreadyFinalized') {
                 throw new BusinessError('No se puede modificar una reserva que ya ha sido finalizada');
             }
-            if (errorCode === 'CannotMoveBackToPending') {
+            if (errorCode === 'Reservation.CannotMoveBackToPending') {
                 throw new BusinessError('Una reserva confirmada no puede volver al estado pendiente');
             }
         }
