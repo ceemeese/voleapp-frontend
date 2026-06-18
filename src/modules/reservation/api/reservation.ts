@@ -69,6 +69,13 @@ function cancelReservation(reservationId: number) : AxiosRequestConfig {
     }
 }
 
+function confirmPayment(reservationId: number, sessionId: string) : AxiosRequestConfig {
+    return {
+        method: 'POST',
+        url: `${baseURL}/${reservationId}/confirm-payment`,
+        data: { sessionId },
+    }
+}
 
 export default {
     getReservations,
@@ -78,4 +85,5 @@ export default {
     createReservation,
     updateStatusReservation,
     cancelReservation,
+    confirmPayment,
 }

@@ -37,6 +37,7 @@ export const RouteNames = {
     USER_PROFILE: 'user-profile',
     BOOKING: 'booking',
     USER_RESERVATIONS: 'my-reservations',
+    PAYMENT_SUCCESS: 'payment-success',
 
     NOT_FOUND: 'not-found'
 }

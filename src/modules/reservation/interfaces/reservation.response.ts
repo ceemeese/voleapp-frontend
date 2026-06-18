@@ -12,7 +12,8 @@ export interface ReservationResponse {
     price: PriceResponse;
     notes?: string;
     createdAt: string;
-    updatedAt: string; 
+    updatedAt: string;
+    checkoutUrl?: string;
 }
 
 export interface StatusResponse {
