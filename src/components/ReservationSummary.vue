@@ -51,7 +51,7 @@ const props = defineProps<{
                     <span class="text-slate-500 line-through">{{ props.reservation.price.basePrice.toFixed(2) }}€</span>
                 </div>
                 <div class="flex justify-between items-center text-xs text-red-500 font-bold">
-                    <span>Descuento ({{ props.reservation.price.appliedDiscountPercent }}%)</span>
+                    <span>Descuento ({{ Math.round(props.reservation.price.appliedDiscountPercent) }}%)</span>
                     <span>-{{ props.reservation.price.discountAmount.toFixed(2) }}€</span>
                 </div>
             </template>
