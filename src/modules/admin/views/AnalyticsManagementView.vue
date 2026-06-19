@@ -234,7 +234,7 @@ watch([selectedYear, selectedMonth], async () => {
                 <BaseCard padding="p-6" class="!shadow-md">
                     <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Media Reservas / Club</p>
                     <p class="text-xl sm:text-3xl font-extrabold text-blue-600 mt-2 truncate">
-                        {{ analyticsData.averageReservationsPerClub }}
+                        {{ analyticsData.averageReservationsPerClub.toFixed(2) }}
                     </p>
                     <p class="text-xs text-slate-400 mt-2 xl:md-auto">Ratio de uso por centro deportivo</p>
                 </BaseCard>

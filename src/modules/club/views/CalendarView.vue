@@ -15,7 +15,7 @@ const confirmMode = ref<ReservationStatus.Cancelled | ReservationStatus.Refunded
 const FINALIZED_STATUS = [ReservationStatus.Completed, ReservationStatus.Failed, ReservationStatus.Refunded, ReservationStatus.Cancelled];
 
 const toast = useToast();
-const { getEventsRangeByClub, updateEvent, createEvent } = useEvent();
+const { getEventsRangeByClub, updateEvent, createEvent, deleteEvent } = useEvent();
 const { activeClubId } = useClub();
 const { getClubReservations, updateStatusReservation } = useReservation();
 const { getCourtsByClubId } = useCourt();
@@ -343,6 +343,20 @@ const onSaveModifiedEvent = async (updatedData: EventForm) => {
 }
 
 
+const onDeleteEvent = async () => {
+    if (!selectedEvent.value?.id) return;
+    try {
+        await deleteEvent(selectedEvent.value.courtId, selectedEvent.value.id);
+        events.value = events.value.filter(e => e.id !== selectedEvent.value!.id);
+        eventDialogRef.value?.close();
+        toast.add({ severity: 'success', summary: 'Eliminado', detail: 'Evento eliminado correctamente', life: 2000 });
+    } catch (error: unknown) {
+        if (isHandledError(error)) return;
+        const message = getErrorMessage(error);
+        toast.add({ severity: 'error', summary: 'Error', detail: message, life: 2000 });
+    }
+}
+
 const onUpdateStatus = async (newStatus: number) => {
     if (!selectedReservation.value) return;
     
@@ -463,7 +477,24 @@ const canAdminChangeStatus = (currentId: ReservationStatus | undefined): boolean
             :resolver="resolver"
             @save="onSaveModifiedEvent"
             :loading="isLoading"
-        />
+        >
+            <template v-if="selectedEvent?.id" #footer>
+                <div class="flex justify-between w-full">
+                    <BaseButton
+                        label="Eliminar"
+                        icon="pi pi-trash"
+                        severity="danger"
+                        outlined
+                        :loading="isLoading"
+                        @click="onDeleteEvent"
+                    />
+                    <div class="flex gap-2">
+                        <BaseButton label="Cancelar" severity="secondary" @click="eventDialogRef?.close()" :loading="isLoading" />
+                        <BaseButton label="Guardar" type="submit" form="base-dialog-form" :loading="isLoading" />
+                    </div>
+                </div>
+            </template>
+        </BaseDialog>
 
         <BaseDialog
         ref="reservationDialogRef"

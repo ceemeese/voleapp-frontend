@@ -65,7 +65,7 @@ onMounted(async () => {
             <BaseCard padding="p-5">
                 <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Ticket Medio Hoy</p>
                 <p class="text-xl sm:text-3xl font-extrabold text-slate-900 mt-2">
-                {{ metrics.averageTicketToday }}€
+                {{ metrics.averageTicketToday.toFixed(2) }}€
                 </p>
             </BaseCard>
 
