@@ -18,6 +18,9 @@ export const loginAction = async (credentials: Login) : Promise<LoginResponse> =
             if (title === 'IdentityUser.EmailNotConfirmed') {
                 throw new BusinessError('Debes confirmar tu email antes de iniciar sesión. Revisa tu bandeja de entrada');
             }
+            if (title === 'IdentityUser.AccountDeactivated') {
+                throw new BusinessError('Tu cuenta está desactivada. Contacta con el administrador');
+            }
             throw new BusinessError('Usuario o contraseña incorrectos');
         }
 
