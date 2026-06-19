@@ -165,7 +165,7 @@ watch([selectedYear, selectedMonth], async () => {
                 <BaseCard padding="p-5" class="!shadow-md">
                     <p class="text-xs font-bold text-slate-500 uppercase tracking-wider">Ticket promedio</p>
                     <p class="text-xl sm:text-3xl font-extrabold text-blue-600 mt-2">
-                    {{ analyticsData.averageRevenuePeriod }}€
+                    {{ analyticsData.averageRevenuePeriod.toFixed(2) }}€
                     </p>
                 </BaseCard>
 

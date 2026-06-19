@@ -260,10 +260,10 @@ onUnmounted(() => {
                 <template #discount="{ data }">
                     <div v-if="data.price && data.price.appliedDiscountPercent > 0" class="flex gap-1">
                         <span class="text-xs font-bold text-indigo-600">
-                            -{{ data.price.discountAmount }}€
+                            -{{ data.price.discountAmount.toFixed(2) }}€
                         </span>
                         <span class="text-[10px] text-slate-400 font-medium">
-                            ({{ data.price.appliedDiscountPercent }}%)
+                            ({{ Math.round(data.price.appliedDiscountPercent) }}%)
                         </span>
                     </div>
                     <span v-else class="text-xs text-slate-400 italic">—</span>
