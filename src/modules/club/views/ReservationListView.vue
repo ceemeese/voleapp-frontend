@@ -196,15 +196,15 @@ onUnmounted(() => {
 </script>
 
 <template>
-    <div class="flex flex-col overflow-hidden h-full w-full p-6 space-y-6">
-        <div class="flex flex-col md:flex-row md:justify-between md:items-end gap-4 mb-6 border-b border-slate-200 pb-5">
+    <div class="flex flex-col pt-6 pr-6 pl-6 space-y-6 w-full h-full overflow-y-auto md:overflow-y-hidden">
+        <div class="mb-4 flex justify-between items-center">
             <div>
                 <h2 class="text-xl font-black text-slate-800 uppercase italic">Gestión de reservas</h2>
                 <p class="text-sm text-slate-500">Historial de reservas</p>
             </div>
         </div>
         
-        <BaseCard padding="p-4">
+        <BaseCard padding="p-4" class="flex-grow min-h-0 overflow-hidden mb-3 !shadow-sm">
             <BaseDataTable
                 :value="reservations"
                 :columns="headerColumns"
@@ -213,8 +213,9 @@ onUnmounted(() => {
                 :removable-sort="true"
                 :rows="rowsPerPage"
                 :paginator="true"
+                class="h-full"
+                scrollHeight="flex"
                 scrollable
-                scrollHeight="400px"
             >
                 <template #table-actions>
                     <div class="flex flex-wrap gap-2 w-full items-center justify-end">

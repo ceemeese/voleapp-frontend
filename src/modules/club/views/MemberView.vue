@@ -256,15 +256,15 @@ const animateTableRows = async () => {
 </script>
 
 <template>
-    <div class="flex flex-col overflow-hidden h-full w-full p-6 space-y-6 overflow-y-auto">
-        <div class="flex flex-col md:flex-row md:justify-between md:items-end gap-4 mb-6 border-b border-slate-200 pb-5">
+    <div class="flex flex-col pt-6 pr-6 pl-6 space-y-6 w-full h-full overflow-y-auto md:overflow-y-hidden">
+        <div class="mb-4 flex justify-between items-center">
             <div>
                 <h2 class="text-xl font-black text-slate-800 uppercase italic">Comunidad</h2>
                 <p class="text-sm text-slate-500">Administra perfiles, roles y permisos de los jugadores del club</p>
             </div>
         </div>
 
-        <BaseCard padding="p-4">
+        <BaseCard padding="p-4" class="flex-grow min-h-0 overflow-hidden mb-3 !shadow-sm">
             <BaseDataTable
             :value="members"
             :columns="headerColumns"
@@ -273,10 +273,13 @@ const animateTableRows = async () => {
             :removable-sort="true"
             :rows="7"
             :paginator="true"
+            class="h-full"
+            scrollHeight="flex"
+            scrollable
             >
 
                 <template #table-actions>
-                    <BaseButton icon="pi pi-plus" size="small" rounded label="Añadir miembro" outlined @click="onOpenSearchMember"/>
+                    <BaseButton icon="pi pi-plus" size="small" rounded label="Añadir miembro" class="!bg-black !border-none" @click="onOpenSearchMember"/>
                 </template>
 
                 <template #fullName="{ data }">

@@ -203,15 +203,15 @@ onMounted(async () => {
 </script>
 
 <template>
-    <div class="p-6 min-h-screen">
+    <div class="flex flex-col pt-6 pr-6 pl-6 space-y-6 w-full h-full overflow-y-auto md:overflow-y-hidden">
         <div class="mb-4 flex justify-between items-center">
             <div>
                 <h2 class="text-xl font-black text-slate-800 uppercase italic">Gestión de Clubes</h2>
-                <p class="text-xs text-slate-500">Administra los centros dados de alta en VoleApp</p>
+                <p class="text-sm text-slate-500">Administra los centros dados de alta en VoleApp</p>
             </div>
         </div>
 
-        <BaseCard padding="p-4">
+        <BaseCard padding="p-4" class="flex-grow min-h-0 overflow-hidden mb-3 !shadow-sm">
             <BaseDataTable
             :value="clubs"
             :columns="headerColumns"
@@ -221,6 +221,9 @@ onMounted(async () => {
             :removable-sort="true"
             :rows="7"
             :paginator="true"
+            class="h-full"
+            scrollHeight="flex"
+            scrollable
             >
                 <template #table-actions>
                     <BaseButton icon="pi pi-plus" size="small" rounded label="Nuevo Club" class="!bg-black !border-none" @click="onOpenCreateDialog"/>

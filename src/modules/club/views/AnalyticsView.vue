@@ -127,9 +127,9 @@ watch([selectedYear, selectedMonth], async () => {
 </script>
 
 <template>
-    <div class="flex flex-col p-6 space-y-6 w-full h-full overflow-y-auto">
+    <div class="flex flex-col p-6 space-y-6 w-full h-full overflow-y-auto md:overflow-y-hidden">
         
-        <div class="flex flex-col md:flex-row md:justify-between md:items-end gap-4 mb-6 border-b border-slate-200 pb-5">
+        <div class="flex flex-col md:flex-row md:justify-between md:items-center gap-4 mb-6 border-b border-slate-200 pb-5">
 
             <div>
                 <h2 class="text-xl font-black text-slate-800 uppercase italic">Analíticas</h2>
@@ -160,50 +160,52 @@ watch([selectedYear, selectedMonth], async () => {
 
         </div>
 
-        <section v-if="analyticsData" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5">
-            <BaseCard padding="p-5">
-                <p class="text-xs font-bold text-slate-500 uppercase tracking-wider">Ticket promedio</p>
-                <p class="text-xl sm:text-3xl font-extrabold text-blue-600 mt-2">
-                {{ analyticsData.averageRevenuePeriod }}€
-                </p>
-            </BaseCard>
+        <div class="flex flex-col gap-5 md:overflow-y-auto">
+            <section v-if="analyticsData" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5">
+                <BaseCard padding="p-5" class="!shadow-md">
+                    <p class="text-xs font-bold text-slate-500 uppercase tracking-wider">Ticket promedio</p>
+                    <p class="text-xl sm:text-3xl font-extrabold text-blue-600 mt-2">
+                    {{ analyticsData.averageRevenuePeriod }}€
+                    </p>
+                </BaseCard>
 
-            <BaseCard padding="p-4">
-                <p class="text-xs font-bold text-slate-500 uppercase tracking-wider">Nuevos usuarios Mensual</p>
-                <p class="text-xl sm:text-3xl font-extrabold text-purple-600 mt-2">
-                {{ analyticsData.totalNewUsersCount }}
-                </p>
-            </BaseCard>
+                <BaseCard padding="p-4" class="!shadow-md">
+                    <p class="text-xs font-bold text-slate-500 uppercase tracking-wider">Nuevos usuarios Mensual</p>
+                    <p class="text-xl sm:text-3xl font-extrabold text-purple-600 mt-2">
+                    {{ analyticsData.totalNewUsersCount }}
+                    </p>
+                </BaseCard>
 
-            <BaseCard padding="p-5">
-                <p class="text-xs font-bold text-slate-500 uppercase tracking-wider">Total reservas mensuales</p>
-                <p class="text-xl sm:text-3xl font-extrabold text-slate-900 mt-2">
-                {{ analyticsData.totalReservationsPeriod }}
-                </p>
-            </BaseCard>
+                <BaseCard padding="p-5" class="!shadow-md">
+                    <p class="text-xs font-bold text-slate-500 uppercase tracking-wider">Total reservas mensuales</p>
+                    <p class="text-xl sm:text-3xl font-extrabold text-slate-900 mt-2">
+                    {{ analyticsData.totalReservationsPeriod }}
+                    </p>
+                </BaseCard>
 
-            <BaseCard padding="p-5">
-                <p class="text-xs font-bold text-slate-500 uppercase tracking-wider">Ganancias mensuales</p>
-                <p class="text-xl sm:text-3xl font-extrabold text-emerald-600 mt-2">
-                {{ analyticsData.totalRevenuePeriod }}€
-                </p>
-            </BaseCard>
-        </section>
+                <BaseCard padding="p-5" class="!shadow-md">
+                    <p class="text-xs font-bold text-slate-500 uppercase tracking-wider">Ganancias mensuales</p>
+                    <p class="text-xl sm:text-3xl font-extrabold text-emerald-600 mt-2">
+                    {{ analyticsData.totalRevenuePeriod }}€
+                    </p>
+                </BaseCard>
+            </section>
 
-        <section v-if="analyticsData">
-            <BaseCard padding="p-5">
-                <div class="flex flex-col justify-between h-[380px]">
-                    <h3 class="font-semibold mb-4 flex items-center gap-2">
-                        <i class="pi pi-chart-line"></i>
-                        Actividad Anual
-                    </h3>
-                    
-                    <div class="h-80 w-full">
-                        <Chart type="bar" :data="chartData" :options="chartOptions" class="h-full w-full" />
+            <section v-if="analyticsData">
+                <BaseCard padding="p-5" class="!shadow-md mb-2">
+                    <div class="flex flex-col justify-between h-[380px]">
+                        <h3 class="font-semibold mb-4 flex items-center gap-2">
+                            <i class="pi pi-chart-line"></i>
+                            Actividad Anual
+                        </h3>
+                        
+                        <div class="h-80 w-full">
+                            <Chart type="bar" :data="chartData" :options="chartOptions" class="h-full w-full" />
+                        </div>
                     </div>
-                </div>
-            </BaseCard>
-        </section>
+                </BaseCard>
+            </section>
+        </div>
 
     </div>
 </template>

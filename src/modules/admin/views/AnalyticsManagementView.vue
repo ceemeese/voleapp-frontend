@@ -181,7 +181,7 @@ watch([selectedYear, selectedMonth], async () => {
 </script>
 
 <template>
-    <div class="flex flex-col p-6 space-y-6 w-full h-full overflow-y-auto">
+    <div class="flex flex-col pt-6 pr-6 pl-6 space-y-6 w-full h-full overflow-y-auto md:overflow-y-hidden">
         
         <div class="flex flex-col md:flex-row md:justify-between md:items-center gap-4 border-b border-slate-200 pb-5">
             <div>
@@ -212,78 +212,80 @@ watch([selectedYear, selectedMonth], async () => {
             </div>
         </div>
 
-        <section v-if="analyticsData" class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5">
-            
-            <BaseCard padding="p-6">
-                <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Ganancias Periodo</p>
-                <p class="text-xl sm:text-3xl font-extrabold text-emerald-600 mt-2 truncate">
-                    {{ analyticsData.totalRevenuePeriod.toLocaleString('es-ES') }}€
-                </p>
-                <p class="text-xs text-slate-400 mt-2 xl:md-auto">Facturación total de clubs acumulada</p>
-            </BaseCard>
+        <div class="flex flex-col gap-5 md:overflow-y-auto">
+            <section v-if="analyticsData" class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5">
+                
+                <BaseCard padding="p-6" class="!shadow-md">
+                    <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Ganancias Periodo</p>
+                    <p class="text-xl sm:text-3xl font-extrabold text-emerald-600 mt-2 truncate">
+                        {{ analyticsData.totalRevenuePeriod.toLocaleString('es-ES') }}€
+                    </p>
+                    <p class="text-xs text-slate-400 mt-2 xl:md-auto">Facturación total de clubs acumulada</p>
+                </BaseCard>
 
-            <BaseCard padding="p-6">
-                <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Reservas Periodo</p>
-                <p class="text-xl sm:text-3xl font-extrabold text-slate-900 mt-2 truncate">
-                    {{ analyticsData.totalReservationsPeriod.toLocaleString('es-ES') }}
-                </p>
-                <p class="text-xs text-slate-400 mt-2 xl:md-auto">Partidos reservados en el sistema</p>
-            </BaseCard>
+                <BaseCard padding="p-6" class="!shadow-md">
+                    <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Reservas Periodo</p>
+                    <p class="text-xl sm:text-3xl font-extrabold text-slate-900 mt-2 truncate">
+                        {{ analyticsData.totalReservationsPeriod.toLocaleString('es-ES') }}
+                    </p>
+                    <p class="text-xs text-slate-400 mt-2 xl:md-auto">Partidos reservados en el sistema</p>
+                </BaseCard>
 
-            <BaseCard padding="p-6">
-                <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Media Reservas / Club</p>
-                <p class="text-xl sm:text-3xl font-extrabold text-blue-600 mt-2 truncate">
-                    {{ analyticsData.averageReservationsPerClub }}
-                </p>
-                <p class="text-xs text-slate-400 mt-2 xl:md-auto">Ratio de uso por centro deportivo</p>
-            </BaseCard>
+                <BaseCard padding="p-6" class="!shadow-md">
+                    <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Media Reservas / Club</p>
+                    <p class="text-xl sm:text-3xl font-extrabold text-blue-600 mt-2 truncate">
+                        {{ analyticsData.averageReservationsPerClub }}
+                    </p>
+                    <p class="text-xs text-slate-400 mt-2 xl:md-auto">Ratio de uso por centro deportivo</p>
+                </BaseCard>
 
-            <BaseCard padding="p-6">
-                <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Nuevos Clubes Afiliados</p>
-                <p class="text-xl sm:text-3xl font-extrabold text-amber-600 mt-2 truncate">
-                    +{{ analyticsData.totalClubsPeriod }}
-                </p>
-                <p class="text-xs text-slate-400 mt-2 xl:md-auto">Centros dados de alta en este periodo</p>
-            </BaseCard>
+                <BaseCard padding="p-6" class="!shadow-md">
+                    <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Nuevos Clubes Afiliados</p>
+                    <p class="text-xl sm:text-3xl font-extrabold text-amber-600 mt-2 truncate">
+                        +{{ analyticsData.totalClubsPeriod }}
+                    </p>
+                    <p class="text-xs text-slate-400 mt-2 xl:md-auto">Centros dados de alta en este periodo</p>
+                </BaseCard>
 
-            <BaseCard padding="p-6">
-                <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Nuevos Usuarios Registrados</p>
-                <p class="text-xl sm:text-3xl font-extrabold text-purple-600 mt-2 truncate">
-                    +{{ analyticsData.totalNewPlayersCount.toLocaleString('es-ES') }}
-                </p>
-                <p class="text-xs text-slate-400 mt-2 xl:md-auto">Nuevas cuentas de jugadores creadas</p>
-            </BaseCard>
+                <BaseCard padding="p-6" class="!shadow-md">
+                    <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Nuevos Usuarios Registrados</p>
+                    <p class="text-xl sm:text-3xl font-extrabold text-purple-600 mt-2 truncate">
+                        +{{ analyticsData.totalNewPlayersCount.toLocaleString('es-ES') }}
+                    </p>
+                    <p class="text-xs text-slate-400 mt-2 xl:md-auto">Nuevas cuentas de jugadores creadas</p>
+                </BaseCard>
 
-        </section>
+            </section>
 
-        <section v-if="analyticsData" class="grid grid-cols-1 xl:grid-cols-2 gap-6">
-            
-            <BaseCard padding="p-5">
-                <div class="flex flex-col justify-between h-[380px]">
-                    <h3 class="font-bold text-slate-800 flex items-center gap-2 text-base">
-                        <i class="pi pi-chart-line"></i>
-                        Rendimiento Financiero y Reservas
-                    </h3>
-                    
-                    <div class="h-80 w-full">
-                        <Chart type="bar" :data="financialChartData" :options="financialChartOptions" class="h-full w-full" />
+            <section v-if="analyticsData" class="grid grid-cols-1 xl:grid-cols-2 gap-6 mb-2">
+                
+                <BaseCard padding="p-5" class="!shadow-md">
+                    <div class="flex flex-col justify-between h-[380px]">
+                        <h3 class="font-bold text-slate-800 flex items-center gap-2 text-base">
+                            <i class="pi pi-chart-line"></i>
+                            Rendimiento Financiero y Reservas
+                        </h3>
+                        
+                        <div class="h-80 w-full">
+                            <Chart type="bar" :data="financialChartData" :options="financialChartOptions" class="h-full w-full" />
+                        </div>
                     </div>
-                </div>
-            </BaseCard>
+                </BaseCard>
 
-            <BaseCard padding="p-5">
-                <div class="flex flex-col justify-between h-[380px]">
-                    <h3 class="font-bold text-slate-800 flex items-center gap-2 text-base">
-                        <i class="pi pi-user-plus"></i>
-                        Evolución de Altas
-                    </h3>
-    
-                    <div class="h-80 w-full">
-                        <Chart type="bar" :data="growthChartData" :options="growthChartOptions" class="h-full w-full" />
+                <BaseCard padding="p-5" class="!shadow-md">
+                    <div class="flex flex-col justify-between h-[380px]">
+                        <h3 class="font-bold text-slate-800 flex items-center gap-2 text-base">
+                            <i class="pi pi-user-plus"></i>
+                            Evolución de Altas
+                        </h3>
+        
+                        <div class="h-80 w-full">
+                            <Chart type="bar" :data="growthChartData" :options="growthChartOptions" class="h-full w-full" />
+                        </div>
                     </div>
-                </div>
-            </BaseCard>
+                </BaseCard>
 
-        </section>
+            </section>
+        </div>
     </div>
 </template>

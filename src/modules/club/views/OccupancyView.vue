@@ -139,9 +139,9 @@ watch([selectedYear, selectedMonth], async () => {
 </script>
 
 <template>
-    <div class="flex flex-col p-6 space-y-6 w-full h-full overflow-y-auto">
+    <div class="flex flex-col p-6 space-y-6 w-full h-full overflow-y-auto md:overflow-y-hidden">
         
-        <div class="flex flex-col md:flex-row md:justify-between md:items-end gap-4 mb-6">
+        <div class="flex flex-col md:flex-row md:justify-between md:items-center gap-4 mb-6">
 
             <div>
                 <h2 class="text-xl font-black text-slate-800 uppercase italic">Ocupación</h2>
@@ -173,50 +173,52 @@ watch([selectedYear, selectedMonth], async () => {
         </div>
 
 
-        <section v-if="occupancyData" class="grid grid-cols-1 md:grid-cols-2 gap-5">
-            
-            <BaseCard padding="p-5">
-                <div class="mb-2">
-                    <h3 class="font-bold text-slate-800 text-base flex items-center gap-2">
-                        <i class="pi pi-chart-pie text-purple-500"></i>
-                        Uso por Pistas
-                    </h3>
-                    <p class="text-xs text-slate-400">Distribución de reservas e impacto de cada pista del club</p>
-                </div>
-                <div class="h-64 w-full mt-4 flex justify-center items-center">
-                    <Chart type="doughnut" :data="courtChartData" :options="donutOptions" class="h-full w-full" />
-                </div>
-            </BaseCard>
-
-
-            <BaseCard padding="p-5">
-                <div class="mb-2">
-                    <h3 class="font-bold text-slate-800 text-base flex items-center gap-2">
-                        <i class="pi pi-calendar text-blue-500"></i>
-                        Rendimiento Semanal
-                    </h3>
-                    <p class="text-xs text-slate-400">Días con mayor y menor afluencia de jugadores en el periodo</p>
-                </div>
-                <div class="h-64 w-full mt-4">
-                    <Chart type="bar" :data="dayChartData" :options="dayChartOptions" class="h-full w-full" />
-                </div>
-            </BaseCard>
-
-            <div class="md:col-span-2">
-                <BaseCard padding="p-5">
+        <div class="flex flex-col gap-5 md:overflow-y-auto">
+            <section v-if="occupancyData" class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                
+                <BaseCard padding="p-5" class="!shadow-md">
                     <div class="mb-2">
                         <h3 class="font-bold text-slate-800 text-base flex items-center gap-2">
-                            <i class="pi pi-chart-line text-emerald-500"></i>
-                            Tendencia de Ocupación Mensual
+                            <i class="pi pi-chart-pie text-purple-500"></i>
+                            Uso por Pistas
                         </h3>
-                        <p class="text-xs text-slate-400">Evolución porcentual del llenado de pistas a lo largo del año</p>
+                        <p class="text-xs text-slate-400">Distribución de reservas e impacto de cada pista del club</p>
                     </div>
-                    <div class="h-72 w-full mt-4">
-                        <Chart type="line" :data="evolutionChartData" :options="evolutionChartOptions" class="h-full w-full" />
+                    <div class="h-64 w-full mt-4 flex justify-center items-center">
+                        <Chart type="doughnut" :data="courtChartData" :options="donutOptions" class="h-full w-full" />
                     </div>
                 </BaseCard>
-            </div>
 
-        </section> 
+
+                <BaseCard padding="p-5" class="!shadow-md">
+                    <div class="mb-2">
+                        <h3 class="font-bold text-slate-800 text-base flex items-center gap-2">
+                            <i class="pi pi-calendar text-blue-500"></i>
+                            Rendimiento Semanal
+                        </h3>
+                        <p class="text-xs text-slate-400">Días con mayor y menor afluencia de jugadores en el periodo</p>
+                    </div>
+                    <div class="h-64 w-full mt-4">
+                        <Chart type="bar" :data="dayChartData" :options="dayChartOptions" class="h-full w-full" />
+                    </div>
+                </BaseCard>
+
+                <div class="md:col-span-2">
+                    <BaseCard padding="p-5" class="!shadow-md mb-2">
+                        <div class="mb-2">
+                            <h3 class="font-bold text-slate-800 text-base flex items-center gap-2">
+                                <i class="pi pi-chart-line text-emerald-500"></i>
+                                Tendencia de Ocupación Mensual
+                            </h3>
+                            <p class="text-xs text-slate-400">Evolución porcentual del llenado de pistas a lo largo del año</p>
+                        </div>
+                        <div class="h-72 w-full mt-4">
+                            <Chart type="line" :data="evolutionChartData" :options="evolutionChartOptions" class="h-full w-full" />
+                        </div>
+                    </BaseCard>
+                </div>
+
+            </section> 
+        </div>
     </div>
 </template>

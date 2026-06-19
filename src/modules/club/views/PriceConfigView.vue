@@ -84,7 +84,7 @@ onMounted(async () => {
 </script>
 
 <template>
-    <div class="flex flex-col overflow-hidden h-full w-full p-6 space-y-6">
+    <div class="flex flex-col md:overflow-y-hidden h-full w-full p-6 space-y-6 overflow-y-auto">
         <div class="flex flex-col md:flex-row md:justify-between md:items-end gap-4 mb-6 border-b border-slate-200 pb-5">
             <div>
                 <h2 class="text-xl font-black text-slate-800 uppercase italic">Configurador y simulador de precios</h2>
@@ -92,10 +92,10 @@ onMounted(async () => {
             </div>
         </div>
 
-    <div class="flex flex-col gap-8 w-full h-full overflow-y-auto">
+    <div class="flex flex-col gap-8 w-full h-full md:overflow-y-auto">
         
         <section class="w-full mx-auto">
-            <BaseCard padding="p-8">
+            <BaseCard padding="p-8" class="!shadow-md">
                 <PriceConfigForm v-if="pricingConfig"
                 :pricing-config="pricingConfig"
                 @submit="handleSaveConfig" />
@@ -103,7 +103,7 @@ onMounted(async () => {
         </section>
 
         <section class="w-full mx-auto">
-            <BaseCard padding="p-8">
+            <BaseCard padding="p-8" class="mb-2 !shadow-md">
                 <PriceSimulator v-if="pricingConfig && courts.length > 0 " 
                 :courts="courts"
                 :pricing-config="pricingConfig"/>
