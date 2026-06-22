@@ -7,16 +7,8 @@ export const useGlobalLoading = () => {
     
     const stop = () => {
         activeRequests.value = Math.max(0, activeRequests.value - 1);
-        console.log('Requests activas:', activeRequests.value);
-
-        activeRequests.value = Math.max(0, activeRequests.value - 1);
-    
-        console.log('Requests activas actuales:', activeRequests.value); 
-
-        if (activeRequests.value === 0) {
-            console.log('UI desbloqueada');
-        }
-        };
+    }
+ 
 
     return { isLoading, start, stop };
 };

@@ -406,15 +406,6 @@ const canAdminChangeStatus = (currentId: ReservationStatus | undefined): boolean
                 @click="onOpenCreateEventDialog"
                 />
 
-                <BaseButton 
-                icon="pi pi-plus"
-                label="Añadir reserva"
-                class="!bg-black !border-none"
-                size="small"
-                rounded
-                @click="onOpenCreateEventDialog"
-                />
-
                 <div class="card flex justify-center">
                     <Drawer v-model:visible="isDrawerVisible" position="full">
                         <div class="md:hidden p-1 text-center text-xs text-slate-400 bg-slate-50">
